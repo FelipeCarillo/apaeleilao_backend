@@ -25,7 +25,7 @@ jobs:
         run: npm install -g aws-cdk
 
       - name: CDK Deploy
-        working-directory: ./
+        working-directory: ./iac
         run: cdk deploy --require-approval never
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
