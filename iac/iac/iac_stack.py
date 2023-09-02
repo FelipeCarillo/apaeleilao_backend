@@ -12,17 +12,17 @@ class IACStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        random_drink_lambda = _lambda.Function(
-            self, "RandomDrinkLambda",
+        random_name_lambda = _lambda.Function(
+            self, "random_name_lambda",
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset("../src"),
-            handler="drink.lambda_handler",
+            handler="name.lambda_handler",
         )
 
         api = apigw.RestApi(
-            self, "RandomDrinkApi",
+            self, "apaeleilaoimtapi",
 
         )
 
-        api.root.add_resource("drink").add_method("GET", apigw.LambdaIntegration(random_drink_lambda))
+        api.root.add_resource("name").add_method("GET", apigw.LambdaIntegration(random_name_lambda))
 
