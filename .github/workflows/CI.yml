@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  delete-branch-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if the PR was merged
+        run: echo "PR_STATE=${{ github.event.pull_request.merged }}" >> $GITHUB_ENV
+
+      - name: Get the branch name from the PR
+        if: steps.delete-branch-and-test.outputs.PR_STATE == 'true'
+        run: echo "BRANCH_NAME=$(echo ${{ github.event.pull_request.head.ref }} | sed 's/\//_/g')" >> $GITHUB_ENV
+
+      - name: Delete the branch
+        if: steps.delete-branch-and-test.outputs.PR_STATE == 'true' && env.BRANCH_NAME != 'prod' && env.BRANCH_NAME != 'homolog' && env.BRANCH_NAME != 'dev'
+        run: git push origin --delete $BRANCH_NAME
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run pytest
+        run: pytest
