@@ -17,7 +17,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/CDKRole
-          aws-region: ${{ var.AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
 
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
