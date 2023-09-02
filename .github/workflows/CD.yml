@@ -21,8 +21,8 @@ jobs:
           node-version: 14
 
       - name: Install CDK dependencies
-        working-directory: ./
-        run: npm install -g aws-cdk
+        working-directory: ./iac
+        run: pip install -r requirements.txt
 
       - name: CDK Deploy
         working-directory: ./iac

@@ -2,7 +2,7 @@
 import os
 import aws_cdk as cdk
 
-from apae_mss_activity.iac.iac.iac_stack import IACStack
+from .iac.iac_stack import IACStack
 
 
 app = cdk.App()
