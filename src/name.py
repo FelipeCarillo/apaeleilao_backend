@@ -2,14 +2,14 @@ import json
 import random
 
 
-def random_drink():
-    drinks = ["Coffee", "Te", "Water"]
-    return random.choice(drinks)
+def random_name():
+    name = ["Felipe", "Joao", "Maria"]
+    return random.choice(name)
 
 
 def lambda_handler(event, context):
-    drink = random_drink()
-    message = f"Your drink is {drink}"
+    name = random_drink()
+    message = f"Your drink is {name}"
 
     return {
         'statusCode': 200,
