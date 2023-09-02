@@ -1,4 +1,4 @@
-name: CD with AWS CDK
+name: CD
 
 on:
   push:
@@ -14,15 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setting AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws configure --profile default
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/CDKRole
-          aws-region: ${{ vars.AWS_REGION }}
-
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+            aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws_default_region: ${{ secrets.AWS_REGION }}
 
       - name: Install CDK dependencies
         working-directory: ./
@@ -34,6 +30,7 @@ jobs:
       - name: CDK Deploy
         working-directory: ./iac
         run: |
+          cdk bootstrap aws://$AWS_ACCOUNT_ID/$AWS_REGION
           cdk synth
           cdk deploy --require-approval never
         env:
