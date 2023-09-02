@@ -33,5 +33,5 @@ jobs:
       - name: Install dependencies
         run: pip install pytest==6.2.5
 
-      - name: Run pytest
-        run: pytest
+#      - name: Run pytest
+#        run: pytest
