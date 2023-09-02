@@ -10,7 +10,7 @@ on:
       - homolog
       - prod
 jobs:
-  delete-branch-and-test:
+  CI:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,7 +31,10 @@ jobs:
           python-version: 3.9
 
       - name: Install dependencies
-        run: pip install -r requirements-dev.txt
+        run: |
+          cd ..
+          cd ..
+          pip install -r ../requirements-dev.txt
 
       - name: Run pytest
         run: pytest
