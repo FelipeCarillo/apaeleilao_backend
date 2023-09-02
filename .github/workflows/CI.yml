@@ -4,7 +4,11 @@ on:
   pull_request:
     types:
       - closed
-
+  push:
+    branches:
+      - dev
+      - homolog
+      - prod
 jobs:
   delete-branch-and-test:
     runs-on: ubuntu-latest
