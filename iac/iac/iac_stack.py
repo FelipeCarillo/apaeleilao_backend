@@ -5,23 +5,31 @@ from aws_cdk import (
     Duration,
 )
 from constructs import Construct
+from lambda_stack import LambdaStack
 
 
 class IACStack(Stack):
-
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        random_name_lambda = _lambda.Function(
-            self, "soma_two_numbers",
-            runtime=_lambda.Runtime.PYTHON_3_9,
-            code=_lambda.Code.from_asset("../src"),
-            handler="name.lambda_handler",
+        self.api = apigw.RestApi(
+            self, "Apae_Leilao_RestApi",
+            rest_api_name="Apae_Leilao_RestApi",
+            description="This service serves Apae Leilao RestApi",
+            default_cors_preflight_options=
+            {
+                "allow_origins": apigw.Cors.ALL_ORIGINS,
+                "allow_methods": ["GET", "POST", "PUT", "DELETE"],
+                "allow_headers": ["*"],
+            }
         )
 
-        api = apigw.RestApi(
-            self, "apaeleilaoimtapi",
-        )
+        restapi_resourse= self.api.root.add_resource("apae-leilao", default_cors_preflight_options=
+            {
+                "allow_origins": apigw.Cors.ALL_ORIGINS,
+                "allow_methods": ["GET", "POST", "PUT", "DELETE"],
+                "allow_headers": ["*"],
+            })
 
-        api.root.add_resource("soma").add_method("POST", apigw.LambdaIntegration(random_name_lambda))
+        self.lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,)
 
