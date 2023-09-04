@@ -5,7 +5,7 @@ from aws_cdk import (
     Duration,
 )
 from constructs import Construct
-from lambda_stack import LambdaStack
+from .lambda_stack import LambdaStack
 
 
 class IACStack(Stack):

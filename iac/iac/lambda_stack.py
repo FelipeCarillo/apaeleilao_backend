@@ -4,10 +4,7 @@ from aws_cdk import (
     Stack,
     Duration,
 )
-
 from constructs import Construct
-from apigateway_stack import ApiGatewayStack
-
 
 class LambdaStack(Stack):
 
