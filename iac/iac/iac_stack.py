@@ -13,7 +13,7 @@ class IACStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         random_name_lambda = _lambda.Function(
-            self, "random_name_lambda",
+            self, "soma_two_numbers",
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset("../src"),
             handler="name.lambda_handler",
@@ -21,8 +21,7 @@ class IACStack(Stack):
 
         api = apigw.RestApi(
             self, "apaeleilaoimtapi",
-
         )
 
-        api.root.add_resource("name").add_method("GET", apigw.LambdaIntegration(random_name_lambda))
+        api.root.add_resource("soma").add_method("POST", apigw.LambdaIntegration(random_name_lambda))
 
