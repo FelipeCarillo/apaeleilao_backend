@@ -5,17 +5,30 @@ from aws_cdk import (
     Duration,
 )
 
+from constructs import Construct
+from apigateway_stack import ApiGatewayStack
+
 
 class LambdaStack(Stack):
 
-    def create_lambda(self, ):
-        return _lambda.Function(
-            self, "RandomDrinkLambda",
+    def create_lambda(module_name: str, method: str, restapi_resource: apigw.Resource) -> _lambda.Function:
+        function = _lambda.Function(
+            self, module_name,
             runtime=_lambda.Runtime.PYTHON_3_9,
-            code=_lambda.Code.from_asset("../src"),
-            handler="drink.lambda_handler",
+            code=_lambda.Code.from_asset("../src/modules"),
+            handler=f"app.{module_name}.lambda_handler",
         )
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+        restapi_resource.add_resource(function_name.replace("_", "-")).add_method(method, apigw.LambdaIntegration(function))
+
+        return function
+    def __init__(self, scope: Construct, restapi_resource: apigw.Resource) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+        self.create_user = create_lambda(
+            module_name="create_user",
+            method="POST",
+            restapi_resource=restapi_resource)
+
+
 

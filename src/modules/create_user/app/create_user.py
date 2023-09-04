@@ -1,7 +1,7 @@
 import json
 
 
-def soma_two_numbers(event, context):
+def create_user(event, context):
     number1 = event["number1"]
     number2 = event["number2"]
     soma = number1 + number2
