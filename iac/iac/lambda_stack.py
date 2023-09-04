@@ -16,7 +16,7 @@ class LambdaStack(Stack):
             handler=f"app.{module_name}.lambda_handler",
         )
 
-        restapi_resource.add_resource(function_name.replace("_", "-")).add_method(method, apigw.LambdaIntegration(function))
+        restapi_resource.add_resource(module_name.replace("_", "-")).add_method(method, apigw.LambdaIntegration(function))
 
         return function
     def __init__(self, scope: Construct, restapi_resource: apigw.Resource) -> None:
