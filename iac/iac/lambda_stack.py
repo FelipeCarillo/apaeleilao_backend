@@ -20,7 +20,7 @@ class LambdaStack(Stack):
 
         return function
     def __init__(self, scope: Construct, restapi_resource: apigw.Resource) -> None:
-        super().__init__(scope, construct_id, **kwargs)
+        super().__init__(scope, "ApaeMssLambdas",)
 
         self.create_user = create_lambda(
             module_name="create_user",
