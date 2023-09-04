@@ -8,7 +8,7 @@ from constructs import Construct
 
 class LambdaStack(Stack):
 
-    def create_lambda(module_name: str, method: str, restapi_resource: apigw.Resource) -> _lambda.Function:
+    def create_lambda(self, module_name: str, method: str, restapi_resource: apigw.Resource) -> _lambda.Function:
         function = _lambda.Function(
             self, module_name,
             runtime=_lambda.Runtime.PYTHON_3_9,
@@ -22,7 +22,7 @@ class LambdaStack(Stack):
     def __init__(self, scope: Construct, restapi_resource: apigw.Resource) -> None:
         super().__init__(scope, "ApaeMssLambdas",)
 
-        self.create_user = create_lambda(
+        self.create_user = self.create_lambda(
             module_name="create_user",
             method="POST",
             restapi_resource=restapi_resource)
