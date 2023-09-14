@@ -2,12 +2,15 @@
 import os
 import aws_cdk as cdk
 
-from iac.iac_stack import IACStack
+from iac.mss_auction.iac_stack import IACStack
 
 
 app = cdk.App()
 
-IACStack(app, "ApaeMssActivityStack",
-         env=cdk.Environment(account=os.environ["CDK_DEFAULT_ACCOUNT"], region=os.environ["CDK_DEFAULT_REGION"]))
+aws_account_id = os.environ.get("AWS_ACCOUNT_ID")
+aws_region = os.environ.get("AWS_REGION")
+
+IACStack(app, "ApaeMssAuctionStack",
+                env=cdk.Environment(account=aws_account_id, region=aws_region),)
 
 app.synth()
