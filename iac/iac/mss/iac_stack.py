@@ -18,8 +18,8 @@ class IACStack(Stack):
         ses_region = os.environ.get("SES_REGION")
 
         self.__restapi = apigw.RestApi(
-            self, f"apae_leilao_restapi_{stage}",
-            rest_api_name="Apae_Leilao_RestApi",
+            self, f"Apae_Leilao_Restapi_{stage}",
+            rest_api_name=f"Apae_Leilao_RestApi_{stage}",
             description="This service serves Apae Leilao RestApi",
             default_cors_preflight_options=
             {
@@ -43,5 +43,5 @@ class IACStack(Stack):
             "SES_REGION": ses_region,
         }
 
-        self.__lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,
-                                             environment_variables=ENVIROMENT_VARIABLES)
+        self.lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,
+                                           environment_variables=ENVIROMENT_VARIABLES)

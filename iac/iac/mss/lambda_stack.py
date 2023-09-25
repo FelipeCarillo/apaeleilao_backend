@@ -28,7 +28,7 @@ class LambdaStack(Stack):
 
     def __init__(self, scope: Construct, restapi_resource: apigw.Resource,
                  environment_variables: Dict[str, str]) -> None:
-        super().__init__(scope, "ApaeLeilao_Lambdas", )
+        super().__init__(scope, "ApaeLeilao_Lambda")
 
         self.create_user = self.create_lambda(
             function_name="create_user",
@@ -36,5 +36,7 @@ class LambdaStack(Stack):
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
+
+
 
 
