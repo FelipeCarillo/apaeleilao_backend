@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - dev
-      - homolog
+      - homology
       - prod
 
 jobs:
-  DeploytoAWS:
+  Deploy to AWS:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,5 +36,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ vars.AWS_REGION }}
-
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          STAGE: ${{ github.ref }}
+          SES_SENDER: ${{ secrets.SES_EMAIL }}
+          SES_REGION: ${{ vars.AWS_REGION }}
