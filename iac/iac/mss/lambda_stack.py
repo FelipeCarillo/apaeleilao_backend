@@ -30,12 +30,14 @@ class LambdaStack(Stack):
                  environment_variables: Dict[str, str]) -> None:
         super().__init__(scope, "ApaeMssLambdas", )
 
-        self.__create_user = self.create_lambda(
+        self.create_user = self.create_lambda(
             module_name="create_user",
             method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
+
+
 
 
 
