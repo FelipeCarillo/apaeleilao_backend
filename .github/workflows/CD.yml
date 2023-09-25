@@ -32,7 +32,7 @@ jobs:
         run: |
           cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }}
           cdk synth
-          cdk deploy --all --require-approval never
+          cdk deploy --require-approval never ApaeLeilaoStack${{ github.ref_name }}
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
