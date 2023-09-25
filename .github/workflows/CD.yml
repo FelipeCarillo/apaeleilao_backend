@@ -40,6 +40,6 @@ jobs:
           AWS_REGION: ${{ vars.AWS_REGION }}
           SES_REGION: ${{ vars.SES_REGION }}
           SES_SENDER: ${{ vars.SES_SENDER }}
-          STAGE: ${{ github.ref }}
+          STAGE: ${{ github.ref_name }}
 
 
