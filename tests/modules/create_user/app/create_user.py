@@ -1,11 +1,15 @@
+import os
 import json
 
 
 def create_user(event, context):
-    number1 = event["number1"]
-    number2 = event["number2"]
-    soma = number1 + number2
-    return soma
+
+    stage = os.environ.get("STAGE")
+    body = json.loads(event['body'])
+    email = body['email']
+    fullname = body['fullname']
+
+
 
 
 def lambda_handler(event, context):
