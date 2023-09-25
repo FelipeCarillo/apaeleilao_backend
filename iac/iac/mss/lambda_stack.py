@@ -14,12 +14,11 @@ class LambdaStack(Stack):
                       environment_variables: Dict[str, str]) -> _lambda.Function:
         function = _lambda.Function(
             self, module_name,
-            memory_size=512,
             environment=environment_variables,
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset(f"../src/modules/{module_name}"),
             handler=f"app.{module_name}.lambda_handler",
-            timeout=Duration.seconds(15),
+            timeout=Duration.seconds(10),
         )
 
         restapi_resource.add_resource(module_name.replace("_", "-")).add_method(method,
@@ -37,4 +36,6 @@ class LambdaStack(Stack):
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
+
+
 
