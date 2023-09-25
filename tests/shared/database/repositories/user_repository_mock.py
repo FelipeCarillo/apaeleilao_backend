@@ -1,4 +1,0 @@
-
-
-
-class UserRepositoryMock(I):
