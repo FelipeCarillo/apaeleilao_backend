@@ -30,7 +30,7 @@ jobs:
       - name: CDK Deploy
         working-directory: ./iac
         run: |
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }}
+          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }} "ApaeLeilaoStack${{ github.ref_name }}"
           cdk synth
           cdk deploy --require-approval never "ApaeLeilaoStack${{ github.ref_name }}"
         env:
