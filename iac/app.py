@@ -9,7 +9,7 @@ app = cdk.App()
 aws_account_id = os.environ.get("AWS_ACCOUNT_ID")
 aws_region = os.environ.get("AWS_REGION")
 
-IACStack(app, "ApaeLeilao",
+IACStack(app, "ApaeLeilaoMss",
          env=cdk.Environment(account=aws_account_id, region=aws_region))
 
 app.synth()
