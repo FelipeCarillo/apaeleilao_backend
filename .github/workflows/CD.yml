@@ -44,4 +44,3 @@ jobs:
           STAGE: ${{ github.ref_name }}
           STACK_NAME: ${{ env.STACK_NAME }}
 
-
