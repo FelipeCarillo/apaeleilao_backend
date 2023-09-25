@@ -18,7 +18,7 @@ class LambdaStack(Stack):
             environment=environment_variables,
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
-            handler=f"app.{function_name}.lambda_handler",
+            handler=f"app.{function_name}_presenter.lambda_handler",
             timeout=Duration.seconds(10),
         )
 

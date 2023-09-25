@@ -19,6 +19,7 @@ jobs:
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws configure set default.region ${{ vars.AWS_REGION }}
           aws configure set default.output json
+          echo "STACK_NAME=ApaeLeilaoStack${{ github.ref_name }}" >> $GITHUB_ENV
 
       - name: Install CDK dependencies
         working-directory: ./
@@ -30,7 +31,7 @@ jobs:
       - name: CDK Deploy
         working-directory: ./iac
         run: |
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }} --toolkit-stack-name "ApaeLeilaoStack${{ github.ref_name }}"
+          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }} --toolkit-stack-name ${{ env.STACK_NAME }}
           cdk synth
           cdk deploy --require-approval never --all
         env:
@@ -41,5 +42,6 @@ jobs:
           SES_REGION: ${{ vars.SES_REGION }}
           SES_SENDER: ${{ vars.SES_SENDER }}
           STAGE: ${{ github.ref_name }}
+          STACK_NAME: ${{ env.STACK_NAME }}
 
 
