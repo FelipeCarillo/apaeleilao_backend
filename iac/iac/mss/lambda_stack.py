@@ -13,6 +13,7 @@ class LambdaStack(Stack):
     def create_lambda(self, function_name: str, method: str, restapi_resource: apigw.Resource,
                       environment_variables: Dict[str, str]) -> _lambda.Function:
         function = _lambda.Function(
+
             self, function_name.title(),
             function_name=function_name.title(),
             environment=environment_variables,
