@@ -8,7 +8,7 @@ on:
       - prod
 
 jobs:
-  DeploytoAWS:
+  Deploy_to_AWS:
     runs-on: ubuntu-latest
 
     steps:
