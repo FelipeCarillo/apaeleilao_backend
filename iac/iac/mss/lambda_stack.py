@@ -10,18 +10,19 @@ from constructs import Construct
 
 class LambdaStack(Stack):
 
-    def create_lambda(self, module_name: str, method: str, restapi_resource: apigw.Resource,
+    def create_lambda(self, function_name: str, method: str, restapi_resource: apigw.Resource,
                       environment_variables: Dict[str, str]) -> _lambda.Function:
         function = _lambda.Function(
-            self, module_name,
+            self,
+            function_name=function_name,
             environment=environment_variables,
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset(f"../src/modules/{module_name}"),
-            handler=f"app.{module_name}.lambda_handler",
+            handler=f"app.{function_name}.lambda_handler",
             timeout=Duration.seconds(10),
         )
 
-        restapi_resource.add_resource(module_name.replace("_", "-")).add_method(method,
+        restapi_resource.add_resource(function_name.replace("_", "-")).add_method(method,
                                                                                 apigw.LambdaIntegration(function))
 
         return function
@@ -31,7 +32,7 @@ class LambdaStack(Stack):
         super().__init__(scope, "ApaeMssLambdas", )
 
         self.create_user = self.create_lambda(
-            module_name="create_user",
+            function_name="create_user",
             method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
