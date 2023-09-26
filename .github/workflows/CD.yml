@@ -42,7 +42,7 @@ jobs:
       - name: CDK Bootstrap
         run: |
           cd iac
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }} --toolkit-stack-name CDK${{ STACK_NAME }} 
+          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }} --toolkit-stack-name CDK${{ env.STACK_NAME }} 
 
       - name: CDK Synth
         run: |
