@@ -39,8 +39,6 @@ jobs:
       - name: CDK Deploy
         run: |
           cd iac
-          # Set AWS region and account ID in your CDK context
-          cdk context --clear
           cdk context --global aws:region=$AWS_REGION aws:account=$AWS_ACCOUNT_ID
           cdk synth
           cdk deploy --require-approval never
