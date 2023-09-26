@@ -21,6 +21,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ${{ secrets.AWS_REGION }}
+          aws configure set default.output json
 
       - name: Get the branch name from the PR
         run: |
@@ -41,8 +46,6 @@ jobs:
       - name: CDK Deploy
         run: |
           cd iac
-          cdk context --reset
-          cdk context --global aws:region=$AWS_REGION aws:account=$AWS_ACCOUNT_ID
           cdk synth
           cdk deploy --require-approval never
         env:
