@@ -41,7 +41,7 @@ jobs:
       - name: CDK Bootstrap
         run: |
           cd iac
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }}
+          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }} --toolkit-bucket-name ${{ env.STACK_NAME }} --bootstrap-bucket-name ${{ env.BUCKET_NAME }}
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
