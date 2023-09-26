@@ -37,16 +37,11 @@ jobs:
             aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws configure set default.region ${{ vars.AWS_REGION }}
             aws configure set default.output json
-          
-
-      - name: CDK Bootstrap
-        run: |
-          cd iac
-          cdk bootstrap --toolkit-stack-name CDK${{ env.STACK_NAME }} --bootstrap-bucket-name cdk-${{ env.BUCKET_NAME }}
 
       - name: CDK Deploy
         run: |
           cd iac
+          cdk bootstrap
           cdk deploy --require-approval never
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
