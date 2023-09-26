@@ -1,5 +1,5 @@
 from typing import Dict
-from .create_user_usecase import CreateUserUseCase
+from src.modules.create_user.create_user_usecase import CreateUserUseCase
 
 
 class CreateUserController:
