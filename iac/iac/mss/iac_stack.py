@@ -16,16 +16,17 @@ class IACStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         stage = os.environ.get("STAGE", "TEST").upper()
-        ses_sender = os.environ.get("SES_SENDER", None)
-        ses_region = os.environ.get("SES_REGION", None)
-        bucket_name = os.environ.get("BUCKET_NAME", None)
-
+        bucket_name = os.environ.get("BUCKET_NAME", "")
         self.__bucket = s3.Bucket(
             self, f"Apae_Leilao_Bucket_{stage}",
             bucket_name=bucket_name,
             versioned=True,
             removal_policy=RemovalPolicy.DESTROY,
         )
+
+        ses_sender = os.environ.get("SES_SENDER", "")
+        ses_region = os.environ.get("SES_REGION", "")
+
 
         self.__restapi = apigw.RestApi(
             self, f"Apae_Leilao_Restapi_{stage}",
