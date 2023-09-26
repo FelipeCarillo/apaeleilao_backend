@@ -17,7 +17,7 @@ class LambdaStack(Construct):
             function_name=(function_name + "_apae_leilao").title(),
             environment=environment_variables,
             runtime=_lambda.Runtime.PYTHON_3_9,
-            code=_lambda.Code.from_asset("../src/modules/{function_name}"),
+            code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
             handler=f"app.{function_name}_presenter.lambda_handler",
             layers=[],
             timeout=Duration.seconds(10),
