@@ -23,7 +23,7 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Get the branch name from the PR
-        run: echo "STACK_NAME=Apae_Leilao_Stack_${{ github.ref_name }}" >> $GITHUB_ENV
+        run: echo "STACK_NAME=ApaeLeilaoStack${{ github.ref_name }}" >> $GITHUB_ENV
 
       - name: Set up Python
         uses: actions/setup-python@v2
