@@ -1,6 +1,6 @@
 import os
 import json
-from src.modules.create_user.app.create_user_controller import CreateUserController
+from .create_user_controller import CreateUserController
 
 
 def lambda_handler(event, context):
