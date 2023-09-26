@@ -38,21 +38,6 @@ jobs:
           cd iac
           pip3 install -r requirements.txt
 
-      - name: CDK Bootstrap
-        run: |
-          cd iac
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }} --toolkit-bucket-name ${{ env.STACK_NAME }} --bootstrap-bucket-name ${{ env.BUCKET_NAME }}
-        env:
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ vars.AWS_REGION }}
-          SES_REGION: ${{ vars.SES_REGION }}
-          SES_SENDER: ${{ vars.SES_SENDER }}
-          STAGE: ${{ github.ref_name }}
-          STACK_NAME: ${{ env.STACK_NAME }}
-          BUCKET_NAME: ${{ env.BUCKET_NAME }}
-
       - name: CDK Synth
         run: |
           cd iac
