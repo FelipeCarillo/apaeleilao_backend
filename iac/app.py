@@ -2,7 +2,7 @@
 import os
 import aws_cdk as cdk
 from iac.iac_stack import IACStack
-from .adjust_layer_directory import adjust_layer_directory
+from adjust_layer_directory import adjust_layer_directory
 
 app = cdk.App()
 
