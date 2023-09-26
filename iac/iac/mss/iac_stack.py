@@ -33,7 +33,7 @@ class IACStack(Stack):
         {
             "allow_origins": apigw.Cors.ALL_ORIGINS,
             "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-            "allow_headers": ['*'],
+            "allow_headers": ["*"],
         }
                                                             )
 

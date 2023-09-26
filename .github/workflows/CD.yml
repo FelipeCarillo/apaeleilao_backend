@@ -15,25 +15,24 @@ jobs:
       - uses: actions/checkout@v2
       - name: Setting AWS Credentials
         run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set default.region ${{ vars.AWS_REGION }}
-          aws configure set default.output json
-          echo "STACK_NAME=ApaeLeilaoStack${{ github.ref_name }}" >> $GITHUB_ENV
+          aws-actions/configure-aws-credentials@v1
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ vars.AWS_REGION }}
 
       - name: Install CDK dependencies
         working-directory: ./
         run: |
-          npm install -g aws-cdk
+          sudo npm install -g aws-cdk
           cd iac
-          pip install -r requirements.txt
+          sudo pip3 install -r requirements.txt
 
       - name: CDK Deploy
         working-directory: ./iac
         run: |
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }} --toolkit-stack-name ${{ env.STACK_NAME }}
           cdk synth
-          cdk deploy --require-approval never --all
+          cdk deploy --require-approval never
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
