@@ -38,10 +38,19 @@ jobs:
           cd iac
           pip3 install -r requirements.txt
 
-      - name: CDK Deploy
+      - name: CDK Bootstrap
+        run: |
+          cd iac
+          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }}
+
+      - name: CDK Synth
         run: |
           cd iac
           cdk synth
+
+      - name: CDK Deploy
+        run: |
+          cd iac
           cdk deploy --require-approval never
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
