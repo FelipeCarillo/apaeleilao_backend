@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os
 import aws_cdk as cdk
-
 from iac.mss.iac_stack import IACStack
 
 app = cdk.App()

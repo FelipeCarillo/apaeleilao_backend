@@ -35,7 +35,7 @@ jobs:
         run: |
           sudo npm install -g aws-cdk
           cd iac
-          sudo pip3 install -r requirements.txt
+          pip3 install -r requirements.txt
 
       - name: CDK Deploy
         working-directory: ./iac

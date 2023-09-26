@@ -14,8 +14,8 @@ class IACStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         stage = os.environ.get("STAGE", "TEST").upper()
-        ses_sender = os.environ.get("SES_SENDER")
-        ses_region = os.environ.get("SES_REGION")
+        ses_sender = os.environ.get("SES_SENDER", None)
+        ses_region = os.environ.get("SES_REGION", None)
 
         self.__restapi = apigw.RestApi(
             self, f"Apae_Leilao_Restapi_{stage}",
