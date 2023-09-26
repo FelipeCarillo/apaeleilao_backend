@@ -20,7 +20,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ vars.AWS_REGION }}  # Use the AWS region from your secrets
+          aws-region: ${{ vars.AWS_REGION }}
 
       - name: Get the branch name from the PR
         run: |
@@ -28,7 +28,7 @@ jobs:
           echo "BUCKET_NAME=apae-leilao-bucket-${{ github.ref_name }}" >> $GITHUB_ENV
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9
 
@@ -41,6 +41,7 @@ jobs:
       - name: CDK Deploy
         run: |
           cd iac
+          cdk context --reset KEY_OR_NUMBER
           cdk context --global aws:region=$AWS_REGION aws:account=$AWS_ACCOUNT_ID
           cdk synth
           cdk deploy --require-approval never

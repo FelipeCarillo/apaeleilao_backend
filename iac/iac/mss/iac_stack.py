@@ -4,6 +4,7 @@ from aws_cdk import (
     aws_apigateway as apigw,
     Stack,
     aws_s3 as s3,
+    RemovalPolicy,
 )
 from constructs import Construct
 from .lambda_stack import LambdaStack
@@ -19,11 +20,11 @@ class IACStack(Stack):
         ses_region = os.environ.get("SES_REGION", None)
         bucket_name = os.environ.get("BUCKET_NAME", None)
 
-
         self.__bucket = s3.Bucket(
             self, f"Apae_Leilao_Bucket_{stage}",
             bucket_name=bucket_name,
             versioned=True,
+            removal_policy=RemovalPolicy.DESTROY,
         )
 
         self.__restapi = apigw.RestApi(
