@@ -39,9 +39,8 @@ jobs:
       - name: CDK Deploy
         run: |
           cd iac
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }} --toolkit-bucket-name "${{ env.STACK_NAME }}"
           cdk synth
-          cdk deploy "${{ env.STACK_NAME }}" --require-approval never
+          cdk deploy --require-approval never
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
