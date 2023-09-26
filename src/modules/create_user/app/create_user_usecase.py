@@ -1,6 +1,6 @@
 import uuid
-from ....shared.database.user_dynamodb import UserDynamodb
-from ....shared.structure.entities.user import User
+from src.shared.database.user_dynamodb import UserDynamodb
+from src.shared.structure.entities.user import User
 
 
 class CreateUserUseCase:
