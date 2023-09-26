@@ -3,6 +3,7 @@ import os
 from aws_cdk import (
     aws_apigateway as apigw,
     Stack,
+    aws_s3 as s3,
 )
 from constructs import Construct
 from .lambda_stack import LambdaStack
@@ -16,6 +17,11 @@ class IACStack(Stack):
         stage = os.environ.get("STAGE", "TEST").upper()
         ses_sender = os.environ.get("SES_SENDER", None)
         ses_region = os.environ.get("SES_REGION", None)
+
+        self.__bucket = s3.Bucket(
+            self, f"Apae_Leilao_Bucket_{stage}",
+            bucket_name=f"apae-leilao-bucket-{stage}",
+        )
 
         self.__restapi = apigw.RestApi(
             self, f"Apae_Leilao_Restapi_{stage}",
