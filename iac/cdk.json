@@ -9,6 +9,7 @@
       "cdk*.json",
       "requirements*.txt",
       "source.bat",
+      "source.bat",
       "**/__init__.py",
       "python/__pycache__",
       "tests"
@@ -50,6 +51,9 @@
     "@aws-cdk/aws-kms:aliasNameRef": true,
     "@aws-cdk/aws-autoscaling:generateLaunchTemplateInsteadOfLaunchConfig": true,
     "@aws-cdk/core:includePrefixInUniqueNameGeneration": true,
-    "@aws-cdk/aws-opensearchservice:enableOpensearchMultiAzWithStandby": true
+    "@aws-cdk/aws-opensearchservice:enableOpensearchMultiAzWithStandby": true,
+    "@aws-cdk/core:enableStackNameDuplicates": "true",
+    "aws-cdk:default-account": "YOUR_AWS_ACCOUNT_ID",
+    "aws-cdk:default-region": "YOUR_AWS_REGION"
   }
 }
