@@ -23,7 +23,9 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}  # Use the AWS region from your secrets
 
       - name: Get the branch name from the PR
-        run: echo "STACK_NAME=ApaeLeilaoStack${{ github.ref_name }}" >> $GITHUB_ENV
+        run: |
+          echo "STACK_NAME=ApaeLeilaoStack${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "BUCKET_NAME=apae-leilao-bucket-${{ github.ref_name }}" >> $GITHUB_ENV
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -51,3 +53,4 @@ jobs:
           SES_SENDER: ${{ secrets.SES_SENDER }}
           STAGE: ${{ github.ref_name }}
           STACK_NAME: ${{ env.STACK_NAME }}
+          BUCKET_NAME: ${{ env.BUCKET_NAME }}

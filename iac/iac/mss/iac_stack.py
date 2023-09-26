@@ -17,10 +17,12 @@ class IACStack(Stack):
         stage = os.environ.get("STAGE", "TEST").upper()
         ses_sender = os.environ.get("SES_SENDER", None)
         ses_region = os.environ.get("SES_REGION", None)
+        bucket_name = os.environ.get("BUCKET_NAME", None)
+
 
         self.__bucket = s3.Bucket(
             self, f"Apae_Leilao_Bucket_{stage}",
-            bucket_name=f"apae-leilao-bucket-{stage.lower()}",
+            bucket_name=bucket_name,
             versioned=True,
         )
 
