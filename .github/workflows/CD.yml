@@ -41,7 +41,7 @@ jobs:
       - name: CDK Deploy
         run: |
           cd iac
-          cdk context --reset KEY_OR_NUMBER
+          cdk context --reset
           cdk context --global aws:region=$AWS_REGION aws:account=$AWS_ACCOUNT_ID
           cdk synth
           cdk deploy --require-approval never
