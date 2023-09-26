@@ -38,10 +38,14 @@ jobs:
             aws configure set default.region ${{ vars.AWS_REGION }}
             aws configure set default.output json
 
-      - name: CDK Deploy
+      - name: CDK Bootstrap
         run: |
           cd iac
           cdk bootstrap
+
+      - name: CDK Deploy
+        run: |
+          cd iac
           cdk deploy --require-approval never
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
