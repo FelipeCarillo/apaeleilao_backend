@@ -9,16 +9,6 @@ class CreateUserUseCase:
         self.__dynamodb = UserDynamodb()
 
     def __call__(self):
-        auth = self.__dynamodb.authenticate(
-            self.__request['auth']['user_id'],
-            self.__request['auth']['password']
-        )
-        if not auth:
-            return {
-                'statusCode': 401,
-                'body': 'Unauthorized'
-            }
-
         user = User(**self.__request['body'])
         user.user_id = str(uuid.uuid4())
         self.__dynamodb.create_user(user)

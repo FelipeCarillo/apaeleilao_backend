@@ -17,11 +17,6 @@ class CreateUserController:
                 'statusCode': 400,
                 'body': 'Invalid request body'
             }
-        if not self.__request['auth']:
-            raise {
-                'statusCode': 400,
-                'body': 'Invalid request auth'
-            }
         create_user_usecase = CreateUserUseCase(self.__request)()
         return create_user_usecase
 

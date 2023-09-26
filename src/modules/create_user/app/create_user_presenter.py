@@ -5,7 +5,7 @@ from .create_user_controller import CreateUserController
 
 def lambda_handler(event, context):
     stage = os.environ.get("STAGE")
-    request = json.loads(event)
+    request = json.loads(json.dumps(event))
 
     response = CreateUserController(request)()
 
