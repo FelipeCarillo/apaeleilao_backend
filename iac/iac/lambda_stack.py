@@ -1,3 +1,4 @@
+import os
 from typing import Dict
 from aws_cdk import (
     aws_lambda as _lambda,
@@ -12,9 +13,12 @@ class LambdaStack(Construct):
     def create_lambda(self, function_name: str, method: str, restapi_resource: apigw.Resource,
                       environment_variables: Dict[str, str]) -> _lambda.Function:
 
+        current_directory = os.path.dirname(os.path.abspath(__file__))
+        shared_directory = os.path.join(current_directory, "../src/shared")
+
         shared_layer = _lambda.LayerVersion(
             self, "ApaeLeilao_Layer",
-            code=_lambda.Code.from_asset(f"./apaeleilao_layer"),
+            code=_lambda.Code.from_asset(shared_directory),
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
         )
 
