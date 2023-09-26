@@ -38,6 +38,7 @@ jobs:
 
       - name: CDK Deploy
         run: |
+          cd iac
           cdk synth
           cdk deploy "${{ env.STACK_NAME }}" --require-approval never
         env:
