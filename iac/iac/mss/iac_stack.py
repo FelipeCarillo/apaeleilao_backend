@@ -21,6 +21,7 @@ class IACStack(Stack):
         self.__bucket = s3.Bucket(
             self, f"Apae_Leilao_Bucket_{stage}",
             bucket_name=f"apae-leilao-bucket-{stage.lower()}",
+            versioned=True,
         )
 
         self.__restapi = apigw.RestApi(
