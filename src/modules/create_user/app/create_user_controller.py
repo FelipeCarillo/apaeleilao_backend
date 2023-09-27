@@ -25,7 +25,6 @@ class CreateUserController:
         last_name = request['body']['last_name']
         password = request['body']['password']
         accept_terms = request['body']['accept_terms']
-        is_verified = request['body']['is_verified']
 
         create_user_usecase = self.__usecase(email, cpf, user_id, first_name, last_name,
                                              password, accept_terms)
