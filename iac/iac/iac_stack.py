@@ -29,8 +29,8 @@ class IACStack(Stack):
 
 
         self.__restapi = apigw.RestApi(
-            self, f"Apae_Leilao_Restapi_{stage}",
-            rest_api_name=f"Apae_Leilao_RestApi_{stage}",
+            self, f"Apae_Leilao_Restapi",
+            rest_api_name=f"Apae_Leilao_RestApi",
             description="This service serves Apae Leilao RestApi",
             default_cors_preflight_options=
             {

@@ -1,4 +1,25 @@
+import json
 from typing import Any
+
+
+class HttpResponse:
+    def __init__(self, status_code: int, body: Any):
+        self.__status_code = status_code
+        self.__body = body
+
+    @property
+    def status_code(self):
+        return self.__status_code
+
+    @property
+    def body(self):
+        return self.__body
+
+    @property
+    def data(self):
+        return {'statusCode': self.__status_code,
+                'headers': {'Content-Type': 'application/json'},
+                'body': json.dumps(self.__body)}
 
 
 class OK:
@@ -7,7 +28,8 @@ class OK:
 
     @property
     def data(self):
-        return {'statusCode': 200, 'body': self.__data}
+        return {'statusCode': 200,
+                'body': self.__data}
 
 
 class Created:
@@ -16,7 +38,8 @@ class Created:
 
     @property
     def data(self):
-        return {'statusCode': 201, 'body': self.__data}
+        return {'statusCode': 201,
+                'body': self.__data}
 
 
 class BadRequest:
