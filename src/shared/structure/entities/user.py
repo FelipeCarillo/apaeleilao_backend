@@ -26,8 +26,8 @@ class User(ABC):
     def __init__(self, user_id: str = None, first_name: str = None, last_name: str = None, cpf: str = None,
                  email: str = None, phone: str = None, password: str = None,
                  accepted_terms: bool = None, date_joined: int = None, is_verified: bool = None,
-                 verification_code: str = None, verification_code_expires_at: int = None,
-                 password_reset_code: str = None, password_reset_code_expires_at: int = None):
+                 verification_code: int = None, verification_code_expires_at: int = None,
+                 password_reset_code: int = None, password_reset_code_expires_at: int = None):
 
         self.user_id = self.validate_and_set_user_id(user_id)
         self.first_name = self.validate_and_set_first_name(first_name)
@@ -70,7 +70,7 @@ class User(ABC):
 
     @staticmethod
     def validate_and_set_first_name(first_name: str) -> str or None:
-        if first_name is None: return None
+        if first_name is None: raise UserEntityError("first_name não pode ser nulo.")
         if User.NAME_MIN_LENGTH < len(first_name) >= User.NAME_MAX_LENGTH: raise UserEntityError(
             "first_name deve ter no mínimo 2 caracteres e no máximo 255.")
         if type(first_name) != str: raise UserEntityError("first_name deve ser str.")
@@ -78,7 +78,7 @@ class User(ABC):
 
     @staticmethod
     def validate_and_set_last_name(last_name: str) -> str or None:
-        if last_name is None: return None
+        if last_name is None: raise UserEntityError("last_name não pode ser nulo.")
         if type(last_name) != str: raise UserEntityError("last_name deve ser str.")
         if User.NAME_MIN_LENGTH < len(last_name) >= User.NAME_MAX_LENGTH: raise UserEntityError(
             "last_name deve ter no mínimo 2 caracteres e no máximo 255.")
@@ -86,8 +86,8 @@ class User(ABC):
 
     @staticmethod
     def validate_and_set_cpf(cpf: str) -> str or None:
-        if cpf is None: return None
-        cpf = cpf.replace(".", "").replace("-", "").replace(" ", "")  # remove all special characters
+        if cpf is None: raise UserEntityError("cpf não pode ser nulo.")
+        cpf = cpf.replace(".", "").replace("-", "").replace(" ", "")
         if not cpf.isnumeric(): raise UserEntityError("cpf deve ser numérico.")
         if type(cpf) != str: raise UserEntityError("cpf deve ser str.")
         if len(cpf) != 11: raise UserEntityError("cpf deve ter 11 caracteres.")
@@ -95,7 +95,7 @@ class User(ABC):
 
     @staticmethod
     def validate_and_set_email(email: str) -> str or None:
-        if email is None: return None
+        if email is None: raise UserEntityError("email não pode ser nulo.")
         if re.fullmatch(r"([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+",
                         email) is None: raise UserEntityError("email inválido.")
         if type(email) != str: raise UserEntityError("email deve ser str.")
@@ -103,7 +103,7 @@ class User(ABC):
 
     @staticmethod
     def validate_and_set_phone(phone: str) -> str or None:
-        if phone is None: return None
+        if phone is None: raise UserEntityError("phone não pode ser nulo.")
         if type(phone) != str: raise UserEntityError("phone deve ser str.")
         return phone
 
@@ -132,25 +132,27 @@ class User(ABC):
         return is_verified
 
     @staticmethod
-    def validate_and_set_verification_code(verification_code: str) -> str or None:
+    def validate_and_set_verification_code(verification_code: int) -> int or None:
         if verification_code is None: return None
-        if type(verification_code) != str: raise UserEntityError("verification_code deve ser str.")
+        if type(verification_code) != int: raise UserEntityError("verification_code deve ser str.")
         return verification_code
 
     @staticmethod
     def validate_and_set_verification_code_expires_at(verification_code_expires_at: int) -> int or None:
         if verification_code_expires_at is None: return None
-        if type(verification_code_expires_at) != int: raise UserEntityError("verification_code_expires_at deve ser time.")
+        if type(verification_code_expires_at) != int: raise UserEntityError("verification_code_expires_at deve ser "
+                                                                            "time.")
         return verification_code_expires_at
 
     @staticmethod
-    def validate_and_set_password_reset_code(password_reset_code: str) -> str or None:
+    def validate_and_set_password_reset_code(password_reset_code: int) -> int or None:
         if password_reset_code is None: return None
-        if type(password_reset_code) != str: raise UserEntityError("password_reset_code deve ser str.")
+        if type(password_reset_code) != int: raise UserEntityError("password_reset_code deve ser str.")
         return password_reset_code
 
     @staticmethod
-    def validate_and_set_password_reset_code_expires_at(password_reset_code_expires_at: str) -> str or None:
+    def validate_and_set_password_reset_code_expires_at(password_reset_code_expires_at: int) -> int or None:
         if password_reset_code_expires_at is None: return None
-        if type(password_reset_code_expires_at) != str: raise UserEntityError("password_reset_code_expires_at deve ser time.")
+        if type(password_reset_code_expires_at) != int: raise UserEntityError("password_reset_code_expires_at deve "
+                                                                              "ser time.")
         return password_reset_code_expires_at

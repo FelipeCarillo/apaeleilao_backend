@@ -12,4 +12,3 @@ class Dynamodb:
     def get_table_auction(self):
         table = self.__dynamo_connection.Table('Auction_Apae_Leilao')
         return table
-
