@@ -20,14 +20,13 @@ class CreateUserController:
 
         email = request['body']['email']
         cpf = request['body']['cpf']
-        user_id = request['body']['user_id']
         first_name = request['body']['first_name']
         last_name = request['body']['last_name']
         password = request['body']['password']
-        accept_terms = request['body']['accept_terms']
+        accepted_terms = request['body']['accepted_terms']
 
-        create_user_usecase = self.__usecase(email, cpf, user_id, first_name, last_name,
-                                             password, accept_terms)
+        create_user_usecase = self.__usecase(email=email, cpf=cpf, first_name=first_name, last_name=last_name,
+                                             password=password, accepted_terms=accepted_terms, is_verified=False)
         return create_user_usecase
 
 

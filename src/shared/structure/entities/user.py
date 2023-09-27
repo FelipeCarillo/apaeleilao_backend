@@ -10,7 +10,7 @@ class User(ABC):
     last_name: str
     cpf: str
     phone: str
-    password: str # required
+    password: str  # required
     accepted_terms: bool
     is_active: bool
     date_joined: int
@@ -40,9 +40,11 @@ class User(ABC):
         self.date_joined = self.validate_and_set_date_joined(date_joined)
         self.is_verified = self.validate_and_set_is_verified(is_verified)
         self.verification_code = self.validate_and_set_verification_code(verification_code)
-        self.verification_code_expires_at = self.validate_and_set_verification_code_expires_at(verification_code_expires_at)
+        self.verification_code_expires_at = self.validate_and_set_verification_code_expires_at(
+            verification_code_expires_at)
         self.password_reset_code = self.validate_and_set_password_reset_code(password_reset_code)
-        self.password_reset_code_expires_at = self.validate_and_set_password_reset_code_expires_at(password_reset_code_expires_at)
+        self.password_reset_code_expires_at = self.validate_and_set_password_reset_code_expires_at(
+            password_reset_code_expires_at)
 
     def to_dict(self):
         return {
@@ -61,6 +63,7 @@ class User(ABC):
             'password_reset_code': self.password_reset_code,
             'password_reset_code_expires_at': self.password_reset_code_expires_at,
         }
+
     @staticmethod
     def validate_and_set_user_id(user_id: str) -> str or None:
         if user_id is None: raise UserEntityError("user_id não pode ser nulo.")
@@ -96,8 +99,8 @@ class User(ABC):
     @staticmethod
     def validate_and_set_email(email: str) -> str or None:
         if email is None: raise UserEntityError("email não pode ser nulo.")
-        if re.fullmatch(r"([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+",
-                        email) is None: raise UserEntityError("email inválido.")
+        if re.fullmatch(r"[A-Za-z0-9_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", email) is None:
+            raise UserEntityError("email inválido.")
         if type(email) != str: raise UserEntityError("email deve ser str.")
         return email
 
