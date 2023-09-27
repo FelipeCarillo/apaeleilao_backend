@@ -38,6 +38,9 @@ class IACStack(Stack):
                 "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                 "allow_headers": ["*"],
             },
+            deploy_options=apigw.StageOptions(
+                stage_name=stage,
+            ),
         )
 
         restapi_resourse = self.__restapi.root.add_resource("apae-leilao", default_cors_preflight_options=
