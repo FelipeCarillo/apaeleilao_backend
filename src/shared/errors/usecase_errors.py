@@ -1,4 +1,4 @@
-from main_error import MainError
+from src.shared.errors.main_error import MainError
 
 
 class EmailAlreadyUsed(MainError):
