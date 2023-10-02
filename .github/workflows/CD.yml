@@ -22,17 +22,22 @@ jobs:
 
       - name: Get Stack and Bucket name
         run: |
+          echo "Defining stack and bucket name"
           echo "STACK_NAME=ApaeLeilaoStack${{ github.ref_name }}" >> $GITHUB_ENV
           echo "BUCKET_NAME=apae-leilao-bucket-${{ github.ref_name }}" >> $GITHUB_ENV
 
       - name: Install CDK dependencies
         run: |
+          echo "Installing CDK dependencies"
           npm install -g aws-cdk
           cd iac
-          pip install -r requirements.txt
+          pip install pymongo
+          pip install aws-cdk-lib
+          pip install constructs
 
       - name: AWS Credentials
         run: |
+          echo "Configuring AWS Credentials"
           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
             aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws configure set default.region ${{ vars.AWS_REGION }}
@@ -40,11 +45,13 @@ jobs:
 
       - name: CDK Bootstrap
         run: |
+            echo "CDK Bootstrap"
           cd iac
           cdk bootstrap
 
       - name: CDK Deploy
         run: |
+            echo "CDK Deploy"
           cd iac
           cdk deploy --require-approval never
         env:
