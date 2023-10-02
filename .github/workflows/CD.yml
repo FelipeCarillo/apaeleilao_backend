@@ -53,6 +53,7 @@ jobs:
         run: |
           echo "CDK Deploy"
           cd iac
+          cdk synth
           cdk deploy --require-approval never
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
