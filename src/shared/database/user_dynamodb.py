@@ -36,6 +36,16 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
+    def get_all_users(self):
+        try:
+            response = self.__dynamodb.scan()
+            if 'Items' in response:
+                return response['Items']
+            else:
+                return None
+        except Exception as e:
+            raise e
+
     def get_user_by_id(self, user_id) -> User or None:
         try:
             response = self.__dynamodb.get_item(
@@ -44,7 +54,16 @@ class UserDynamodb(UserInterface):
                 }
             )
             if 'Item' in response:
-                return User(**response['Item'])
+                return User(user_id=user_id,first_name=response['Item']['first_name'], last_name=response['Item']['last_name'],
+                            cpf=response['Item']['cpf'], email=response['Item']['email'],
+                            phone=response['Item']['phone'], password=response['Item']['password'],
+                            accepted_terms=response['Item']['accepted_terms'],
+                            is_verified=response['Item']['is_verified'], date_joined=response['Item']['date_joined'],
+                            verification_code=response['Item']['verification_code'],
+                            verification_code_expires_at=response['Item']['verification_code_expires_at'],
+                            password_reset_code=response['Item']['password_reset_code'],
+                            password_reset_code_expires_at=response['Item']['password_reset_code_expires_at']
+                            )
             else:
                 return None
         except Exception as e:

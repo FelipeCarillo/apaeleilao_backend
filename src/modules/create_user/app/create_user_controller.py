@@ -1,7 +1,7 @@
 from typing import Dict
 from src.shared.https_codes.https_code import *
 from src.shared.errors.controller_errors import InvalidRequest, MissingParameter
-from create_user_usecase import CreateUserUseCase
+from .create_user_usecase import CreateUserUseCase
 
 
 class CreateUserController:
