@@ -2,7 +2,7 @@ from typing import Dict
 from aws_cdk import (
     aws_lambda as _lambda,
     aws_apigateway as apigw,
-    Duration,
+    Duration
 )
 from constructs import Construct
 
@@ -11,7 +11,6 @@ class LambdaStack(Construct):
 
     def create_lambda(self, function_name: str, method: str, restapi_resource: apigw.Resource,
                       environment_variables: Dict[str, str]) -> _lambda.Function:
-
         shared_layer = _lambda.LayerVersion(
             self, "ApaeLeilao_Layer",
             code=_lambda.Code.from_asset("./apaeleilao_layer"),
@@ -31,7 +30,7 @@ class LambdaStack(Construct):
 
         restapi_resource.add_resource(function_name.replace("_", "-")).add_method(method,
                                                                                   integration=apigw.LambdaIntegration(
-                                                                                                    function))
+                                                                                      function))
 
         return function
 
@@ -45,7 +44,3 @@ class LambdaStack(Construct):
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
-
-
-
-

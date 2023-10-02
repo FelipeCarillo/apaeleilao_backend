@@ -4,7 +4,7 @@ from src.shared.errors.entities_errors import UserEntityError
 
 
 class User(ABC):
-    user_id: str  # required and unique
+    _id: str  # required and unique
     first_name: str
     last_name: str
     cpf: str
@@ -18,17 +18,17 @@ class User(ABC):
     verification_code_expires_at: int
     password_reset_code: str
     password_reset_code_expires_at: int
-    USER_ID_LENGTH = 36
+    _ID_LENGTH = 36
     NAME_MIN_LENGTH = 2
     NAME_MAX_LENGTH = 255
 
-    def __init__(self, user_id: str = None, first_name: str = None, last_name: str = None, cpf: str = None,
+    def __init__(self, _id: str = None, first_name: str = None, last_name: str = None, cpf: str = None,
                  email: str = None, phone: str = None, password: str = None,
                  accepted_terms: bool = None, date_joined: int = None, is_verified: bool = None,
                  verification_code: int = None, verification_code_expires_at: int = None,
                  password_reset_code: int = None, password_reset_code_expires_at: int = None):
 
-        self.user_id = self.validate_and_set_user_id(user_id)
+        self._id = self.validate_and_set_user_id(_id)
         self.first_name = self.validate_and_set_first_name(first_name)
         self.last_name = self.validate_and_set_last_name(last_name)
         self.cpf = self.validate_and_set_cpf(cpf)
@@ -47,7 +47,7 @@ class User(ABC):
 
     def to_dict(self):
         return {
-            'user_id': self.user_id,
+            '_id': self._id,
             'first_name': self.first_name,
             'last_name': self.last_name,
             'cpf': self.cpf,
@@ -64,11 +64,11 @@ class User(ABC):
         }
 
     @staticmethod
-    def validate_and_set_user_id(user_id: str) -> str or None:
-        if user_id is None: raise UserEntityError("user_id não pode ser nulo.")
-        if type(user_id) != str: raise UserEntityError("user_id deve ser str.")
-        if len(user_id) != User.USER_ID_LENGTH: raise UserEntityError("user_id deve ter 36 caracteres.")
-        return user_id
+    def validate_and_set_user_id(_id: str) -> str or None:
+        if _id is None: raise UserEntityError("user_id não pode ser nulo.")
+        if type(_id) != str: raise UserEntityError("user_id deve ser str.")
+        if len(_id) != User._ID_LENGTH: raise UserEntityError("user_id deve ter 36 caracteres.")
+        return _id
 
     @staticmethod
     def validate_and_set_first_name(first_name: str) -> str or None:

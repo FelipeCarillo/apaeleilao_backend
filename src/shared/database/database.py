@@ -1,0 +1,17 @@
+import os
+from pymongo.mongo_client import MongoClient
+
+class Database:
+    def __init__(self):
+        user = os.getenv('MONGO_USER')
+        password = os.getenv('MONGO_PASSWORD')
+        credentials = f"mongodb+srv://{user}:{password}@apaeleilaoimt.vv5d9ja.mongodb.net/?retryWrites=true&w=majority"
+        self.__database_connection = MongoClient(credentials).get_database('apaeleilaoimt')
+
+    def get_table_user(self):
+        table = self.__database_connection['user']
+        return table
+
+    def get_table_auction(self):
+        table = self.__database_connection['auction']
+        return table

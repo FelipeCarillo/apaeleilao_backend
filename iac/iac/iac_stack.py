@@ -59,3 +59,7 @@ class IACStack(Stack):
 
         self.lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,
                                            environment_variables=ENVIROMENT_VARIABLES)
+
+        [self.__dynamodb.user_tabble.grant_read_write_data(function) for function in self.lambda_function.needed_user_dynamodb_permissions]
+
+        [self.__dynamodb.auction_table.grant_read_write_data(function) for function in self.lambda_function.needed_auction_dynamodb_permissions]
