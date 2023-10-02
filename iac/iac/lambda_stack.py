@@ -32,7 +32,7 @@ class LambdaStack(Construct):
             code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
             handler=f"app.{function_name}_presenter.lambda_handler",
             layers=[shared_layer, pymongo_layer],
-            timeout=Duration.seconds(10),
+            timeout=Duration.seconds(15),
         )
 
         restapi_resource.add_resource(function_name.replace("_", "-")).add_method(method,

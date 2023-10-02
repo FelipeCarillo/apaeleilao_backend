@@ -158,3 +158,7 @@ class User(ABC):
         if type(password_reset_code_expires_at) != int: raise UserEntityError("password_reset_code_expires_at deve "
                                                                               "ser time.")
         return password_reset_code_expires_at
+
+    @property
+    def id(self):
+        return self._id

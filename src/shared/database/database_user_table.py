@@ -24,12 +24,9 @@ class UserTable(UserInterface):
 
     def authenticate(self, _id, password) -> Dict or None:
         try:
-            user_authenticated = []
-            response = self.__table.find({'_id': _id, 'password': password})
-            for item in response:
-                user_authenticated.append(item)
-            if len(user_authenticated) > 0:
-                return user_authenticated[0]
+            response = self.__table.find_one({'_id': _id, 'password': password})
+            if response is not None:
+                return response
             else:
                 return None
         except Exception as e:
@@ -37,59 +34,38 @@ class UserTable(UserInterface):
 
     def get_all_users(self) -> List[Dict] or None:
         try:
-            users = []
-            response = self.__table.find()
-            for item in response:
-                users.append(item)
-            if len(users) > 0:
-                return users
-            else:
-                return None
+            response = list(self.__table.find())
+            return response if len(response) > 0 else None
         except Exception as e:
             return e
 
     def get_user_by_id(self, _id) -> Dict or None:
         try:
-            user = []
-            for item in self.__table.find({'_id': _id}):
-                user.append(item)
-            if len(user) > 0:
-                return user[0]
-            else:
-                return None
+            user = self.__table.find_one({'_id': _id})
+            return user
         except Exception as e:
             return e
 
     def get_user_by_email(self, email) -> User or None:
         try:
-            user = []
-            for item in self.__table.find({'email': email}):
-                user.append(item)
-            if len(user) > 0:
-                return user[0]
-            else:
-                return None
+            user = self.__table.find_one({'email': email})
+            return user
         except Exception as e:
             return e
 
     def get_user_by_cpf(self, cpf) -> User or None:
         try:
-            user = []
-            for item in self.__table.find({'cpf': cpf}):
-                user.append(item)
-            if len(user) > 0:
-                return user[0]
-            else:
-                return None
+            user = self.__table.find_one({'cpf': cpf})
+            return user
         except Exception as e:
             return e
 
     def update_user(self, user: User):
         try:
-            user = self.__table.update_one(
-                {'_id': user._id},
+            update_result = self.__table.update_one(
+                {'_id': user.id},
                 {'$set': user.to_dict()}
             )
-            return user
+            return update_result.raw_result
         except Exception as e:
-            return e
+            return str(e)
