@@ -31,9 +31,7 @@ jobs:
           echo "Installing CDK dependencies"
           npm install -g aws-cdk
           cd iac
-          pip install pymongo
-          pip install aws-cdk-lib
-          pip install constructs
+          pip install -r requirements.txt
 
       - name: AWS Credentials
         run: |
@@ -53,7 +51,6 @@ jobs:
         run: |
           echo "CDK Deploy"
           cd iac
-          cdk synth
           cdk deploy --require-approval never
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}

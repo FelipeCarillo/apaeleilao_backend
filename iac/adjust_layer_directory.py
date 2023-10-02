@@ -32,5 +32,6 @@ def adjust_layer_directory(shared_dir_name: str, destination: str):
         f"Copying files from {source_directory} to {os.path.join(destination_directory, LAMBDA_LAYER_PREFIX, shared_dir_name)}")
 
 
+
 if __name__ == '__main__':
     adjust_layer_directory(shared_dir_name="shared", destination="apaeleilao_layer")
