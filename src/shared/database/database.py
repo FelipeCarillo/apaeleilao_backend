@@ -3,8 +3,8 @@ from pymongo.mongo_client import MongoClient
 
 class Database:
     def __init__(self):
-        user = os.getenv('MONGO_USER')
-        password = os.getenv('MONGO_PASSWORD')
+        user = os.getenv('MONGODB_USER')
+        password = os.getenv('MONGODB_PASSWORD')
         credentials = f"mongodb+srv://{user}:{password}@apaeleilaoimt.vv5d9ja.mongodb.net/?retryWrites=true&w=majority"
         self.__database_connection = MongoClient(credentials).get_database('apaeleilaoimt')
 
