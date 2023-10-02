@@ -2,7 +2,7 @@ from typing import Dict
 from src.shared.https_codes.https_code import *
 from src.shared.errors.controller_errors import InvalidRequest, MissingParameter
 from src.shared.errors.usecase_errors import DataAlreadyUsed
-from create_user_usecase import CreateUserUseCase
+from .create_user_usecase import CreateUserUseCase
 
 
 class CreateUserController:

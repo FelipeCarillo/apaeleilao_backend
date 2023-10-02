@@ -1,5 +1,5 @@
 from typing import Dict, List
-from database import Database
+from .database import Database
 from src.shared.structure.entities.user import User
 from src.shared.structure.interface.user_interface import UserInterface
 
