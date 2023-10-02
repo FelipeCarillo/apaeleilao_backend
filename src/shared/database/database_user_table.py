@@ -1,5 +1,5 @@
 from typing import Dict, List
-from .database import Database
+from src.shared.database.database import Database
 from src.shared.structure.entities.user import User
 from src.shared.structure.interface.user_interface import UserInterface
 
@@ -61,13 +61,35 @@ class UserTable(UserInterface):
             return e
 
     def get_user_by_email(self, email) -> User or None:
-        pass
+        try:
+            user = []
+            for item in self.__table.find({'email': email}):
+                user.append(item)
+            if len(user) > 0:
+                return user[0]
+            else:
+                return None
+        except Exception as e:
+            return e
 
     def get_user_by_cpf(self, cpf) -> User or None:
-        pass
+        try:
+            user = []
+            for item in self.__table.find({'cpf': cpf}):
+                user.append(item)
+            if len(user) > 0:
+                return user[0]
+            else:
+                return None
+        except Exception as e:
+            return e
 
     def update_user(self, user: User):
-        pass
-
-    def delete_user(self, user_id):
-        pass
+        try:
+            user = self.__table.update_one(
+                {'_id': user._id},
+                {'$set': user.to_dict()}
+            )
+            return user
+        except Exception as e:
+            return e
