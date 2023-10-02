@@ -45,13 +45,13 @@ jobs:
 
       - name: CDK Bootstrap
         run: |
-            echo "CDK Bootstrap"
+          echo "CDK Bootstrap"
           cd iac
           cdk bootstrap
 
       - name: CDK Deploy
         run: |
-            echo "CDK Deploy"
+          echo "CDK Deploy"
           cd iac
           cdk deploy --require-approval never
         env:
