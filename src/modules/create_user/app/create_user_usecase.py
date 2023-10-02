@@ -4,7 +4,7 @@ from random import randint
 from src.shared.https_codes.https_code import *
 from src.shared.structure.entities.user import User
 from src.shared.structure.interface.user_interface import UserInterface
-from src.shared.errors.usecase_errors import EmailAlreadyUsed, CPFAlreadyUsed, UserIDAlreadyUsed
+from src.shared.errors.usecase_errors import DataAlreadyUsed
 
 
 class CreateUserUseCase:
@@ -14,17 +14,19 @@ class CreateUserUseCase:
     def __call__(self, email: str, cpf: str, first_name: str, last_name: str, password: str, phone: str, accepted_terms: bool,
                  is_verified: bool):
         try:
-
+            data_duplicated = []
             if self.__user_interface.get_user_by_email(email):
-                raise EmailAlreadyUsed()
+                data_duplicated.append('Email')
 
             if self.__user_interface.get_user_by_cpf(cpf):
-                raise CPFAlreadyUsed()
+                data_duplicated.append('CPF')
+
+            if len(data_duplicated) > 0:
+                raise DataAlreadyUsed(data_duplicated)
+
+            cpf = cpf.replace(".", "").replace("-", "")
 
             user_id = str(uuid.uuid4())
-            if self.__user_interface.get_user_by_id(user_id):
-                raise UserIDAlreadyUsed()
-
             date_joined = time_ns()
             verification_code = randint(10000, 99999)
             verification_code_expires_at = time_ns() + 3600
@@ -36,13 +38,7 @@ class CreateUserUseCase:
 
             return self.__user_interface.create_user(user)
 
-        except EmailAlreadyUsed as e:
-            return BadRequest(e)
-
-        except CPFAlreadyUsed as e:
-            return BadRequest(e)
-
-        except UserIDAlreadyUsed as e:
+        except DataAlreadyUsed as e:
             return BadRequest(e)
 
         except Exception as e:

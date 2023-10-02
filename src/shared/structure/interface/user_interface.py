@@ -10,6 +10,10 @@ class UserInterface(ABC):
         pass
 
     @abstractmethod
+    def get_all_users(self) -> Optional[Any]:
+        pass
+
+    @abstractmethod
     def get_user_by_id(self, user_id: str) -> Optional[User]:
         pass
 

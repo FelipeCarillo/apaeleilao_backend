@@ -1,6 +1,6 @@
 import re
 from abc import ABC
-from ...errors.entities_errors import UserEntityError
+from src.shared.errors.entities_errors import UserEntityError
 
 
 class User(ABC):

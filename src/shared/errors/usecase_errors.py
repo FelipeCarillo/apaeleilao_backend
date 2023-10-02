@@ -1,15 +1,9 @@
 from src.shared.errors.main_error import MainError
 
 
-class EmailAlreadyUsed(MainError):
-    def __init__(self):
-        super().__init__("Email already used.")
-
-
-class CPFAlreadyUsed(MainError):
-    def __init__(self):
-        super().__init__("CPF already used.")
-
+class DataAlreadyUsed(MainError):
+    def __init__(self, data: list):
+        super().__init__(f"{data}")
 
 class UserIDAlreadyUsed(MainError):
     def __init__(self):
