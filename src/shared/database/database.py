@@ -3,9 +3,7 @@ import pymongo
 
 
 class Database:
-    def __init__(self):
-        user = os.getenv('MONGODB_USER')
-        password = os.getenv('MONGODB_PASSWORD')
+    def __init__(self, user=os.environ.get('MONGO_USER'), password=os.environ.get('MONGO_PASSWORD')):
         credentials = f"mongodb+srv://{user}:{password}@apaeleilaoimt.vv5d9ja.mongodb.net/?retryWrites=true&w=majority"
         self.__database_connection = pymongo.MongoClient(credentials).get_database('apaeleilaoimt')
 
