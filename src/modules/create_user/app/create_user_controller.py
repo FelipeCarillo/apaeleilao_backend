@@ -31,10 +31,10 @@ class CreateUserController:
             return Created(create_user_usecase)
 
         except DataAlreadyUsed as e:
-            return BadRequest(e)
+            return BadRequest(e.body)
 
         except InvalidRequest as e:
-            return BadRequest(e)
+            return BadRequest(e.body)
 
         except MissingParameter as e:
             return BadRequest(e.body)

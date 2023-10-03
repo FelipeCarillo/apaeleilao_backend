@@ -4,18 +4,9 @@ from typing import Any
 
 class HttpResponse:
     def __init__(self, status_code: int, body: Any):
-        self.__status_code = status_code
-        self.__body = body
+        self.status_code = status_code
+        self.body = body
 
-    @property
-    def status_code(self):
-        return self.__status_code
-
-    @property
-    def body(self):
-        return self.__body
-
-    @property
     def data(self):
         return {'statusCode': self.status_code,
                 'headers': {'Content-Type': 'application/json'},

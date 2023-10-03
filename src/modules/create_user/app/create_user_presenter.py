@@ -12,7 +12,7 @@ controller = CreateUserController(usecase)
 def lambda_handler(event, context):
     stage = os.environ.get("STAGE")
     request = json.loads(json.dumps(event))
-    status_code, body = controller(request=request).data.values()
-    response = HttpResponse(status_code=status_code, body=body)
+    response = controller(request=request)
+    http = HttpResponse(status_code=response.status_code, body=response.body)
 
-    return response.data
+    return http.data

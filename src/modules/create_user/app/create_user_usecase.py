@@ -15,10 +15,10 @@ class CreateUserUseCase:
                  is_verified: bool):
 
         if self.__user_interface.get_user_by_email(email):
-            raise DataAlreadyUsed('Email')
+            raise DataAlreadyUsed('Email address already used.')
 
         if self.__user_interface.get_user_by_cpf(cpf):
-            raise DataAlreadyUsed('CPF')
+            raise DataAlreadyUsed('CPF already used.')
 
         cpf = cpf.replace(".", "").replace("-", "")
 
