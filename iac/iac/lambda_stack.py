@@ -12,7 +12,7 @@ class LambdaStack(Construct):
     AUCTION_TABLE = 'AuctionApaeLeilao'
 
     def create_lambda(self, function_name: str, method: str, restapi_resource: apigw.Resource,
-                      environment_variables: Dict[str, str], table_permission: str or Tuple[str]) -> _lambda.Function:
+                      environment_variables: Dict[str, str]) -> _lambda.Function:
 
         shared_layer = _lambda.LayerVersion(
             self, "ApaeLeilao_Layer",
