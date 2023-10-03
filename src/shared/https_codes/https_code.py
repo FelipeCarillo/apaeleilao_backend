@@ -22,75 +22,41 @@ class HttpResponse:
                 'body': json.dumps(self.body)}
 
 
-class OK:
-    def __init__(self, data: Any):
-        self.__data = data
-
-    @property
-    def data(self):
-        return {'statusCode': 200,
-                'body': self.__data}
+class OK(HttpResponse):
+    def __init__(self, body: Any):
+        super().__init__(status_code=200, body=body)
 
 
-class Created:
-    def __init__(self, data: Any):
-        self.__data = data
-
-    @property
-    def data(self):
-        return {'statusCode': 201,
-                'body': self.__data}
+class Created(HttpResponse):
+    def __init__(self, body: Any):
+        super().__init__(status_code=201, body=body)
 
 
-class BadRequest:
-    def __init__(self, data: Any):
-        self.__data = data
-
-    @property
-    def data(self):
-        return {'statusCode': 400, 'body': self.__data}
+class BadRequest(HttpResponse):
+    def __init__(self, body: Any):
+        super().__init__(status_code=400, body=body)
 
 
-class Unauthorized:
-    def __init__(self, data: Any):
-        self.__data = data
-
-    @property
-    def data(self):
-        return {'statusCode': 401, 'body': self.__data}
+class Unauthorized(HttpResponse):
+    def __init__(self, body: Any):
+        super().__init__(status_code=401, body=body)
 
 
-class Forbidden:
-    def __init__(self, data: Any):
-        self.__data = data
-
-    @property
-    def data(self):
-        return {'statusCode': 403, 'body': self.__data}
+class Forbidden(HttpResponse):
+    def __init__(self, body: Any):
+        super().__init__(status_code=403, body=body)
 
 
-class NotFound:
-    def __init__(self, data: Any):
-        self.__data = data
-
-    @property
-    def data(self):
-        return {'statusCode': 404, 'body': self.__data}
+class NotFound(HttpResponse):
+    def __init__(self, body: Any):
+        super().__init__(status_code=404, body=body)
 
 
-class NoContent:
-    def __init__(self, data: Any):
-        self.__data = data
-
-    @property
-    def data(self):
-        return {'statusCode': 204, 'body': self.__data}
+class NoContent(HttpResponse):
+    def __init__(self, body: Any):
+        super().__init__(status_code=204, body=body)
 
 
-class InternalServerError:
-    def __init__(self, data: Any):
-        self.__data = data
-
-    @property
-    def data(self):
-        return {'statusCode': 500, 'body': self.__data}
+class InternalServerError(HttpResponse):
+    def __init__(self, body: Any):
+        super().__init__(status_code=500, body=body)
