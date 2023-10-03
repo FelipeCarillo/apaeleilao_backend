@@ -7,5 +7,5 @@ class InvalidRequest(MainError):
 
 
 class MissingParameter(MainError):
-    def __init__(self, message: str):
-        super().__init__(f"Missing {message} parameter.")
+    def __init__(self, body: str):
+        super().__init__(f"Missing {body} parameter.")

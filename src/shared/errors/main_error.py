@@ -1,8 +1,8 @@
 class MainError(Exception):
-    def __init__(self, message: str):
-        self.__message: str = message
-        super().__init__(message)
+    def __init__(self, body: str):
+        self.__body: str = body
+        super().__init__(body)
 
     @property
-    def message(self):
-        return self.__message
+    def body(self):
+        return self.__body

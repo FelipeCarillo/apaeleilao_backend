@@ -37,10 +37,10 @@ class CreateUserController:
             return BadRequest(e)
 
         except MissingParameter as e:
-            return BadRequest(e)
+            return BadRequest(e.body)
 
         except Exception as e:
-            return InternalServerError(e)
+            return InternalServerError(e.args[0])
 
 
 
