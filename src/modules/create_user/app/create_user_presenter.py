@@ -3,9 +3,9 @@ import json
 from .create_user_usecase import CreateUserUseCase
 from src.shared.https_codes.https_code import HttpResponse
 from .create_user_controller import CreateUserController
-from src.shared.database.database_user_table import UserTable
+from src.shared.database.database_user_table import UserDynamodb
 
-usecase = CreateUserUseCase(UserTable())
+usecase = CreateUserUseCase(UserDynamodb())
 controller = CreateUserController(usecase)
 
 
