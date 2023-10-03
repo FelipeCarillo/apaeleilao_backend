@@ -17,9 +17,9 @@ class HttpResponse:
 
     @property
     def data(self):
-        return {'statusCode': self.__status_code,
+        return {'statusCode': self.status_code,
                 'headers': {'Content-Type': 'application/json'},
-                'body': json.dumps(self.__body)}
+                'body': json.dumps(self.body)}
 
 
 class OK:

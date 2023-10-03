@@ -16,25 +16,3 @@ def lambda_handler(event, context):
     response = HttpResponse(status_code=status_code, body=body)
 
     return response.data
-
-
-if __name__ == '__main__':
-    event = {
-          "hearder":{
-              "Content-Type": "application/json"
-          },
-          "body": {
-            "first_name": "Ana Clara",
-            "last_name": "Braga",
-            "email": "23.00765-6@maua.br",
-            "cpf": "73914804017",
-            "phone": "11999885462",
-            "password": "651gfsdf-1686ada-ad4adas",
-            "accepted_terms": True,
-            "is_verified": True
-          }
-    }
-    context = {}
-
-    response = lambda_handler(event, context)
-    print(response)
