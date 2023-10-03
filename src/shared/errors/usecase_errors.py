@@ -2,7 +2,7 @@ from src.shared.errors.main_error import MainError
 
 
 class DataAlreadyUsed(MainError):
-    def __init__(self, data: list):
+    def __init__(self, data: str):
         super().__init__(f"{data}")
 
 class UserIDAlreadyUsed(MainError):

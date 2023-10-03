@@ -14,15 +14,11 @@ class CreateUserUseCase:
                  accepted_terms: bool,
                  is_verified: bool):
 
-        data_duplicated = []
         if self.__user_interface.get_user_by_email(email):
-            data_duplicated.append('Email')
+            raise DataAlreadyUsed('Email')
 
         if self.__user_interface.get_user_by_cpf(cpf):
-            data_duplicated.append('CPF')
-
-        if len(data_duplicated) > 0:
-            raise DataAlreadyUsed(data_duplicated)
+            raise DataAlreadyUsed('CPF')
 
         cpf = cpf.replace(".", "").replace("-", "")
 

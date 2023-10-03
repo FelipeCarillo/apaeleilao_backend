@@ -19,7 +19,7 @@ class HttpResponse:
     def data(self):
         return {'statusCode': self.status_code,
                 'headers': {'Content-Type': 'application/json'},
-                'body': self.body}
+                'body': json.dumps(self.body)}
 
 
 class OK:
