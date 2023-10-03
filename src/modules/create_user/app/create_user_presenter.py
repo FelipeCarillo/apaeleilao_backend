@@ -15,4 +15,4 @@ def lambda_handler(event, context):
     response = controller(request=request)
     http = HttpResponse(status_code=response.status_code, body=response.body)
 
-    return http.data
+    return http.to_dict()

@@ -7,7 +7,7 @@ class HttpResponse:
         self.status_code = status_code
         self.body = body
 
-    def data(self):
+    def to_dict(self):
         return {'statusCode': self.status_code,
                 'headers': {'Content-Type': 'application/json'},
                 'body': json.dumps(self.body)}
