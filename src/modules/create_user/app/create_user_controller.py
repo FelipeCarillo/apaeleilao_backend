@@ -1,6 +1,6 @@
 from typing import Dict
 from src.shared.https_codes.https_code import *
-from src.shared.errors.controller_errors import InvalidRequest, MissingParameter
+from src.shared.errors.controller_errors import InvalidRequest, MissingParameter, InvalidParameter
 from src.shared.errors.usecase_errors import DataAlreadyUsed
 from .create_user_usecase import CreateUserUseCase
 
@@ -26,14 +26,16 @@ class CreateUserController:
             accepted_terms = request['body']['accepted_terms']
 
             create_user_usecase = self.__usecase(email=email, cpf=cpf, first_name=first_name, last_name=last_name,
-                                                 phone=phone, password=password, accepted_terms=accepted_terms,
-                                                 is_verified=False)
+                                                 phone=phone, password=password, accepted_terms=accepted_terms)
             return Created(create_user_usecase)
 
         except DataAlreadyUsed as e:
             return BadRequest(e.body)
 
         except InvalidRequest as e:
+            return BadRequest(e.body)
+
+        except InvalidParameter as e:
             return BadRequest(e.body)
 
         except MissingParameter as e:

@@ -15,7 +15,7 @@ class IACStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        stage = os.environ.get("STAGE", "TEST").upper()
+        stage = os.environ.get("STAGE", "TEST")
         bucket_name = os.environ.get("BUCKET_NAME", "")
         self.__bucket = s3.Bucket(
             self, f"Apae_Leilao_Bucket_{stage}",

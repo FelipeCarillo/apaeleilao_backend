@@ -2,5 +2,5 @@ from src.shared.errors.main_error import MainError
 
 
 class DataAlreadyUsed(MainError):
-    def __init__(self, body: str):
-        super().__init__(f"{body}")
+    def __init__(self):
+        super().__init__(f"Parameter already used")
