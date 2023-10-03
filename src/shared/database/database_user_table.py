@@ -9,16 +9,18 @@ class UserDynamodb(UserInterface):
     def __init__(self):
         self.__dynamodb = Database().get_table_user()
 
-    def create_user(self, user: User):
+    def create_user(self, user: User) -> Dict or None:
         try:
-            self.__dynamodb.put_item(Item=user.to_dict())
+            user = user.to_dict()
+            user['status_account'] = user['status_account'].value
+            self.__dynamodb.put_item(Item=user)
             return {
-                'body': user.to_dict()
+                'body': user
             }
         except Exception as e:
             raise e
 
-    def authenticate(self, user_id, password):
+    def authenticate(self, user_id, password) -> Dict or None:
         try:
             response = self.__dynamodb.get_item(
                 Key={
@@ -30,7 +32,7 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def get_all_users(self, exclusive_start_key: Any = None, limit: int = None):
+    def get_all_users(self, exclusive_start_key: Any = None, limit: int = None) -> Dict or None:
         try:
             response = self.__dynamodb.scan(
                 ExclusiveStartKey=exclusive_start_key,
@@ -51,7 +53,7 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def get_user_by_email(self, email) -> User or None:
+    def get_user_by_email(self, email) -> Dict or None:
         try:
             response = self.__dynamodb.scan(
                 FilterExpression='email = :email',
@@ -63,7 +65,7 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def get_user_by_cpf(self, cpf) -> User or None:
+    def get_user_by_cpf(self, cpf) -> Dict or None:
         try:
             response = self.__dynamodb.scan(
                 FilterExpression='cpf = :cpf',

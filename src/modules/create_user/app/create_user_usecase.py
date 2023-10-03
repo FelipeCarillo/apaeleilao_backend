@@ -15,10 +15,10 @@ class CreateUserUseCase:
                  accepted_terms: bool):
 
         if self.__user_interface.get_user_by_email(email):
-            raise DataAlreadyUsed()
+            raise DataAlreadyUsed('email')
 
         if self.__user_interface.get_user_by_cpf(cpf):
-            raise DataAlreadyUsed()
+            raise DataAlreadyUsed('cpf')
 
         user_id = str(uuid.uuid4())
         status_account = STATUS_USER_ACCOUNT_ENUM.PENDING
@@ -28,9 +28,9 @@ class CreateUserUseCase:
         verification_code_expires_at = date_joined + 3600
 
         user = User(user_id=user_id, first_name=first_name, last_name=last_name, cpf=cpf, email=email, phone=phone,
-                    password=password, accepted_terms=accepted_terms, status_account=status_account, suspensions=[],
-                    date_joined=date_joined, verification_code=verification_code,
-                    verification_code_expires_at= verification_code_expires_at, password_reset_code=None,
+                    password=password, accepted_terms=accepted_terms, status_account=status_account,
+                    suspensions=suspensions, date_joined=date_joined, verification_code=verification_code,
+                    verification_code_expires_at=verification_code_expires_at, password_reset_code=None,
                     password_reset_code_expires_at=None)
 
         return self.__user_interface.create_user(user)

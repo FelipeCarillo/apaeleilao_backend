@@ -11,7 +11,7 @@ class UserRepositoryMock(UserInterface):
             User(user_id='dd0ba02b-1201-4c01-897b-9409522b2c7d',
                  first_name='Felipe', last_name='Carillo', cpf='12345678901',
                  email='felipecarillo@outlook.com', password='123456', phone='11999999999',
-                 accepted_terms=True, status_account=STATUS_USER_ACCOUNT_ENUM.PENDING, suspensions=[],
+                 accepted_terms=True, status_account=STATUS_USER_ACCOUNT_ENUM.PENDING.value, suspensions=[],
                  date_joined=int(time()), verification_code=None, verification_code_expires_at=int(time()) + 3600,
                  password_reset_code=None, password_reset_code_expires_at=None),
         ]
@@ -44,6 +44,7 @@ class UserRepositoryMock(UserInterface):
         return None
 
     def create_user(self, user: User) -> Optional[Dict]:
+        user.status_account = user.status_account.value
         self.users.append(user)
         return user.to_dict()
 
