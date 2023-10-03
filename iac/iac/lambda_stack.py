@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Tuple
 from aws_cdk import (
     aws_lambda as _lambda,
     aws_apigateway as apigw,
@@ -8,19 +8,15 @@ from constructs import Construct
 
 
 class LambdaStack(Construct):
+    USER_TABLE = 'UserApaeLeilao'
+    AUCTION_TABLE = 'AuctionApaeLeilao'
 
     def create_lambda(self, function_name: str, method: str, restapi_resource: apigw.Resource,
-                      environment_variables: Dict[str, str]) -> _lambda.Function:
+                      environment_variables: Dict[str, str], table_permission: str or Tuple[str]) -> _lambda.Function:
 
         shared_layer = _lambda.LayerVersion(
             self, "ApaeLeilao_Layer",
             code=_lambda.Code.from_asset("./apaeleilao_layer"),
-            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
-        )
-
-        pymongo_layer = _lambda.LayerVersion(
-            self, "Pymongo_Layer",
-            code=_lambda.Code.from_asset("./pymongo_layer"),
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
         )
 
@@ -31,7 +27,7 @@ class LambdaStack(Construct):
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
             handler=f"app.{function_name}_presenter.lambda_handler",
-            layers=[shared_layer, pymongo_layer],
+            layers=[shared_layer],
             timeout=Duration.seconds(15),
         )
 
@@ -50,4 +46,15 @@ class LambdaStack(Construct):
             method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
+        )
+
+    @property
+    def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
+        return (
+            self.create_user,
+        )
+
+    @property
+    def functions_need_auction_table_permission(self) -> Tuple[_lambda.Function] or None:
+        return (
         )

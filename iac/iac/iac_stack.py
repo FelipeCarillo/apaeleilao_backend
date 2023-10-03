@@ -8,7 +8,7 @@ from aws_cdk import (
 )
 from constructs import Construct
 from .lambda_stack import LambdaStack
-
+from .dynamodb_stack import DynamoDBStack
 
 class IACStack(Stack):
 
@@ -50,6 +50,8 @@ class IACStack(Stack):
         }
                                                             )
 
+        self.dynamodb_stack = DynamoDBStack(self)
+
         ENVIROMENT_VARIABLES = {
             "STAGE": stage,
             "SES_SENDER": ses_sender,
@@ -58,3 +60,10 @@ class IACStack(Stack):
 
         self.lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,
                                            environment_variables=ENVIROMENT_VARIABLES)
+
+        for function in self.lambda_function.functions_need_user_table_permission:
+            self.dynamodb_stack.user_table.grant_read_write_data(function)
+
+        for function in self.lambda_function.functions_need_auction_table_permission:
+            self.dynamodb_stack.auction_table.grant_read_write_data(function)
+

@@ -1,16 +1,13 @@
 import os
-import pymongo
+import boto3
 
 
 class Database:
-    def __init__(self, user=os.environ.get('MONGO_USER'), password=os.environ.get('MONGO_PASSWORD')):
-        credentials = f"mongodb+srv://{user}:{password}@apaeleilaoimt.vv5d9ja.mongodb.net/?retryWrites=true&w=majority"
-        self.__database_connection = pymongo.MongoClient(credentials).get_database('apaeleilaoimt')
+    def __init__(self):
+        self.__database_connection = boto3.resource('dynamodb')
 
     def get_table_user(self):
-        table = self.__database_connection['user']
-        return table
+        return self.__database_connection.Table('UserApaeLeilao')
 
     def get_table_auction(self):
-        table = self.__database_connection['auction']
-        return table
+        return self.__database_connection.Table('AuctionApaeLeilao')

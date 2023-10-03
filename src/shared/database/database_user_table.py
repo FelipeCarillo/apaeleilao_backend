@@ -1,71 +1,79 @@
-from typing import Dict, List
-from src.shared.database.database import Database
+from .database import Database
+from typing import Any, Dict
 from src.shared.structure.entities.user import User
 from src.shared.structure.interface.user_interface import UserInterface
 
 
-class UserTable(UserInterface):
+class UserDynamodb(UserInterface):
 
     def __init__(self):
-        self.__table = Database().get_table_user()
+        self.__dynamodb = Database().get_table_user()
 
     def create_user(self, user: User):
         try:
-            self.__table.insert_one(
-                user.to_dict()
-            )
-
+            self.__dynamodb.put_item(Item=user.to_dict())
             return {
-                'statusCode': 201,
                 'body': user.to_dict()
             }
         except Exception as e:
-            return e
+            raise e
 
-    def authenticate(self, _id, password) -> Dict or None:
+    def authenticate(self, user_id, password):
         try:
-            response = self.__table.find_one({'_id': _id, 'password': password})
-            if response is not None:
-                return response
-            else:
-                return None
+            response = self.__dynamodb.get_item(
+                Key={
+                    'user_id': user_id,
+                    'password': password
+                }
+            )
+            return response.get('Item', None)
         except Exception as e:
-            return e
+            raise e
 
-    def get_all_users(self) -> List[Dict] or None:
+    def get_all_users(self, exclusive_start_key: Any = None, limit: int = None):
         try:
-            response = list(self.__table.find())
-            return response if len(response) > 0 else None
+            response = self.__dynamodb.scan(
+                ExclusiveStartKey=exclusive_start_key,
+                Limit=limit
+            )
+            return response.get('Items', None)
         except Exception as e:
-            return e
+            raise e
 
-    def get_user_by_id(self, _id) -> Dict or None:
+    def get_user_by_id(self, user_id) -> Dict or None:
         try:
-            user = self.__table.find_one({'_id': _id})
-            return user
+            response = self.__dynamodb.get_item(
+                Key={
+                    'user_id': user_id
+                }
+            )
+            return response.get('Item', None)
         except Exception as e:
-            return e
+            raise e
 
     def get_user_by_email(self, email) -> User or None:
         try:
-            user = self.__table.find_one({'email': email})
-            return user
+            response = self.__dynamodb.scan(
+                FilterExpression='email = :email',
+                ExpressionAttributeValues={
+                    ':email': email
+                }
+            )
+            return response.get('Items', None)
         except Exception as e:
-            return e
+            raise e
 
     def get_user_by_cpf(self, cpf) -> User or None:
         try:
-            user = self.__table.find_one({'cpf': cpf})
-            return user
+            response = self.__dynamodb.scan(
+                FilterExpression='cpf = :cpf',
+                ExpressionAttributeValues={
+                    ':cpf': cpf
+                }
+            )
+            return response.get('Items', None)
         except Exception as e:
-            return e
+            raise e
 
     def update_user(self, user: User):
-        try:
-            update_result = self.__table.update_one(
-                {'_id': user.id},
-                {'$set': user.to_dict()}
-            )
-            return update_result.raw_result
-        except Exception as e:
-            return str(e)
+        pass
