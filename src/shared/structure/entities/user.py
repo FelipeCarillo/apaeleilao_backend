@@ -4,7 +4,7 @@ from src.shared.errors.entities_errors import UserEntityError
 
 
 class User(ABC):
-    _id: str  # required and unique
+    user_id: str  # required and unique
     first_name: str
     last_name: str
     cpf: str
@@ -47,7 +47,7 @@ class User(ABC):
 
     def to_dict(self):
         return {
-            'user_id': self._id,
+            'user_id': self.user_id,
             'first_name': self.first_name,
             'last_name': self.last_name,
             'cpf': self.cpf,
@@ -158,7 +158,3 @@ class User(ABC):
         if type(password_reset_code_expires_at) != int: raise UserEntityError("password_reset_code_expires_at deve "
                                                                               "ser time.")
         return password_reset_code_expires_at
-
-    @property
-    def id(self):
-        return self._id
