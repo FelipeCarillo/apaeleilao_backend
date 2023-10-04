@@ -8,9 +8,14 @@ class HttpResponse:
         self.body = body
 
     def to_dict(self):
-        return json.dumps({'statusCode': self.status_code,
-                           'headers': {'Content-Type': 'application/json'},
-                           'body': self.body})
+        return {
+            "statusCode": self.status_code,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "isBase64Encoded": False,
+            "body": json.dumps(self.body)
+        }
 
 
 class OK(HttpResponse):
