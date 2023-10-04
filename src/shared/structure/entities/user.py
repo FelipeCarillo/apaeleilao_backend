@@ -142,7 +142,7 @@ class User(ABC):
     @staticmethod
     def validate_and_set_status_account(status_account: STATUS_USER_ACCOUNT_ENUM):
         if status_account is None: raise MissingParameter("status_account")
-        if type(STATUS_USER_ACCOUNT_ENUM(status_account)) == STATUS_USER_ACCOUNT_ENUM: raise InvalidParameter("status_account",
+        if type(status_account) == STATUS_USER_ACCOUNT_ENUM: raise InvalidParameter("status_account",
                                                                                     "deve ser STATUS_USER_ACCOUNT_ENUM.")
         return status_account
 

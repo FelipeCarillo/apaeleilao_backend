@@ -9,7 +9,6 @@ class GetUserUseCase:
         self.__user_interface = user_interface
 
     def __call__(self, email: str = None, cpf: str = None, password: str = None):
-
         if not email and not cpf:
             raise MissingParameter('email or cpf')
         if not password:
