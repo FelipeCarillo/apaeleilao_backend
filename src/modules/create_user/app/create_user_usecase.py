@@ -26,13 +26,9 @@ class CreateUserUseCase:
         status_account = STATUS_USER_ACCOUNT_ENUM.PENDING
         suspensions = []
         date_joined = int(time())
-        verification_code = randint(10000, 99999)
-        verification_code_expires_at = date_joined + 3600
 
         user = User(user_id=user_id, first_name=first_name, last_name=last_name, cpf=cpf, email=email, phone=phone,
                     password=password, accepted_terms=accepted_terms, status_account=status_account,
-                    suspensions=suspensions, date_joined=date_joined, verification_code=verification_code,
-                    verification_code_expires_at=verification_code_expires_at, password_reset_code=None,
-                    password_reset_code_expires_at=None)
+                    suspensions=suspensions, date_joined=date_joined)
 
         return self.__user_interface.create_user(user)

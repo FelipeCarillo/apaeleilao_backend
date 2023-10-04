@@ -30,7 +30,7 @@ class User(ABC):
     def __init__(self, user_id: str = None, first_name: str = None, last_name: str = None, cpf: str = None,
                  email: str = None, phone: str = None, password: str = None, accepted_terms: bool = None,
                  status_account: STATUS_USER_ACCOUNT_ENUM = None, suspensions: List[Optional[Suspension]] = None,
-                 date_joined: int = None, verification_code: int = None, verification_code_expires_at: int = None,
+                 date_joined: int = None, verification_email_code: int = None, verification_email_code_expires_at: int = None,
                  password_reset_code: int = None, password_reset_code_expires_at: int = None):
 
         self.user_id = self.validate_and_set_user_id(user_id)
@@ -44,9 +44,9 @@ class User(ABC):
         self.status_account = self.validate_and_set_status_account(status_account)
         self.suspensions = self.validate_and_set_suspensions(suspensions)
         self.date_joined = self.validate_and_set_date_joined(date_joined)
-        self.verification_code = self.validate_and_set_verification_code(verification_code)
-        self.verification_code_expires_at = self.validate_and_set_verification_code_expires_at(
-            verification_code_expires_at)
+        self.verification_email_code = self.validate_and_set_verification_email_code(verification_email_code)
+        self.verification_email_code_expires_at = self.validate_and_set_verification_email_code_expires_at(
+            verification_email_code_expires_at)
         self.password_reset_code = self.validate_and_set_password_reset_code(password_reset_code)
         self.password_reset_code_expires_at = self.validate_and_set_password_reset_code_expires_at(
             password_reset_code_expires_at)
@@ -68,8 +68,8 @@ class User(ABC):
             'status_account': self.status_account,
             'suspensions': self.suspensions,
             'date_joined': self.date_joined,
-            'verification_code': self.verification_code,
-            'verification_code_expires_at': self.verification_code_expires_at,
+            'verification_email_code': self.verification_email_code,
+            'verification_email_code_expires_at': self.verification_email_code_expires_at,
             'password_reset_code': self.password_reset_code,
             'password_reset_code_expires_at': self.password_reset_code_expires_at,
         }
@@ -178,20 +178,20 @@ class User(ABC):
         return suspensions
 
     @staticmethod
-    def validate_and_set_verification_code(verification_code: int) -> int or None:
-        if verification_code is None:
+    def validate_and_set_verification_email_code(verification_email_code: int) -> int or None:
+        if verification_email_code is None:
             return None
-        if type(verification_code) != int:
+        if type(verification_email_code) != int:
             raise UserEntityError("verification_code deve ser str.")
-        return verification_code
+        return verification_email_code
 
     @staticmethod
-    def validate_and_set_verification_code_expires_at(verification_code_expires_at: int) -> int or None:
-        if verification_code_expires_at is None:
+    def validate_and_set_verification_email_code_expires_at(verification_email_code_expires_at: int) -> int or None:
+        if verification_email_code_expires_at is None:
             return None
-        if type(verification_code_expires_at) != int:
+        if type(verification_email_code_expires_at) != int:
             raise UserEntityError("verification_code_expires_at deve ser time.")
-        return verification_code_expires_at
+        return verification_email_code_expires_at
 
     @staticmethod
     def validate_and_set_password_reset_code(password_reset_code: int) -> int or None:
@@ -206,5 +206,5 @@ class User(ABC):
         if password_reset_code_expires_at is None:
             return None
         if type(password_reset_code_expires_at) != int:
-            raise InvalidParameter("password_reset_code_expires_at deve ser time.")
+            raise InvalidParameter("password_reset_code_expires_at", "deve ser int.")
         return password_reset_code_expires_at

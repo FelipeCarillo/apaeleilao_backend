@@ -24,12 +24,11 @@ class TestCreateUserUseCase:
         assert response['phone'] == user_test['phone']
         assert response['password'] == user_test['password']
         assert response['accepted_terms'] == user_test['accepted_terms']
-        assert response['status_account'] == user_test['status_account']
+        assert response['status_account'] == user_test['status_account'].value
         assert response['suspensions'] == user_test['suspensions']
         assert response['date_joined'] == user_test['date_joined']
-        assert type(response['verification_code']) == int
-        assert len(str(response['verification_code'])) == 5
-        assert response['verification_code_expires_at'] == user_test['verification_code_expires_at']
+        assert response['verification_email_code'] == user_test['verification_email_code']
+        assert response['verification_email_code_expires_at'] == user_test['verification_email_code_expires_at']
         assert response['password_reset_code'] == user_test['password_reset_code']
         assert response['password_reset_code_expires_at'] == user_test['password_reset_code_expires_at']
 
@@ -41,7 +40,7 @@ class TestCreateUserUseCase:
             usecase(email=user_test['email'], cpf=self.new_cpf, first_name=user_test['first_name'],
                     last_name=user_test['last_name'], phone=user_test['phone'],
                     password=user_test['password'], accepted_terms=user_test['accepted_terms'])
-        assert str(exc.value) == 'Parameter already used'
+        assert str(exc.value) == 'Parameter email already used.'
 
     def test_create_user_usecase_with_cpf_already_used(self):
         repo = UserRepositoryMock()
@@ -51,7 +50,7 @@ class TestCreateUserUseCase:
             usecase(email=self.new_email, cpf=user_test['cpf'], first_name=user_test['first_name'],
                     last_name=user_test['last_name'], phone=user_test['phone'],
                     password=user_test['password'], accepted_terms=user_test['accepted_terms'])
-        assert str(exc.value) == 'Parameter already used'
+        assert str(exc.value) == 'Parameter cpf already used.'
 
     def test_create_user_usecase_with_invalid_request(self):
         repo = UserRepositoryMock()
@@ -71,4 +70,4 @@ class TestCreateUserUseCase:
             usecase(email=self.new_email, cpf=748, first_name=user_test['first_name'],
                     last_name=user_test['last_name'], phone=user_test['phone'],
                     password=user_test['password'], accepted_terms=user_test['accepted_terms'])
-        assert type(exc) == InvalidParameter
+        assert str(exc.value) == "Invalid cpf parameter: deve ser str."
