@@ -1,8 +1,6 @@
 from src.shared.structure.entities.user import User
-from src.shared.errors.usecase_errors import DataAlreadyUsed
-from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 from src.shared.structure.interface.user_interface import UserInterface
-from src.shared.errors.controller_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
+from src.shared.errors.controller_errors import MissingParameter, UserNotAuthenticated
 
 
 class GetUserUseCase:

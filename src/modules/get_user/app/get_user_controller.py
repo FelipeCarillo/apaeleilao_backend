@@ -6,7 +6,7 @@ from .get_user_usecase import GetUserUseCase
 
 
 class GetUserController:
-    def __int__(self, usecase: GetUserUseCase):
+    def __init__(self, usecase: GetUserUseCase):
         self.__usecase = usecase
 
     def __call__(self, request: Dict):

@@ -6,9 +6,11 @@ from aws_cdk import (
     aws_s3 as s3,
     RemovalPolicy,
 )
+
 from constructs import Construct
 from .lambda_stack import LambdaStack
 from .dynamodb_stack import DynamoDBStack
+
 
 class IACStack(Stack):
 
@@ -66,4 +68,3 @@ class IACStack(Stack):
 
         for function in self.lambda_function.functions_need_auction_table_permission:
             self.dynamodb_stack.auction_table.grant_read_write_data(function)
-
