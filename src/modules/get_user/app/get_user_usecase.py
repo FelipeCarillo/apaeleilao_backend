@@ -1,5 +1,6 @@
 from src.shared.structure.entities.user import User
 from src.shared.errors.usecase_errors import DataAlreadyUsed
+from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.errors.controller_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
 
@@ -8,7 +9,7 @@ class GetUserUseCase:
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
 
-    def __call__(self, email: str, cpf: str, password: str):
+    def __call__(self, email: str = None, cpf: str = None, password: str = None):
 
         if not email and not cpf:
             raise MissingParameter('email or cpf')

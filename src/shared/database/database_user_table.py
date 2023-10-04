@@ -20,7 +20,7 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def authenticate(self, user_id, email, cpf, password) -> Dict or None:
+    def authenticate(self, user_id=None, email=None, cpf=None, password=None) -> Dict or None:
 
         parameter: str = ''
         value: str = ''

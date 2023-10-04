@@ -16,7 +16,7 @@ class UserRepositoryMock(UserInterface):
                  password_reset_code=None, password_reset_code_expires_at=None),
         ]
 
-    def authenticate(self, user_id: str, email: str, cpf: str, password: str) -> Optional[Dict]:
+    def authenticate(self, user_id: str = None, email: str = None, cpf: str = None, password: str = None) -> Optional[Dict]:
         parameter: str = ''
         value: str = ''
 
