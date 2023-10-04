@@ -32,24 +32,22 @@ class UserDynamodb(UserInterface):
                 return response.get('Item', None)
 
             if email:
-                response = self.__dynamodb.scan(
-                    FilterExpression='email = :email AND password = :password',
-                    ExpressionAttributeValues={
-                        ':email': email,
-                        ':password': password
+                response = self.__dynamodb.get_item(
+                    Key={
+                        'email': email,
+                        'password': password
                     }
                 )
-                return response.get('Items', None)
+                return response.get('Item', None)
 
             if cpf:
-                response = self.__dynamodb.scan(
-                    FilterExpression='cpf = :cpf',
-                    ExpressionAttributeValues={
-                        ':cpf': cpf
+                response = self.__dynamodb.get_item(
+                    Key={
+                        'cpf': cpf,
+                        'password': password
                     }
                 )
-                return response.get('Items', None)
-
+                return response.get('Item', None)
             return None
         except Exception as e:
             raise e
