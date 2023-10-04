@@ -8,7 +8,7 @@ class GetUserUseCase:
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
 
-    def __call__(self, email: str = None, cpf: str = None, password: str = None):
+    def __call__(self, email: str = None, cpf: str = None, password: str = None) -> User:
         if not email and not cpf:
             raise MissingParameter('email or cpf')
         if not password:
@@ -40,4 +40,4 @@ class GetUserUseCase:
                     verification_code_expires_at=verification_code_expires_at, password_reset_code=password_reset_code,
                     password_reset_code_expires_at=password_reset_code_expires_at)
 
-        return user.to_dict()
+        return user

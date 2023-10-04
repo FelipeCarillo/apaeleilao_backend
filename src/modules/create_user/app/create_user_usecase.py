@@ -1,6 +1,8 @@
 import uuid
 from time import time
 from random import randint
+from typing import Dict
+
 from src.shared.structure.entities.user import User
 from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 from src.shared.errors.usecase_errors import DataAlreadyUsed
@@ -12,7 +14,7 @@ class CreateUserUseCase:
         self.__user_interface = user_interface
 
     def __call__(self, email: str, cpf: str, first_name: str, last_name: str, password: str, phone: str,
-                 accepted_terms: bool):
+                 accepted_terms: bool) -> Dict:
 
         if self.__user_interface.get_user_by_email(email):
             raise DataAlreadyUsed('email')

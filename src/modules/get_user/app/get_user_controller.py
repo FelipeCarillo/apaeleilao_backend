@@ -3,11 +3,13 @@ from src.shared.https_codes.https_code import OK, BadRequest, InternalServerErro
 from src.shared.errors.controller_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
 from src.shared.errors.usecase_errors import DataAlreadyUsed
 from .get_user_usecase import GetUserUseCase
+from .get_user_viewmodel import GetUserViewModel
 
 
 class GetUserController:
     def __init__(self, usecase: GetUserUseCase):
         self.__usecase = usecase
+        self.__viewmodel = GetUserViewModel()
 
     def __call__(self, request: Dict):
         try:
@@ -22,7 +24,10 @@ class GetUserController:
             password = request['body']['password']
 
             get_user_usecase = self.__usecase(email=email, cpf=cpf, password=password)
-            return OK(get_user_usecase)
+
+            response = self.__viewmodel(get_user_usecase)
+
+            return OK(response)
 
         except UserNotAuthenticated as e:
             return Unauthorized(e.body)
