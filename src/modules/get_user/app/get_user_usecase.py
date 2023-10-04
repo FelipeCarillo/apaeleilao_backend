@@ -1,5 +1,6 @@
 from src.shared.structure.entities.user import User
 from src.shared.structure.interface.user_interface import UserInterface
+from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 from src.shared.errors.controller_errors import MissingParameter, UserNotAuthenticated
 
 
@@ -26,7 +27,7 @@ class GetUserUseCase:
         phone = auth['phone']
         password = auth['password']
         accepted_terms = auth['accepted_terms']
-        status_account = auth['status_account']
+        status_account = STATUS_USER_ACCOUNT_ENUM(auth['status_account'])
         suspensions = auth['suspensions']
         date_joined = auth['date_joined']
         verification_code = auth['verification_code']
