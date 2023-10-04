@@ -28,10 +28,10 @@ class UserDynamodb(UserInterface):
         if user_id:
             parameter = 'user_id'
             value = user_id
-        elif email:
+        if email:
             parameter = 'email'
             value = email
-        elif cpf:
+        if cpf:
             parameter = 'cpf'
             value = cpf
 

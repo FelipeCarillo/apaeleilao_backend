@@ -17,10 +17,11 @@ class GetUserController:
             if not request['body']:
                 raise MissingParameter('body')
 
-            email = request['body']['email']
+            email = None if request['body']['email'] == 'null' else request['body']['email']
+            cpf = None if request['body']['cpf'] == 'null' else request['body']['cpf']
             password = request['body']['password']
 
-            get_user_usecase = self.__usecase(email=email, password=password)
+            get_user_usecase = self.__usecase(email=email, cpf=cpf, password=password)
             return OK(get_user_usecase)
 
         except UserNotAuthenticated as e:

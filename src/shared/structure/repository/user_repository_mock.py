@@ -24,10 +24,10 @@ class UserRepositoryMock(UserInterface):
             if user_id:
                 parameter = user.user_id
                 value = user_id
-            elif email:
+            if email:
                 parameter = user.email
                 value = email
-            elif cpf:
+            if cpf:
                 parameter = user.cpf
                 value = cpf
 
