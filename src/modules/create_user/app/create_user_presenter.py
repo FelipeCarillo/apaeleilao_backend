@@ -15,7 +15,7 @@ controller = CreateUserController(usecase)
 
 
 def lambda_handler(event, context):
-    request = json.loads(json.dumps(event))
+    request = json.loads(event['body'])
     response = controller(request=request)
     http = HttpResponse(status_code=response.status_code, body=response.body)
 
