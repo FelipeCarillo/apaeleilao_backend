@@ -3,10 +3,11 @@ from typing import Dict
 
 class CreateUserViewModel:
     def __call__(self, body: Dict) -> Dict:
+        user = body['body']
         return {
             'user': {
-                'user_id': body['user_id'],
-                'email': body['email'],
-                'password': body['password'],
+                'user_id': user['user_id'],
+                'email': user['email'],
+                'password': user['password'],
             }
         }

@@ -15,7 +15,7 @@ controller = GetUserController(usecase)
 
 
 def lambda_handler(event, context):
-    request = {'body': event['queryStringParameters']}
+    request = {'body': json.loads(event['queryStringParameters'])}
     response = controller(request=request)
     http_response = HttpResponse(status_code=response.status_code, body=response.body)
 
