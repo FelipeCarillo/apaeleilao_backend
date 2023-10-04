@@ -20,33 +20,40 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def authenticate(self, user_id=None, email=None, cpf=None, password=None) -> Dict or None:
-
-        parameter: str = ''
-        value: str = ''
-
-        if user_id:
-            parameter = 'user_id'
-            value = user_id
-        if email:
-            parameter = 'email'
-            value = email
-        if cpf:
-            parameter = 'cpf'
-            value = cpf
-
+    def authenticate(self, user_id:str=None, email:str=None, cpf:str=None, password:str=None) -> Dict or None:
         try:
-            response = self.__dynamodb.get_item(
-                Key={
-                    parameter: value,
-                    'password': password
-                }
-            )
-            return response.get('Item', None)
+            if user_id:
+                response = self.__dynamodb.get_item(
+                    Key={
+                        'user_id': user_id
+                    }
+                )
+                return response.get('Item', None)
+
+            if email:
+                response = self.__dynamodb.scan(
+                    FilterExpression='email = :email AND password = :password',
+                    ExpressionAttributeValues={
+                        ':email': email,
+                        ':password': password
+                    }
+                )
+                return response.get('Items', None)
+
+            if cpf:
+                response = self.__dynamodb.scan(
+                    FilterExpression='cpf = :cpf',
+                    ExpressionAttributeValues={
+                        ':cpf': cpf
+                    }
+                )
+                return response.get('Items', None)
+
+            return None
         except Exception as e:
             raise e
 
-    def get_all_users(self, exclusive_start_key: Any = None, limit: int = None) -> Dict or None:
+def get_all_users(self, exclusive_start_key: Any = None, limit: int = None) -> Dict or None:
         try:
             response = self.__dynamodb.scan(
                 ExclusiveStartKey=exclusive_start_key,
