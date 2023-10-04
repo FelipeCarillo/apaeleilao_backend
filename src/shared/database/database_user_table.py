@@ -20,7 +20,8 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def authenticate(self, user_id:str=None, email:str=None, cpf:str=None, password:str=None) -> Dict or None:
+    def authenticate(self, user_id: str = None, email: str = None, cpf: str = None,
+                     password: str = None) -> Dict or None:
         try:
             if user_id:
                 response = self.__dynamodb.get_item(
@@ -53,7 +54,7 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-def get_all_users(self, exclusive_start_key: Any = None, limit: int = None) -> Dict or None:
+    def get_all_users(self, exclusive_start_key: Any = None, limit: int = None) -> Dict or None:
         try:
             response = self.__dynamodb.scan(
                 ExclusiveStartKey=exclusive_start_key,
