@@ -6,7 +6,7 @@ from src.shared.structure.entities.user import User
 class UserInterface(ABC):
 
     @abstractmethod
-    def authenticate(self, user_id: str, password: str) -> Optional[Dict]:
+    def authenticate(self, user_id: str, email: str, cpf: str, password: str) -> Optional[Dict]:
         pass
 
     @abstractmethod

@@ -14,3 +14,8 @@ class InvalidParameter(MainError):
 class MissingParameter(MainError):
     def __init__(self, body: str):
         super().__init__(f"Missing {body} parameter.")
+
+
+class UserNotAuthenticated(MainError):
+    def __init__(self):
+        super().__init__(f"User not authenticated.")

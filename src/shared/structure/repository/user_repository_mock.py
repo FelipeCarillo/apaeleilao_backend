@@ -16,9 +16,22 @@ class UserRepositoryMock(UserInterface):
                  password_reset_code=None, password_reset_code_expires_at=None),
         ]
 
-    def authenticate(self, user_id: str, password: str) -> Optional[Dict]:
+    def authenticate(self, user_id: str, email: str, cpf: str, password: str) -> Optional[Dict]:
+        parameter: str = ''
+        value: str = ''
+
         for user in self.users:
-            if user.user_id == user_id and user.password == password:
+            if user_id:
+                parameter = user.user_id
+                value = user_id
+            elif email:
+                parameter = user.email
+                value = email
+            elif cpf:
+                parameter = user.cpf
+                value = cpf
+
+            if parameter == value and user.password == password:
                 return user.to_dict()
         return None
 

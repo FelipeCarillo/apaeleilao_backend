@@ -20,11 +20,25 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def authenticate(self, user_id, password) -> Dict or None:
+    def authenticate(self, user_id, email, cpf, password) -> Dict or None:
+
+        parameter: str = ''
+        value: str = ''
+
+        if user_id:
+            parameter = 'user_id'
+            value = user_id
+        elif email:
+            parameter = 'email'
+            value = email
+        elif cpf:
+            parameter = 'cpf'
+            value = cpf
+
         try:
             response = self.__dynamodb.get_item(
                 Key={
-                    'user_id': user_id,
+                    parameter: value,
                     'password': password
                 }
             )
