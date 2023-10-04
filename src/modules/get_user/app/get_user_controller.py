@@ -19,8 +19,9 @@ class GetUserController:
             if not request['body']:
                 raise MissingParameter('body')
 
-            email = None if request['body']['email'] == 'null' else request['body']['email']
-            cpf = None if request['body']['cpf'] == 'null' else request['body']['cpf']
+            user_id = request['body'].get('user_id', None)
+            email = request['body'].get('email', None)
+            cpf = request['body'].get('cpf', None)
             password = request['body']['password']
 
             get_user_usecase = self.__usecase(email=email, cpf=cpf, password=password)

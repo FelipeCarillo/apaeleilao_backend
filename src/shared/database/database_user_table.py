@@ -1,5 +1,4 @@
 from typing import Any, Dict
-from boto3.dynamodb.conditions import Key
 
 from .database import Database
 
@@ -28,18 +27,31 @@ class UserDynamodb(UserInterface):
         response: Dict = {}
         try:
             if user_id:
-                response = self.__dynamodb.query(
-                    KeyConditionExpression=Key('user_id').eq(user_id) & Key('password').eq(password)
+                response = self.__dynamodb.get_item(
+                    Key={
+                        'user_id': {'S': user_id},
+                        'password': {'S': password}
+                    }
                 )
+                item = response.get('Item', None)
+                return item
 
             if email:
                 response = self.__dynamodb.query(
-                    KeyConditionExpression=Key('email').eq(email) & Key('password').eq(password)
+                    KeyConditionExpression='email = :email and password = :password',
+                    ExpressionAttributeValues={
+                        ':email': {'S': email},
+                        ':password': {'S': password}
+                    }
                 )
 
             if cpf:
                 response = self.__dynamodb.query(
-                    KeyConditionExpression=Key('cpf').eq(cpf) & Key('password').eq(password)
+                    KeyConditionExpression='cpf = :cpf and password = :password',
+                    ExpressionAttributeValues={
+                        ':cpf': {'S': cpf},
+                        ':password': {'S': password}
+                    }
                 )
             item = response.get('Items', None)
             return item[0] if item else None
