@@ -7,7 +7,7 @@ from constructs import Construct
 
 
 class DynamoDBStack(Construct):
-    def __init__(self,scope:Construct) -> None:
+    def __init__(self, scope: Construct) -> None:
         super().__init__(scope, "ApaeLeilao_DynamoDB")
 
         self.__user_table = dynamodb.Table(
@@ -21,8 +21,27 @@ class DynamoDBStack(Construct):
                 name="password",
                 type=dynamodb.AttributeType.STRING
             ),
+
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
             removal_policy=RemovalPolicy.DESTROY
+        )
+
+        self.__user_table.add_global_secondary_index(
+            index_name="email-index",
+            partition_key=dynamodb.Attribute(
+                name="email",
+                type=dynamodb.AttributeType.STRING
+            ),
+            projection_type=dynamodb.ProjectionType.ALL
+        )
+
+        self.__user_table.add_global_secondary_index(
+            index_name="cpf-index",
+            partition_key=dynamodb.Attribute(
+                name="cpf",
+                type=dynamodb.AttributeType.STRING
+            ),
+            projection_type=dynamodb.ProjectionType.ALL
         )
 
         self.__auction_table = dynamodb.Table(
@@ -30,6 +49,10 @@ class DynamoDBStack(Construct):
             table_name="AuctionApaeLeilao",
             partition_key=dynamodb.Attribute(
                 name="auction_id",
+                type=dynamodb.AttributeType.STRING
+            ),
+            sort_key=dynamodb.Attribute(
+                name="user_id",
                 type=dynamodb.AttributeType.STRING
             ),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
