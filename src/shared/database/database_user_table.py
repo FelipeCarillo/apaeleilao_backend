@@ -1,5 +1,8 @@
-from .database import Database
 from typing import Any, Dict
+from boto3.dynamodb.conditions import Key
+
+from .database import Database
+
 from src.shared.structure.entities.user import User
 from src.shared.structure.interface.user_interface import UserInterface
 
@@ -22,33 +25,24 @@ class UserDynamodb(UserInterface):
 
     def authenticate(self, user_id: str = None, email: str = None, cpf: str = None,
                      password: str = None) -> Dict or None:
+        response: Dict = {}
         try:
             if user_id:
-                response = self.__dynamodb.get_item(
-                    Key={
-                        'user_id': user_id
-                    }
+                response = self.__dynamodb.query(
+                    KeyConditionExpression=Key('user_id').eq(user_id) & Key('password').eq(password)
                 )
-                return response.get('Item', None)
 
             if email:
-                response = self.__dynamodb.get_item(
-                    Key={
-                        'email': email,
-                        'password': password
-                    }
+                response = self.__dynamodb.query(
+                    KeyConditionExpression=Key('email').eq(email) & Key('password').eq(password)
                 )
-                return response.get('Item', None)
 
             if cpf:
-                response = self.__dynamodb.get_item(
-                    Key={
-                        'cpf': cpf,
-                        'password': password
-                    }
+                response = self.__dynamodb.query(
+                    KeyConditionExpression=Key('cpf').eq(cpf) & Key('password').eq(password)
                 )
-                return response.get('Item', None)
-            return None
+            item = response.get('Items', None)
+            return item[0] if item else None
         except Exception as e:
             raise e
 
