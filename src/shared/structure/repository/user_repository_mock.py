@@ -32,12 +32,6 @@ class UserRepositoryMock(UserInterface):
     def get_all_users(self) -> Optional[List[Dict]]:
         return [user.to_dict() for user in self.users]
 
-    def get_user_by_id(self, user_id: str) -> Optional[Dict]:
-        for user in self.users:
-            if user.user_id == user_id:
-                return user.to_dict()
-        return None
-
     def get_user_by_email(self, email: str) -> Optional[Dict]:
         for user in self.users:
             if user.email == email:
