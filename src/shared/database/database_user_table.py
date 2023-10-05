@@ -40,7 +40,7 @@ class UserDynamodb(UserInterface):
             if email:
                 response = self.__dynamodb.query(
                     IndexName='email-index',
-                    KeyConditionExpression='email = :email AND password = :password',
+                    FilterExpression='email = :email AND password = :password',
                     ExpressionAttributeValues={
                         ':email': {
                             'S': email
@@ -54,7 +54,7 @@ class UserDynamodb(UserInterface):
             if cpf:
                 response = self.__dynamodb.query(
                     IndexName='cpf-index',
-                    KeyConditionExpression='cpf = :cpf AND password = :password',
+                    FilterExpression='cpf = :cpf AND password = :password',
                     ExpressionAttributeValues={
                         ':cpf': {
                             'S': cpf
@@ -94,7 +94,7 @@ class UserDynamodb(UserInterface):
         try:
             response = self.__dynamodb.query(
                 IndexName='email-index',
-                KeyConditionExpression='email = :email',
+                FilterExpression='email = :email',
                 ExpressionAttributeValues={
                     ':email': {
                         'S': email
@@ -109,7 +109,7 @@ class UserDynamodb(UserInterface):
         try:
             response = self.__dynamodb.query(
                 IndexName='cpf-index',
-                KeyConditionExpression='cpf = :cpf',
+                FilterExpression='cpf = :cpf',
                 ExpressionAttributeValues={
                     ':cpf': {
                         'S': cpf
