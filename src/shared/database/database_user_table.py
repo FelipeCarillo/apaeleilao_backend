@@ -50,8 +50,7 @@ class UserDynamodb(UserInterface):
 
     def get_user_by_email(self, email) -> Dict or None:
         try:
-            Key = {'email': email}
-            response = self.__dynamodb.get_item(Key=Key)
+            response = self.__dynamodb.get_item(Key={'email': email})
             return response.get('Item', None)
         except Exception as e:
             raise e
