@@ -26,11 +26,13 @@ class UserDynamodb(UserInterface):
     def authenticate(self, email: str, password: str, user_id: str = None) -> Dict or None:
         try:
             Key = {"email": email}
-            if user_id:
-                Key.update({"user_id": user_id})
-
             response = self.__dynamodb.get_item(Key=Key)
             item = response.get('Item', None)
+            if user_id:
+                if item.get('user_id', None) == user_id and item.get('password', None) == password:
+                    return item
+                else:
+                    return None
             if item.get('password', None) == password:
                 return item
             else:
