@@ -38,8 +38,7 @@ class UserDynamodb(UserInterface):
                 return item
 
             if email:
-                response = self.__dynamodb.query(
-                    IndexName='email-index',
+                response = self.__dynamodb.scan(
                     FilterExpression='email = :email AND password = :password',
                     ExpressionAttributeValues={
                         ':email': {
@@ -51,19 +50,6 @@ class UserDynamodb(UserInterface):
                     }
                 )
 
-            if cpf:
-                response = self.__dynamodb.query(
-                    IndexName='cpf-index',
-                    FilterExpression='cpf = :cpf AND password = :password',
-                    ExpressionAttributeValues={
-                        ':cpf': {
-                            'S': cpf
-                        },
-                        ':password': {
-                            'S': password
-                        }
-                    }
-                )
             item = response.get('Items', None)
             return item[0] if item else None
         except Exception as e:
@@ -92,8 +78,7 @@ class UserDynamodb(UserInterface):
 
     def get_user_by_email(self, email) -> Dict or None:
         try:
-            response = self.__dynamodb.query(
-                IndexName='email-index',
+            response = self.__dynamodb.scan(
                 FilterExpression='email = :email',
                 ExpressionAttributeValues={
                     ':email': {
@@ -107,8 +92,7 @@ class UserDynamodb(UserInterface):
 
     def get_user_by_cpf(self, cpf) -> Dict or None:
         try:
-            response = self.__dynamodb.query(
-                IndexName='cpf-index',
+            response = self.__dynamodb.scan(
                 FilterExpression='cpf = :cpf',
                 ExpressionAttributeValues={
                     ':cpf': {
