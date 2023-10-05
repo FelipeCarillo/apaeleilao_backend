@@ -23,35 +23,18 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def authenticate(self, user_id: str = None, email: str = None, cpf: str = None,
-                     password: str = None) -> Dict or None:
-        response: Dict = {}
+    def authenticate(self, email: str, password: str, user_id: str = None) -> Dict or None:
         try:
+            key = {"email": {'S': email}}
             if user_id:
-                response = self.__dynamodb.get_item(
-                    Key={
-                        'user_id': {'S': user_id},
-                        'password': {'S': password}
-                    }
-                )
-                item = response.get('Item', None)
+                key.update({"user_id": {'S': user_id}})
+
+            response = self.__dynamodb.get_item(Key=key)
+            item = response.get('Item', None)
+            if item.get('password', {}).get('S', None) == password:
                 return item
-
-            if email:
-                response = self.__dynamodb.scan(
-                    FilterExpression='email = :email AND password = :password',
-                    ExpressionAttributeValues={
-                        ':email': {
-                            'S': email
-                        },
-                        ':password': {
-                            'S': password
-                        }
-                    }
-                )
-
-            item = response.get('Items', None)
-            return item[0] if item else None
+            else:
+                return None
         except Exception as e:
             raise e
 
@@ -65,28 +48,16 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def get_user_by_id(self, user_id) -> Dict or None:
+    def get_user_by_email(self, email) -> Dict or None:
         try:
             response = self.__dynamodb.get_item(
                 Key={
-                    'user_id': user_id
-                }
-            )
-            return response.get('Item', None)
-        except Exception as e:
-            raise e
-
-    def get_user_by_email(self, email) -> Dict or None:
-        try:
-            response = self.__dynamodb.scan(
-                FilterExpression='email = :email',
-                ExpressionAttributeValues={
-                    ':email': {
+                    'email': {
                         'S': email
                     }
                 }
             )
-            return response.get('Items', None)
+            return response.get('Item', None)
         except Exception as e:
             raise e
 
@@ -100,7 +71,7 @@ class UserDynamodb(UserInterface):
                     }
                 }
             )
-            return response.get('Items', None)
+            return response.get('Items', None)[0]
         except Exception as e:
             raise e
 

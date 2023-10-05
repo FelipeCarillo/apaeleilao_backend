@@ -6,8 +6,7 @@ from src.shared.structure.entities.user import User
 class UserInterface(ABC):
 
     @abstractmethod
-    def authenticate(self, user_id: str = None, email: str = None,
-                     cpf: str = None, password: str = None) -> Optional[Dict]:
+    def authenticate(self, email: str, password: str, user_id: str = None) -> Optional[Dict]:
         pass
 
     @abstractmethod
@@ -33,5 +32,3 @@ class UserInterface(ABC):
     @abstractmethod
     def update_user(self, user: User) -> Optional[Dict]:
         pass
-
-

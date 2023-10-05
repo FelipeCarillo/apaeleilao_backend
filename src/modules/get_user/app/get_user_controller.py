@@ -21,10 +21,9 @@ class GetUserController:
 
             user_id = request['body'].get('user_id', None)
             email = request['body'].get('email', None)
-            cpf = request['body'].get('cpf', None)
             password = request['body']['password']
 
-            get_user_usecase = self.__usecase(email=email, cpf=cpf, password=password)
+            get_user_usecase = self.__usecase(email=email, password=password, user_id=user_id)
 
             response = self.__viewmodel(get_user_usecase)
 

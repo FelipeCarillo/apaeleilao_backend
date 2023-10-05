@@ -16,21 +16,16 @@ class UserRepositoryMock(UserInterface):
                  password_reset_code=None, password_reset_code_expires_at=None),
         ]
 
-    def authenticate(self, user_id: str = None, email: str = None, cpf: str = None, password: str = None) -> Optional[Dict]:
+    def authenticate(self, email: str, password: str, user_id: str = None) -> Optional[Dict]:
+
         if user_id:
             for user in self.users:
-                if user.user_id == user_id:
+                if user.user_id == user_id and user.password == password and user.email == email:
                     return user.to_dict()
 
-        if email:
-            for user in self.users:
-                if user.email == email and user.password == password:
-                    return user.to_dict()
-
-        if cpf:
-            for user in self.users:
-                if user.cpf == cpf and user.password == password:
-                    return user.to_dict()
+        for user in self.users:
+            if user.email == email and user.password == password:
+                return user.to_dict()
 
         return None
 
@@ -67,8 +62,8 @@ class UserRepositoryMock(UserInterface):
                 return user.to_dict()
         return None
 
+
 if __name__ == '__main__':
     user_repository_mock = UserRepositoryMock()
     print(user_repository_mock.authenticate(password=user_repository_mock.users[0].password,
                                             email=user_repository_mock.users[0].email))
-
