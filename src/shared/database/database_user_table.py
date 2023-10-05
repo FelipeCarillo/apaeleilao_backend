@@ -58,7 +58,7 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def get_all_users(self, exclusive_start_key: Any = None, limit: int = None) -> Dict or None:
+    def get_all_users(self, exclusive_start_key: str = None, limit: int = None) -> Dict or None:
         try:
             response = self.__dynamodb.scan(
                 ExclusiveStartKey=exclusive_start_key,
@@ -81,10 +81,10 @@ class UserDynamodb(UserInterface):
 
     def get_user_by_email(self, email) -> Dict or None:
         try:
-            response = self.__dynamodb.scan(
-                FilterExpression='email = :email',
+            response = self.__dynamodb.query(
+                KeyConditionExpression='email = :email',
                 ExpressionAttributeValues={
-                    ':email': email
+                    ':email': {'S': email}
                 }
             )
             return response.get('Items', None)
@@ -93,10 +93,10 @@ class UserDynamodb(UserInterface):
 
     def get_user_by_cpf(self, cpf) -> Dict or None:
         try:
-            response = self.__dynamodb.scan(
-                FilterExpression='cpf = :cpf',
+            response = self.__dynamodb.query(
+                KeyConditionExpression='cpf = :cpf',
                 ExpressionAttributeValues={
-                    ':cpf': cpf
+                    ':cpf': {'S': cpf}
                 }
             )
             return response.get('Items', None)
