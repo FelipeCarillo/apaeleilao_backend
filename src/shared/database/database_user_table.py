@@ -1,3 +1,4 @@
+import os
 from typing import Any, Dict
 
 from .database import Database
@@ -37,22 +38,26 @@ class UserDynamodb(UserInterface):
                 return item
 
             if email:
-                response = self.__dynamodb.query(
-                    KeyConditionExpression='email = :email and password = :password',
-                    ExpressionAttributeValues={
+                query = {
+                    'IndexName': 'email-index',
+                    'KeyConditionExpression': 'email = :email and password = :password',
+                    'ExpressionAttributeValues': {
                         ':email': {'S': email},
                         ':password': {'S': password}
                     }
-                )
+                }
+                response = self.__dynamodb.query(**query)
 
             if cpf:
-                response = self.__dynamodb.query(
-                    KeyConditionExpression='cpf = :cpf and password = :password',
-                    ExpressionAttributeValues={
+                query = {
+                    'IndexName': 'cpf-index',
+                    'KeyConditionExpression': 'cpf = :cpf and password = :password',
+                    'ExpressionAttributeValues': {
                         ':cpf': {'S': cpf},
                         ':password': {'S': password}
                     }
-                )
+                }
+                response = self.__dynamodb.query(**query)
             item = response.get('Items', None)
             return item[0] if item else None
         except Exception as e:
@@ -81,24 +86,28 @@ class UserDynamodb(UserInterface):
 
     def get_user_by_email(self, email) -> Dict or None:
         try:
-            response = self.__dynamodb.query(
-                KeyConditionExpression='email = :email',
-                ExpressionAttributeValues={
+            query = {
+                'IndexName': 'email-index',
+                'KeyConditionExpression': 'email = :email',
+                'ExpressionAttributeValues': {
                     ':email': {'S': email}
                 }
-            )
+            }
+            response = self.__dynamodb.query(**query)
             return response.get('Items', None)
         except Exception as e:
             raise e
 
     def get_user_by_cpf(self, cpf) -> Dict or None:
         try:
-            response = self.__dynamodb.query(
-                KeyConditionExpression='cpf = :cpf',
-                ExpressionAttributeValues={
+            query = {
+                'IndexName': 'cpf-index',
+                'KeyConditionExpression': 'cpf = :cpf',
+                'ExpressionAttributeValues': {
                     ':cpf': {'S': cpf}
                 }
-            )
+            }
+            response = self.__dynamodb.query(**query)
             return response.get('Items', None)
         except Exception as e:
             raise e
