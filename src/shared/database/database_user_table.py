@@ -25,13 +25,13 @@ class UserDynamodb(UserInterface):
 
     def authenticate(self, email: str, password: str, user_id: str = None) -> Dict or None:
         try:
-            key = {"email": {'S': email}}
+            Key = {"email": email}
             if user_id:
-                key.update({"user_id": {'S': user_id}})
+                Key.update({"user_id": user_id})
 
-            response = self.__dynamodb.get_item(Key=key)
+            response = self.__dynamodb.get_item(Key=Key)
             item = response.get('Item', None)
-            if item.get('password', {}).get('S', None) == password:
+            if item.get('password', None) == password:
                 return item
             else:
                 return None
@@ -50,13 +50,8 @@ class UserDynamodb(UserInterface):
 
     def get_user_by_email(self, email) -> Dict or None:
         try:
-            response = self.__dynamodb.get_item(
-                Key={
-                    'email': {
-                        'S': email
-                    }
-                }
-            )
+            Key = {'email': email}
+            response = self.__dynamodb.get_item(Key=Key)
             return response.get('Item', None)
         except Exception as e:
             raise e
@@ -65,11 +60,7 @@ class UserDynamodb(UserInterface):
         try:
             response = self.__dynamodb.scan(
                 FilterExpression='cpf = :cpf',
-                ExpressionAttributeValues={
-                    ':cpf': {
-                        'S': cpf
-                    }
-                }
+                ExpressionAttributeValues={':cpf': cpf}
             )
             return response.get('Items', None)[0]
         except Exception as e:
