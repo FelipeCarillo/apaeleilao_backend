@@ -2,6 +2,20 @@ import json
 from typing import Any, Dict
 
 
+class HttpRequest:
+    def __init__(self, body: Dict or str):
+        self.body = body
+
+    def __call__(self):
+        if isinstance(self.body, str):
+            self.body = json.loads(self.body)
+        if isinstance(self.body, dict):
+            self.body = self.body
+        if "body" not in self.body:
+            self.body = {"body": self.body}
+        return self.body
+
+
 class HttpResponse:
     def __init__(self, status_code: int, body: Dict):
         self.status_code = status_code

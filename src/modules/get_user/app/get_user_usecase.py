@@ -28,11 +28,11 @@ class GetUserUseCase:
         accepted_terms = auth['accepted_terms']
         status_account = STATUS_USER_ACCOUNT_ENUM(auth['status_account'])
         suspensions = auth['suspensions']
-        date_joined = auth['date_joined']
-        verification_email_code = auth['verification_email_code']
-        verification_email_code_expires_at = auth['verification_email_code_expires_at']
-        password_reset_code = auth['password_reset_code']
-        password_reset_code_expires_at = auth['password_reset_code_expires_at']
+        date_joined = int(auth['date_joined'])
+        verification_email_code = int(auth['verification_email_code'])
+        verification_email_code_expires_at = int(auth['verification_email_code_expires_at'])
+        password_reset_code = int(auth['password_reset_code'])
+        password_reset_code_expires_at = int(auth['password_reset_code_expires_at'])
 
         user = User(user_id=user_id, first_name=first_name, last_name=last_name, cpf=cpf, email=email, phone=phone,
                     password=password, accepted_terms=accepted_terms, status_account=status_account,
