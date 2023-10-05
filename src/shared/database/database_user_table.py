@@ -26,8 +26,8 @@ class UserDynamodb(UserInterface):
     def authenticate(self, email: str, password: str, user_id: str = None) -> Dict or None:
         try:
             Key = {"email": email}
-            response = self.__dynamodb.get_item(Key=Key)
-            item = response.get('Item', None)
+            query = self.__dynamodb.get_item(Key=Key)
+            item = query.get('Item', None)
             if user_id:
                 if item.get('user_id', None) == user_id and item.get('password', None) == password:
                     return item
@@ -42,28 +42,31 @@ class UserDynamodb(UserInterface):
 
     def get_all_users(self, exclusive_start_key: str = None, limit: int = None) -> Dict or None:
         try:
-            response = self.__dynamodb.scan(
+            query = self.__dynamodb.scan(
                 ExclusiveStartKey=exclusive_start_key,
                 Limit=limit
             )
-            return response.get('Items', None)
+            response = query.get('Items', None)
+            return response
         except Exception as e:
             raise e
 
     def get_user_by_email(self, email) -> Dict or None:
         try:
-            response = self.__dynamodb.get_item(Key={'email': email})
-            return response.get('Item', None)
+            query = self.__dynamodb.get_item(Key={'email': email})
+            response = query.get('Item', None)
+            return response
         except Exception as e:
             raise e
 
     def get_user_by_cpf(self, cpf) -> Dict or None:
         try:
-            response = self.__dynamodb.scan(
+            query = self.__dynamodb.scan(
                 FilterExpression='cpf = :cpf',
                 ExpressionAttributeValues={':cpf': cpf}
             )
-            return response.get('Items', None)[0]
+            response = query.get('Items', None)
+            return response[0] if response else None
         except Exception as e:
             raise e
 
