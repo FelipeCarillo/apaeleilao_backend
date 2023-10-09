@@ -15,12 +15,10 @@ class SendEmailCodeController:
             if not request:
                 raise InvalidRequest()
 
-            if not request['body']:
-                raise MissingParameter('body')
+            if not request['auth']:
+                raise MissingParameter('auth')
 
-            auth = request['body']
-
-            send_email_code_usecase = self.__usecase(auth=auth)
+            send_email_code_usecase = self.__usecase(auth=request['auth'])
 
             return OK(body=send_email_code_usecase['body'], message="Código enviado com sucesso.")
 
