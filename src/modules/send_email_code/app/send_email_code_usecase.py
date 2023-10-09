@@ -19,6 +19,10 @@ class SendEmailCodeUseCase:
     def __call__(self, auth: Dict):
         if not auth:
             MissingParameter('auth')
+        if not auth['email']:
+            MissingParameter('email')
+        if not auth['password']:
+            MissingParameter('password')
 
         auth = self.__user_interface.authenticate(email=auth['email'], password=auth['password'])
         if not auth:

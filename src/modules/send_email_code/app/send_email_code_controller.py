@@ -17,10 +17,8 @@ class SendEmailCodeController:
 
             if not request['body']:
                 raise MissingParameter('body')
-            if not request['headers']:
-                raise MissingParameter('headers')
 
-            auth = request['headers'].get('Authorization', None)
+            auth = request['body']
 
             send_email_code_usecase = self.__usecase(auth=auth)
 
