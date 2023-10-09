@@ -1,6 +1,7 @@
 import re
 from abc import ABC
 from typing import List, Optional
+
 from src.shared.errors.modules_errors import MissingParameter, InvalidParameter
 from src.shared.structure.entities.suspension import Suspension
 from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
