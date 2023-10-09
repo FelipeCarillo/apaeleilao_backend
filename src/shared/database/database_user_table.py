@@ -24,7 +24,7 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def authenticate(self, email: str, password: str, user_id: str = None) -> Dict or None:
+    def authenticate(self, email: str, password: str) -> Dict or None:
 
         encrypted_key = os.environ.get('ENCRYPTED_KEY').encode('utf-8')
         f = Fernet(encrypted_key)
@@ -73,13 +73,13 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def update_user(self, email: str, **kwargs) -> Dict or None:
+    def update_user(self, email_auth: str, **kwargs) -> Dict or None:
 
         update_expression = 'SET '
         expression_attribute_values = {}
 
         for key, value in kwargs.items():
-            if value is not None:
+            if value is not None and value != 'email_auth':
                 update_expression += f'{key} = :{key}, '
                 expression_attribute_values[f':{key}'] = value
 
@@ -87,7 +87,7 @@ class UserDynamodb(UserInterface):
 
         try:
             query = self.__dynamodb.update_item(
-                Key={'email': email},
+                Key={'email': email_auth},
                 UpdateExpression=update_expression,
                 ExpressionAttributeValues=expression_attribute_values,
                 ReturnValues='ALL_NEW'
