@@ -1,11 +1,12 @@
 import os
 
+from .create_user_usecase import CreateUserUseCase
+from .create_user_controller import CreateUserController
+
 from src.shared.database.database_user_table import UserDynamodb
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 from src.shared.structure.repository.user_repository_mock import UserRepositoryMock
 
-from .create_user_usecase import CreateUserUseCase
-from .create_user_controller import CreateUserController
 
 stage = os.environ.get("STAGE", "test")
 usecase = CreateUserUseCase(UserRepositoryMock()) if stage == "test" else CreateUserUseCase(UserDynamodb())

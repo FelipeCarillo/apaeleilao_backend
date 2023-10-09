@@ -1,4 +1,5 @@
 from typing import Dict
+
 from src.shared.structure.entities.user import User
 
 
