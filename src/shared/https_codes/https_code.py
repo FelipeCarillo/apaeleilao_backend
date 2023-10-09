@@ -11,14 +11,10 @@ class HttpRequest:
         if self.body:
             if isinstance(self.body, str):
                 self.body = json.loads(self.body)
-            if "body" not in self.body:
-                self.body = {"body": self.body}
         if self.auth:
             if isinstance(self.auth, str):
                 self.auth = json.loads(self.auth)
-            if 'auth' not in self.auth:
-                self.auth = {'auth': self.auth}
-        return {self.auth, self.body}
+        return {'auth': self.auth, 'body': self.body}
 
 
 class HttpResponse:
