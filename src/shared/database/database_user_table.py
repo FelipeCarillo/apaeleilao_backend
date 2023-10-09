@@ -16,7 +16,6 @@ class UserDynamodb(UserInterface):
     def create_user(self, user: User) -> Dict or None:
         try:
             user = user.to_dict()
-            user['status_account'] = user['status_account'].value
             self.__dynamodb.put_item(Item=user)
             return {
                 'body': user
@@ -73,25 +72,34 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def update_user(self, email_auth: str, **kwargs) -> Dict or None:
-
-        update_expression = 'SET '
-        expression_attribute_values = {}
-
-        for key, value in kwargs.items():
-            if value is not None and value != 'email_auth':
-                update_expression += f'{key} = :{key}, '
-                expression_attribute_values[f':{key}'] = value
-
-        update_expression = update_expression.rstrip(', ')
-
+    def update_user(self, user: User) -> Dict or None:
         try:
-            query = self.__dynamodb.update_item(
-                Key={'email': email_auth},
-                UpdateExpression=update_expression,
-                ExpressionAttributeValues=expression_attribute_values,
-                ReturnValues='ALL_NEW'
+            user = user.to_dict()
+            self.__dynamodb.update_item(
+                Key={'email': user['email']},
+                UpdateExpression='SET first_name = :first_name, last_name = :last_name, cpf = :cpf, '
+                                 'phone = :phone, password = :password, accepted_terms = :accepted_terms, '
+                                 'status_account = :status_account, suspensions = :suspensions, '
+                                 'verification_email_code = :verification_email_code, '
+                                 'verification_email_code_expires_at = :verification_email_code_expires_at, '
+                                 'password_reset_code = :password_reset_code, '
+                                 'password_reset_code_expires_at = :password_reset_code_expires_at',
+                ExpressionAttributeValues={
+                    ':first_name': user['first_name'],
+                    ':last_name': user['last_name'],
+                    ':cpf': user['cpf'],
+                    ':phone': user['phone'],
+                    ':password': user['password'],
+                    ':accepted_terms': user['accepted_terms'],
+                    ':status_account': user['status_account'],
+                    ':suspensions': user['suspensions'],
+                    ':verification_email_code': user['verification_email_code'],
+                    ':verification_email_code_expires_at': user['verification_email_code_expires_at'],
+                    ':password_reset_code': user['password_reset_code'],
+                    ':password_reset_code_expires_at': user['password_reset_code_expires_at']
+                },
+                ReturnValues='UPDATED_NEW'
             )
-            return query.get('Attributes', None)
+            return user
         except Exception as e:
             raise e

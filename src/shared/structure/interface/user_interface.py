@@ -27,5 +27,5 @@ class UserInterface(ABC):
         pass
 
     @abstractmethod
-    def update_user(self, email: str, **kwargs) -> Optional[Dict]:
+    def update_user(self, user: User) -> Optional[Dict]:
         pass

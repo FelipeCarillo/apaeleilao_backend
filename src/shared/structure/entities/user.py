@@ -66,7 +66,7 @@ class User(ABC):
             'phone': self.phone,
             'password': self.password,
             'accepted_terms': self.accepted_terms,
-            'status_account': self.status_account,
+            'status_account': self.status_account.value,
             'suspensions': self.suspensions,
             'date_joined': self.date_joined,
             'verification_email_code': self.verification_email_code,

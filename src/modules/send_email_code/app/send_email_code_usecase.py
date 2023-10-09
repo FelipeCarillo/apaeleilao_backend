@@ -4,6 +4,7 @@ import boto3
 import random
 from typing import Dict
 
+from src.shared.structure.entities.user import User
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated
 
@@ -29,11 +30,18 @@ class SendEmailCodeUseCase:
             raise UserNotAuthenticated()
 
         verification_email_code = random.randint(10000, 99999)
-        verification_email_code_expires_at = time.time() + 3600
+        verification_email_code_expires_at = int(time.time()) + 3600
 
-        self.__user_interface.update_user(email=auth['auth'],
-                                          verification_email_code_expires_at=verification_email_code_expires_at,
-                                          verification_email_code=verification_email_code)
+        user = User(user_id=auth['user_id'], first_name=auth['first_name'], last_name=auth['last_name'],
+                    cpf=auth['cpf'], email=auth['email'], phone=auth['phone'], password=auth['password'],
+                    accepted_terms=auth['accepted_terms'], status_account=auth['status_account'],
+                    suspensions=auth['suspensions'], date_joined=auth['date_joined'],
+                    verification_email_code=verification_email_code,
+                    verification_email_code_expires_at=verification_email_code_expires_at,
+                    password_reset_code=auth['password_reset_code'],
+                    password_reset_code_expires_at=auth['password_reset_code_expires_at'])
+
+        self.__user_interface.update_user(user)
 
         email_format = f"""
         <html>
