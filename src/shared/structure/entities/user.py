@@ -1,8 +1,7 @@
 import re
 from abc import ABC
 from typing import List, Optional
-from src.shared.errors.entities_errors import UserEntityError
-from src.shared.errors.controller_errors import MissingParameter, InvalidParameter
+from src.shared.errors.modules_errors import MissingParameter, InvalidParameter
 from src.shared.structure.entities.suspension import Suspension
 from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 
@@ -24,13 +23,14 @@ class User(ABC):
     password_reset_code: str
     password_reset_code_expires_at: int
     USER_ID_LENGTH = 36
-    NAME_MIN_LENGTH = 2
-    NAME_MAX_LENGTH = 255
+    NAME_MIN_LENGTH = 3
+    NAME_MAX_LENGTH = 200
 
     def __init__(self, user_id: str = None, first_name: str = None, last_name: str = None, cpf: str = None,
                  email: str = None, phone: str = None, password: str = None, accepted_terms: bool = None,
                  status_account: STATUS_USER_ACCOUNT_ENUM = None, suspensions: List[Optional[Suspension]] = None,
-                 date_joined: int = None, verification_email_code: int = None, verification_email_code_expires_at: int = None,
+                 date_joined: int = None, verification_email_code: int = None,
+                 verification_email_code_expires_at: int = None,
                  password_reset_code: int = None, password_reset_code_expires_at: int = None):
 
         self.user_id = self.validate_and_set_user_id(user_id)
@@ -79,69 +79,86 @@ class User(ABC):
         if user_id is None:
             raise MissingParameter("user_id")
         if type(user_id) != str:
-            raise InvalidParameter("user_id", "deve ser str.")
+            raise InvalidParameter("user_id", "deve ser str")
         if len(user_id) != User.USER_ID_LENGTH:
-            raise InvalidParameter("user_id", "deve ter 36 caracteres.")
+            raise InvalidParameter("user_id", "deve ter 36 caracteres")
         return user_id
 
     @staticmethod
     def validate_and_set_first_name(first_name: str) -> str or None:
         if first_name is None:
-            raise MissingParameter("first_name")
+            raise MissingParameter("Nome")
         if User.NAME_MIN_LENGTH < len(first_name) >= User.NAME_MAX_LENGTH:
             raise InvalidParameter(
-                "first_name", "deve ter no mínimo 2 caracteres e no máximo 255.")
+                "first_name",
+                f"deve ter no mínimo {User.NAME_MIN_LENGTH} caracteres e no máximo {User.NAME_MAX_LENGTH}")
         if type(first_name) != str:
-            raise InvalidParameter("first_name", "deve ser str.")
+            raise InvalidParameter("first_name", "deve ser str")
         return first_name
 
     @staticmethod
     def validate_and_set_last_name(last_name: str) -> str or None:
         if last_name is None:
-            raise MissingParameter("last_name")
+            raise MissingParameter("Sobrenome")
         if type(last_name) != str:
-            raise InvalidParameter("last_name", "deve ser str.")
+            raise InvalidParameter("last_name", "deve ser str")
         if User.NAME_MIN_LENGTH < len(last_name) >= User.NAME_MAX_LENGTH:
-            raise InvalidParameter("last_name", "deve ter no mínimo 2 caracteres e no máximo 255.")
+            raise InvalidParameter("last_name",
+                                   f"deve ter no mínimo {User.NAME_MIN_LENGTH} caracteres e no máximo {User.NAME_MAX_LENGTH}")
         return last_name
 
     @staticmethod
     def validate_and_set_cpf(cpf: str) -> str or None:
         if cpf is None:
-            raise MissingParameter("cpf")
+            raise MissingParameter("CPF")
         if type(cpf) != str:
-            raise InvalidParameter("cpf", "deve ser str.")
+            raise InvalidParameter("cpf", "deve ser str")
         if not cpf.isnumeric():
-            raise InvalidParameter("cpf", "deve ser numérico.")
+            raise InvalidParameter("cpf", "deve ser numérico")
         cpf = cpf.replace(".", "").replace("-", "").replace(" ", "")
         if len(cpf) != 11:
-            raise InvalidParameter("cpf", "deve ter 11 caracteres.")
+            raise InvalidParameter("cpf", "deve ter 11 caracteres")
+
+        numbers = [int(digit) for digit in cpf]
+
+        # Validação do primeiro dígito verificador:
+        sum_of_products = sum(a * b for a, b in zip(numbers[0:9], range(10, 1, -1)))
+        expected_digit = (sum_of_products * 10 % 11) % 10
+        if numbers[9] != expected_digit:
+            raise InvalidParameter("CPF", "inválido")
+
+        # Validação do segundo dígito verificador:
+        sum_of_products = sum(a * b for a, b in zip(numbers[0:10], range(11, 1, -1)))
+        expected_digit = (sum_of_products * 10 % 11) % 10
+        if numbers[10] != expected_digit:
+            raise InvalidParameter("CPF", "inválido")
+
         return cpf
 
     @staticmethod
     def validate_and_set_email(email: str) -> str or None:
         if email is None:
-            raise MissingParameter("email")
+            raise MissingParameter("Email")
         if re.fullmatch(r"[A-Za-z0-9_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", email) is None:
-            raise InvalidParameter("email", "inválido.")
+            raise InvalidParameter("email", "inválido")
         if type(email) != str:
-            raise InvalidParameter("email", "deve ser str.")
+            raise InvalidParameter("email", "deve ser str")
         return email
 
     @staticmethod
     def validate_and_set_phone(phone: str) -> str or None:
         if phone is None:
-            raise MissingParameter("phone")
+            raise MissingParameter("Celular")
         if type(phone) != str:
-            raise InvalidParameter("phone", "deve ser str.")
+            raise InvalidParameter("phone", "deve ser str")
         return phone
 
     @staticmethod
     def validate_and_set_password(password: str) -> str or None:
         if password is None:
-            raise MissingParameter("password")
+            raise MissingParameter("Senha")
         if type(password) != str:
-            raise InvalidParameter("password", "deve ser str.")
+            raise InvalidParameter("password", "deve ser str")
         return password
 
     @staticmethod
@@ -149,7 +166,7 @@ class User(ABC):
         if accepted_terms is None:
             return None
         if type(accepted_terms) != bool:
-            raise InvalidParameter("accepted_terms", "deve ser bool.")
+            raise InvalidParameter("accepted_terms", "deve ser bool")
         return accepted_terms
 
     @staticmethod
@@ -157,7 +174,7 @@ class User(ABC):
         if date_joined is None:
             return None
         if type(date_joined) != int:
-            raise InvalidParameter("date_joined", "deve ser int.")
+            raise InvalidParameter("date_joined", "deve ser int")
         return date_joined
 
     @staticmethod
@@ -165,7 +182,7 @@ class User(ABC):
         if status_account is None:
             raise MissingParameter("status_account")
         if type(status_account) != STATUS_USER_ACCOUNT_ENUM:
-            raise InvalidParameter("status_account", "deve ser STATUS_USER_ACCOUNT_ENUM.")
+            raise InvalidParameter("status_account", "deve ser STATUS_USER_ACCOUNT_ENUM")
         return status_account
 
     @staticmethod
@@ -174,7 +191,7 @@ class User(ABC):
             raise MissingParameter("suspensions")
         for item in suspensions:
             if type(item) != Suspension and len(suspensions) > 0:
-                raise InvalidParameter("suspensions", "deve ser Suspension.")
+                raise InvalidParameter("suspensions", "deve ser Suspension")
         return suspensions
 
     @staticmethod
@@ -182,7 +199,7 @@ class User(ABC):
         if verification_email_code is None:
             return None
         if type(verification_email_code) != int:
-            raise UserEntityError("verification_code deve ser str.")
+            raise InvalidParameter("verification_code", "deve ser str")
         return verification_email_code
 
     @staticmethod
@@ -190,7 +207,7 @@ class User(ABC):
         if verification_email_code_expires_at is None:
             return None
         if type(verification_email_code_expires_at) != int:
-            raise UserEntityError("verification_code_expires_at deve ser time.")
+            raise InvalidParameter("verification_code_expires_at", "deve ser int")
         return verification_email_code_expires_at
 
     @staticmethod
@@ -198,7 +215,7 @@ class User(ABC):
         if password_reset_code is None:
             return None
         if type(password_reset_code) != int:
-            raise UserEntityError("password_reset_code deve ser str.")
+            raise InvalidParameter("password_reset_code", "deve ser str")
         return password_reset_code
 
     @staticmethod
@@ -206,5 +223,5 @@ class User(ABC):
         if password_reset_code_expires_at is None:
             return None
         if type(password_reset_code_expires_at) != int:
-            raise InvalidParameter("password_reset_code_expires_at", "deve ser int.")
+            raise InvalidParameter("password_reset_code_expires_at", "deve ser int")
         return password_reset_code_expires_at

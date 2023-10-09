@@ -1,8 +1,7 @@
 import os
-import json
 
-from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 from src.shared.database.database_user_table import UserDynamodb
+from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 from src.shared.structure.repository.user_repository_mock import UserRepositoryMock
 
 from .create_user_usecase import CreateUserUseCase

@@ -21,7 +21,7 @@ class LambdaStack(Construct):
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
             handler=f"app.{function_name}_presenter.lambda_handler",
-            layers=[self.shared_layer],
+            layers=[self.shared_layer, self.cryptography_layer],
             timeout=Duration.seconds(15),
         )
 
@@ -34,6 +34,12 @@ class LambdaStack(Construct):
     def __init__(self, scope: Construct, restapi_resource: apigw.Resource,
                  environment_variables: Dict[str, str]) -> None:
         super().__init__(scope, "ApaeLeilao_Lambdas")
+
+        self.cryptography_layer = _lambda.LayerVersion(
+            self, "Cryptography_Layer",
+            code=_lambda.Code.from_asset("./cryptography_layer"),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
+        )
 
         self.shared_layer = _lambda.LayerVersion(
             self, "ApaeLeilao_Layer",

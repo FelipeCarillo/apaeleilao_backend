@@ -64,4 +64,5 @@ jobs:
           STAGE: ${{ github.ref_name }}
           STACK_NAME: ${{ env.STACK_NAME }}
           BUCKET_NAME: ${{ env.BUCKET_NAME }}
+          ENCRYPTED_KEY: ${{ secrets.ENCRYPTED_KEY }}
 

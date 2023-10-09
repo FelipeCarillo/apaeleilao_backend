@@ -1,9 +1,10 @@
 from typing import Dict
-from src.shared.https_codes.https_code import *
-from src.shared.errors.controller_errors import InvalidRequest, MissingParameter, InvalidParameter
-from src.shared.errors.usecase_errors import DataAlreadyUsed
+
 from .create_user_usecase import CreateUserUseCase
 from .create_user_viewmodel import CreateUserViewModel
+
+from src.shared.https_codes.https_code import Created, BadRequest, InternalServerError
+from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, DataAlreadyUsed
 
 
 class CreateUserController:
@@ -32,34 +33,19 @@ class CreateUserController:
 
             response = self.__viewmodel(create_user_usecase)
 
-            return Created(response)
+            return Created(response, message='Usuário criado com sucesso.')
 
         except DataAlreadyUsed as e:
-            return BadRequest(e.body)
+            return BadRequest(message=e.message)
 
         except InvalidRequest as e:
-            return BadRequest(e.body)
+            return BadRequest(message=e.message)
 
         except InvalidParameter as e:
-            return BadRequest(e.body)
+            return BadRequest(message=e.message)
 
         except MissingParameter as e:
-            return BadRequest(e.body)
+            return BadRequest(message=e.message)
 
         except Exception as e:
-            return InternalServerError(e.args[0])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            return InternalServerError(message=e.args[0])

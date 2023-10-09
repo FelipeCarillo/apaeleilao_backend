@@ -1,6 +1,6 @@
 import pytest
 from src.modules.get_user.app.get_user_usecase import GetUserUseCase
-from src.shared.errors.controller_errors import MissingParameter, UserNotAuthenticated
+from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated
 from src.shared.structure.repository.user_repository_mock import UserRepositoryMock
 
 class TestGetUserUsecase:

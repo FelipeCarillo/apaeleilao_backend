@@ -1,5 +1,5 @@
 import pytest
-from src.shared.errors.controller_errors import InvalidParameter, MissingParameter
+from src.shared.errors.modules_errors import InvalidParameter, MissingParameter
 from src.shared.errors.usecase_errors import DataAlreadyUsed
 from src.modules.create_user.app.create_user_usecase import CreateUserUseCase
 from src.shared.structure.repository.user_repository_mock import UserRepositoryMock

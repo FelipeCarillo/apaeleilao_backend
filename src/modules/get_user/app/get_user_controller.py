@@ -1,6 +1,6 @@
 from typing import Dict
 from src.shared.https_codes.https_code import OK, BadRequest, InternalServerError, Unauthorized
-from src.shared.errors.controller_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
+from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
 from src.shared.errors.usecase_errors import DataAlreadyUsed
 from .get_user_usecase import GetUserUseCase
 from .get_user_viewmodel import GetUserViewModel

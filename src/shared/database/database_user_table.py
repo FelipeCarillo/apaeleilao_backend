@@ -1,5 +1,6 @@
 import os
-from typing import Any, Dict
+from typing import Dict
+from cryptography.fernet import Fernet
 
 from .database import Database
 
@@ -24,19 +25,21 @@ class UserDynamodb(UserInterface):
             raise e
 
     def authenticate(self, email: str, password: str, user_id: str = None) -> Dict or None:
+
+        encrypted_key = os.environ.get('ENCRYPTED_KEY').encode('utf-8')
+        f = Fernet(encrypted_key)
+
         try:
             Key = {"email": email}
             query = self.__dynamodb.get_item(Key=Key)
             item = query.get('Item', None)
-            if user_id:
-                if item.get('user_id', None) == user_id and item.get('password', None) == password:
-                    return item
-                else:
-                    return None
-            if item.get('password', None) == password:
-                return item
-            else:
+
+            if item is None:
                 return None
+
+            real_password = f.decrypt(item['password'].encode('utf-8')).decode('utf-8')
+
+            return item if real_password == password else None
         except Exception as e:
             raise e
 

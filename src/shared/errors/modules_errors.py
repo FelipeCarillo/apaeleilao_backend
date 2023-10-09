@@ -8,14 +8,19 @@ class InvalidRequest(MainError):
 
 class InvalidParameter(MainError):
     def __init__(self, parameter: str, body: str):
-        super().__init__(f"Invalid {parameter} parameter: {body}")
+        super().__init__(f"{parameter} {body}.")
 
 
 class MissingParameter(MainError):
     def __init__(self, body: str):
-        super().__init__(f"Missing {body} parameter.")
+        super().__init__(f"{body} está faltando.")
+
+
+class DataAlreadyUsed(MainError):
+    def __init__(self, message: str):
+        super().__init__(f"{message} está em uso.")
 
 
 class UserNotAuthenticated(MainError):
     def __init__(self):
-        super().__init__(f"User not authenticated.")
+        super().__init__(f"Usuário não autenticado.")

@@ -17,9 +17,10 @@ class HttpRequest:
 
 
 class HttpResponse:
-    def __init__(self, status_code: int, body: Dict):
+    def __init__(self, status_code: int, body: Dict = None, message: str = None):
         self.status_code = status_code
-        self.body = body
+        self.body = body if body else {}
+        self.message = message
 
     def to_dict(self):
         return {
@@ -28,45 +29,46 @@ class HttpResponse:
                 "Content-Type": "application/json"
             },
             "isBase64Encoded": False,
+            "message": self.message,
             "body": json.dumps(self.body)
         }
 
 
 class OK(HttpResponse):
-    def __init__(self, body: Any):
-        super().__init__(status_code=200, body=body)
+    def __init__(self, body: Dict = None, message: str = None):
+        super().__init__(status_code=200, body=body, message=message)
 
 
 class Created(HttpResponse):
-    def __init__(self, body: Any):
-        super().__init__(status_code=201, body=body)
+    def __init__(self, body: Dict = None, message: str = None):
+        super().__init__(status_code=201, body=body, message=message)
 
 
 class BadRequest(HttpResponse):
-    def __init__(self, body: Any):
-        super().__init__(status_code=400, body=body)
+    def __init__(self, body: Dict = None, message: str = None):
+        super().__init__(status_code=400, body=body, message=message)
 
 
 class Unauthorized(HttpResponse):
-    def __init__(self, body: Any):
-        super().__init__(status_code=401, body=body)
+    def __init__(self, body: Dict = None, message: str = None):
+        super().__init__(status_code=401, body=body, message=message)
 
 
 class Forbidden(HttpResponse):
-    def __init__(self, body: Any):
-        super().__init__(status_code=403, body=body)
+    def __init__(self, body: Dict = None, message: str = None):
+        super().__init__(status_code=403, body=body, message=message)
 
 
 class NotFound(HttpResponse):
-    def __init__(self, body: Any):
-        super().__init__(status_code=404, body=body)
+    def __init__(self, body: Dict = None, message: str = None):
+        super().__init__(status_code=404, body=body, message=message)
 
 
 class NoContent(HttpResponse):
-    def __init__(self, body: Any):
-        super().__init__(status_code=204, body=body)
+    def __init__(self, body: Dict = None, message: str = None):
+        super().__init__(status_code=204, body=body, message=message)
 
 
 class InternalServerError(HttpResponse):
-    def __init__(self, body: Any):
-        super().__init__(status_code=500, body=body)
+    def __init__(self, body: Dict = None, message: str = None):
+        super().__init__(status_code=500, body=body, message=message)
