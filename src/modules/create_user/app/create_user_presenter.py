@@ -16,6 +16,6 @@ controller = CreateUserController(usecase)
 def lambda_handler(event, context):
     request = HttpRequest(body=event['body'])
     response = controller(request=request())
-    http_response = HttpResponse(status_code=response.status_code, body=response.body, message=response.message)
+    http_response = HttpResponse(status_code=response.status_code, body=response.body)
 
     return http_response.to_dict()
