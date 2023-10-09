@@ -27,7 +27,6 @@ class UserDynamodb(UserInterface):
     def authenticate(self, email: str, password: str, user_id: str = None) -> Dict or None:
 
         encrypted_key = os.environ.get('ENCRYPTED_KEY').encode('utf-8')
-        print(encrypted_key)
         f = Fernet(encrypted_key)
 
         try:
@@ -39,7 +38,6 @@ class UserDynamodb(UserInterface):
                 return None
 
             real_password = f.decrypt(item.get('password').encode('utf-8')).decode('utf-8')
-            print(real_password)
 
             return item if real_password == password else None
         except Exception as e:
