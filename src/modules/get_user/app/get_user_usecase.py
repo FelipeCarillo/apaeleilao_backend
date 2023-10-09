@@ -18,6 +18,12 @@ class GetUserUseCase:
         if not auth:
             raise UserNotAuthenticated()
 
+        status_account_permitted = [STATUS_USER_ACCOUNT_ENUM.ACTIVE, STATUS_USER_ACCOUNT_ENUM.PENDING,
+                                    STATUS_USER_ACCOUNT_ENUM.SUSPENDED, STATUS_USER_ACCOUNT_ENUM.BANED]
+
+        if auth['status_account'] not in status_account_permitted:
+            raise UserNotAuthenticated(message='Conta de usuário deletada.')
+
         user_id = auth['user_id']
         first_name = auth['first_name']
         last_name = auth['last_name']

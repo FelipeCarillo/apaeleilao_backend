@@ -22,5 +22,8 @@ class DataAlreadyUsed(MainError):
 
 
 class UserNotAuthenticated(MainError):
-    def __init__(self):
-        super().__init__(f"Usuário não autenticado.")
+    def __init__(self, message: str = None):
+        if message:
+            super().__init__(message)
+        else:
+            super().__init__(f"Usuário não autenticado.")

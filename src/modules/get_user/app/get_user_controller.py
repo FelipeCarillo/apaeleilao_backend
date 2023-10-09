@@ -28,7 +28,7 @@ class GetUserController:
 
             response = self.__viewmodel(get_user_usecase)
 
-            return OK(body=response,message='Usuário encontrado com sucesso.')
+            return OK(body=response, message='Usuário encontrado com sucesso.')
 
         except UserNotAuthenticated as e:
             return Unauthorized(message=e.message)
