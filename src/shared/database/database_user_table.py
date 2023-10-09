@@ -34,12 +34,10 @@ class UserDynamodb(UserInterface):
             query = self.__dynamodb.get_item(Key=Key)
             item = query.get('Item', None)
 
-            print(item)
-
             if not item:
                 return None
 
-            real_password = f.decrypt(item['password'].encode('utf-8')).decode('utf-8')
+            real_password = f.decrypt(item.get('password').encode('utf-8')).decode('utf-8')
 
             return item if real_password == password else None
         except Exception as e:
