@@ -75,7 +75,7 @@ class UserDynamodb(UserInterface):
     def update_user(self, user: User) -> Dict or None:
         try:
             user = user.to_dict()
-            self.__dynamodb.update_item(
+            response = self.__dynamodb.update_item(
                 Key={'email': user['email']},
                 UpdateExpression='SET first_name = :first_name, last_name = :last_name, cpf = :cpf, '
                                  'phone = :phone, password = :password, accepted_terms = :accepted_terms, '
@@ -100,6 +100,6 @@ class UserDynamodb(UserInterface):
                 },
                 ReturnValues='UPDATED_NEW'
             )
-            return user
+            return response['Attributes'] if response else None
         except Exception as e:
             raise e

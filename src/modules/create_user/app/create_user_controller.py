@@ -36,7 +36,7 @@ class CreateUserController:
             return Created(response, message='Usuário criado com sucesso.')
 
         except DataAlreadyUsed as e:
-            return BadRequest(message=e.message)
+            return ParameterError(message=e.message)
 
         except InvalidRequest as e:
             return BadRequest(message=e.message)

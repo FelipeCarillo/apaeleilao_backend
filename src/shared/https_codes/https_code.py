@@ -3,17 +3,20 @@ from typing import Dict
 
 
 class HttpRequest:
-    def __init__(self, body: Dict or str):
+    def __init__(self, auth: Dict = None, body: Dict or str = None):
+        self.auth = auth
         self.body = body
 
     def __call__(self):
         if isinstance(self.body, str):
             self.body = json.loads(self.body)
-        if isinstance(self.body, dict):
-            self.body = self.body
         if "body" not in self.body:
             self.body = {"body": self.body}
-        return self.body
+        if isinstance(self.auth, str):
+            self.auth = json.loads(self.auth)
+        if 'auth' not in self.auth:
+            self.auth = {'auth': self.auth}
+        return {self.auth, self.body} if self.auth else self.body
 
 
 class HttpResponse:

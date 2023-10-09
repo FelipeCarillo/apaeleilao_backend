@@ -13,7 +13,7 @@ class SendEmailCodeUseCase:
 
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
-        self.__ses = boto3.client('ses', region_name=os.environ.get('SES_REGION'))
+        self.__client = boto3.client('ses', region_name=os.environ.get('SES_REGION'))
 
     def __call__(self, auth: Dict):
         if not auth:
@@ -50,7 +50,7 @@ class SendEmailCodeUseCase:
         </html>
         """
 
-        self.__ses.meta.client.send_email(
+        self.__client.send_email(
             Destination={
                 'ToAddresses': [
                     user.email,
