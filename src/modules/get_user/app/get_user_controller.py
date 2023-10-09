@@ -31,16 +31,16 @@ class GetUserController:
             return OK(response)
 
         except UserNotAuthenticated as e:
-            return Unauthorized(e.message)
+            return Unauthorized(message=e.message)
 
         except InvalidRequest as e:
-            return BadRequest(e.message)
+            return BadRequest(message=e.message)
 
         except InvalidParameter as e:
-            return BadRequest(e.message)
+            return BadRequest(message=e.message)
 
         except MissingParameter as e:
-            return BadRequest(e.message)
+            return BadRequest(message=e.message)
 
         except Exception as e:
-            return InternalServerError(e.args[0])
+            return InternalServerError(message=e.args[0])
