@@ -32,7 +32,7 @@ class GetUserUseCase:
         phone = auth['phone']
         password = auth['password']
         accepted_terms = auth['accepted_terms']
-        status_account = STATUS_USER_ACCOUNT_ENUM(auth['status_account'])
+        status_account = auth['status_account']
         suspensions = auth['suspensions']
         date_joined = int(auth['date_joined']) if auth['date_joined'] else None
         verification_email_code = int(auth['verification_email_code']) if auth['verification_email_code'] else None

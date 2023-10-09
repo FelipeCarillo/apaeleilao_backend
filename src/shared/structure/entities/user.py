@@ -29,7 +29,7 @@ class User(ABC):
 
     def __init__(self, user_id: str = None, first_name: str = None, last_name: str = None, cpf: str = None,
                  email: str = None, phone: str = None, password: str = None, accepted_terms: bool = None,
-                 status_account: STATUS_USER_ACCOUNT_ENUM = None, suspensions: List[Optional[Suspension]] = None,
+                 status_account: str = None, suspensions: List[Optional[Suspension]] = None,
                  date_joined: int = None, verification_email_code: int = None,
                  verification_email_code_expires_at: int = None,
                  password_reset_code: int = None, password_reset_code_expires_at: int = None):
@@ -42,7 +42,7 @@ class User(ABC):
         self.phone = self.validate_and_set_phone(phone)
         self.password = self.validate_and_set_password(password)
         self.accepted_terms = self.validate_and_set_accepted_terms(accepted_terms)
-        self.status_account = self.validate_and_set_status_account(status_account)
+        self.status_account = self.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
         self.suspensions = self.validate_and_set_suspensions(suspensions)
         self.date_joined = self.validate_and_set_date_joined(date_joined)
         self.verification_email_code = self.validate_and_set_verification_email_code(verification_email_code)

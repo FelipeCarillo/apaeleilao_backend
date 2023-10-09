@@ -30,7 +30,7 @@ class CreateUserUseCase:
             raise DataAlreadyUsed('CPF')
 
         user_id = str(uuid.uuid4())
-        status_account = STATUS_USER_ACCOUNT_ENUM.PENDING
+        status_account = "PENDING"
         suspensions = []
         date_joined = int(time())
 
