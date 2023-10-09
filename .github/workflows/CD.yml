@@ -33,6 +33,14 @@ jobs:
           cd iac
           pip install -r requirements.txt
 
+      - name: Install SRC dependencies
+        run: |
+          echo "Installing SRC dependencies"
+          cd iac
+          mkdir cryptography_layer
+          cd cryptography_layer
+          pip install cryptography -t python
+
       - name: AWS Credentials
         run: |
           echo "Configuring AWS Credentials"
