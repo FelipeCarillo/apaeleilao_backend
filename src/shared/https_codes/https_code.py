@@ -8,15 +8,17 @@ class HttpRequest:
         self.body = body
 
     def __call__(self):
-        if isinstance(self.body, str):
-            self.body = json.loads(self.body)
-        if "body" not in self.body:
-            self.body = {"body": self.body}
-        if isinstance(self.auth, str):
-            self.auth = json.loads(self.auth)
-        if 'auth' not in self.auth:
-            self.auth = {'auth': self.auth}
-        return {self.auth, self.body} if self.auth else self.body
+        if self.body:
+            if isinstance(self.body, str):
+                self.body = json.loads(self.body)
+            if "body" not in self.body:
+                self.body = {"body": self.body}
+        if self.auth:
+            if isinstance(self.auth, str):
+                self.auth = json.loads(self.auth)
+            if 'auth' not in self.auth:
+                self.auth = {'auth': self.auth}
+        return {self.auth, self.body}
 
 
 class HttpResponse:
