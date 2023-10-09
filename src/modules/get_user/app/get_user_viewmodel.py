@@ -6,13 +6,14 @@ from src.shared.structure.entities.user import User
 class GetUserViewModel:
     def __call__(self, user: User) -> Dict:
         return {
-            'body': {
+            'user': {
                 'user_id': user.user_id,
                 'first_name': user.first_name,
                 'last_name': user.last_name,
                 'cpf': user.cpf,
                 'email': user.email,
                 'phone': user.phone,
+                'password': user.password,
                 'accepted_terms': user.accepted_terms,
                 'status_account': user.status_account.value,
                 'suspensions': user.suspensions,

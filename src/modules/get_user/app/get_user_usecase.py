@@ -8,13 +8,13 @@ class GetUserUseCase:
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
 
-    def __call__(self, email: str, password: str, user_id: str = None) -> User:
+    def __call__(self, email: str, password: str) -> User:
         if not email:
             raise MissingParameter('email')
         if not password:
             raise MissingParameter('password')
 
-        auth = self.__user_interface.authenticate(email=email, password=password, user_id=user_id)
+        auth = self.__user_interface.authenticate(email=email, password=password)
         if not auth:
             raise UserNotAuthenticated()
 
