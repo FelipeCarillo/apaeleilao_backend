@@ -42,6 +42,11 @@ class Created(HttpResponse):
         super().__init__(status_code=201, body={'body': body, 'message': message})
 
 
+class NoContent(HttpResponse):
+    def __init__(self, body: Dict = None, message: str = None):
+        super().__init__(status_code=204, body={'body': body, 'message': message})
+
+
 class BadRequest(HttpResponse):
     def __init__(self, body: Dict = None, message: str = None):
         super().__init__(status_code=400, body={'body': body, 'message': message})
@@ -62,9 +67,9 @@ class NotFound(HttpResponse):
         super().__init__(status_code=404, body={'body': body, 'message': message})
 
 
-class NoContent(HttpResponse):
+class ParameterError(HttpResponse):
     def __init__(self, body: Dict = None, message: str = None):
-        super().__init__(status_code=204, body={'body': body, 'message': message})
+        super().__init__(status_code=422, body={'body': body, 'message': message})
 
 
 class InternalServerError(HttpResponse):

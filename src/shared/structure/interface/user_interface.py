@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Dict
+
 from src.shared.structure.entities.user import User
 
 
@@ -26,5 +27,5 @@ class UserInterface(ABC):
         pass
 
     @abstractmethod
-    def update_user(self, user: User) -> Optional[Dict]:
+    def update_user(self, email: str, **kwargs) -> Optional[Dict]:
         pass

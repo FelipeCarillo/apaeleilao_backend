@@ -3,7 +3,7 @@ from typing import Dict
 from .create_user_usecase import CreateUserUseCase
 from .create_user_viewmodel import CreateUserViewModel
 
-from src.shared.https_codes.https_code import Created, BadRequest, InternalServerError
+from src.shared.https_codes.https_code import Created, BadRequest, InternalServerError, ParameterError
 from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, DataAlreadyUsed
 
 
@@ -42,7 +42,7 @@ class CreateUserController:
             return BadRequest(message=e.message)
 
         except InvalidParameter as e:
-            return BadRequest(message=e.message)
+            return ParameterError(message=e.message)
 
         except MissingParameter as e:
             return BadRequest(message=e.message)

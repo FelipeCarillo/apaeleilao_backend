@@ -73,5 +73,25 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def update_user(self, user: User):
-        pass
+    def update_user(self, email: str, **kwargs) -> Dict or None:
+
+        update_expression = 'SET '
+        expression_attribute_values = {}
+
+        for key, value in kwargs.items():
+            if value is not None:
+                update_expression += f'{key} = :{key}, '
+                expression_attribute_values[f':{key}'] = value
+
+        update_expression = update_expression.rstrip(', ')
+
+        try:
+            query = self.__dynamodb.update_item(
+                Key={'email': email},
+                UpdateExpression=update_expression,
+                ExpressionAttributeValues=expression_attribute_values,
+                ReturnValues='ALL_NEW'
+            )
+            return query.get('Attributes', None)
+        except Exception as e:
+            raise e
