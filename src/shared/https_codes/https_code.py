@@ -19,8 +19,8 @@ class HttpRequest:
 class HttpResponse:
     def __init__(self, status_code: int, body: Dict = None, message: str = None):
         self.status_code = status_code
-        self.body = body
-        self.message = message
+        self.body = {"body": body, "message": message}
+
 
     def to_dict(self):
         return {
@@ -29,7 +29,6 @@ class HttpResponse:
                 "Content-Type": "application/json"
             },
             "isBase64Encoded": False,
-            "message": json.dumps(self.message),
             "body": json.dumps(self.body)
         }
 
