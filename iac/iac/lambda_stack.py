@@ -77,12 +77,20 @@ class LambdaStack(Construct):
 
         self.send_email_code.add_to_role_policy(ses_policy)
 
+        self.confirm_email_code = self.create_lambda(
+            function_name="confirm_email_code",
+            method="POST",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
             self.create_user,
             self.get_user,
             self.send_email_code,
+            self.confirm_email_code,
         )
 
     @property
