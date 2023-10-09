@@ -7,16 +7,13 @@ from typing import Dict
 from src.shared.structure.entities.user import User
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated
-from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 
 
 class SendEmailCodeUseCase:
-    ses_region = os.environ.get('SES_REGION')
-    ses_sender = os.environ.get('SES_SENDER')
 
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
-        self.__ses = boto3.client('ses', region_name=self.ses_region)
+        self.__ses = boto3.client('ses', region_name=os.environ.get('SES_REGION'))
 
     def __call__(self, auth: Dict):
         if not auth:
@@ -36,7 +33,7 @@ class SendEmailCodeUseCase:
         user = User(user_id=auth['user_id'], first_name=auth['first_name'], last_name=auth['last_name'],
                     cpf=auth['cpf'], email=auth['email'], phone=auth['phone'], password=auth['password'],
                     accepted_terms=auth['accepted_terms'], status_account=auth['status_account'],
-                    suspensions=auth['suspensions'], date_joined=auth['date_joined'],
+                    suspensions=auth['suspensions'], date_joined=int(auth['date_joined']),
                     verification_email_code=verification_email_code,
                     verification_email_code_expires_at=verification_email_code_expires_at,
                     password_reset_code=auth['password_reset_code'],
@@ -56,7 +53,7 @@ class SendEmailCodeUseCase:
         self.__ses.meta.client.send_email(
             Destination={
                 'ToAddresses': [
-                    auth['email'],
+                    user.email,
                 ],
             },
             Message={
@@ -71,7 +68,7 @@ class SendEmailCodeUseCase:
                     'Data': 'Código de verificação',
                 }
             },
-            Source=self.ses_sender,
+            Source=os.environ.get('SES_SENDER'),
         )
 
         return {'body': {'email': auth['email'],

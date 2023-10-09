@@ -2,7 +2,7 @@ from typing import Dict, Tuple
 from aws_cdk import (
     aws_lambda as _lambda,
     aws_apigateway as apigw,
-    Duration
+    Duration, aws_iam as iam
 )
 from constructs import Construct
 
@@ -13,7 +13,6 @@ class LambdaStack(Construct):
 
     def create_lambda(self, function_name: str, method: str, restapi_resource: apigw.Resource,
                       environment_variables: Dict[str, str]) -> _lambda.Function:
-
         function = _lambda.Function(
             self, (function_name + "_apae_leilao").title(),
             function_name=(function_name + "_apae_leilao").title(),
@@ -61,12 +60,22 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
+        ses_policy = iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=[
+                "ses:*",
+            ],
+            resources=["*"],
+        )
+
         self.send_email_code = self.create_lambda(
             function_name="send_email_code",
             method="GET",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
+
+        self.send_email_code.add_to_role_policy(ses_policy)
 
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
