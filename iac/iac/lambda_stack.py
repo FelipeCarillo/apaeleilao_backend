@@ -25,9 +25,16 @@ class LambdaStack(Construct):
             memory_size=512,
         )
 
-        restapi_resource.add_resource(function_name.replace("_", "-")).add_method(method,
-                                                                                  integration=apigw.LambdaIntegration(
-                                                                                      function))
+        default_cors_preflight_options = {
+            "allow_origins": apigw.Cors.ALL_ORIGINS,
+            "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["*"]
+        }
+
+        restapi_resource.add_resource(function_name.replace("_", "-"),
+                                      default_cors_preflight_options=default_cors_preflight_options).add_method(method,
+                                                                                                                integration=apigw.LambdaIntegration(
+                                                                                                                    function))
 
         return function
 

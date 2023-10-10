@@ -43,9 +43,9 @@ class IACStack(Stack):
             description="This service serves Apae Leilao RestApi",
             default_cors_preflight_options=
             {
-                "allow_origins": ["*"],
+                "allow_origins": apigw.Cors.ALL_ORIGINS,
                 "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-                "allow_headers": ['*']
+                "allow_headers": ["*"]
             },
             deploy_options=apigw.StageOptions(
                 stage_name=stage,
@@ -54,9 +54,9 @@ class IACStack(Stack):
 
         restapi_resourse = self.__restapi.root.add_resource("apae-leilao", default_cors_preflight_options=
         {
-            "allow_origins": ["*"],
+            "allow_origins": apigw.Cors.ALL_ORIGINS,
             "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-            "allow_headers": apigw.Cors.DEFAULT_HEADERS
+            "allow_headers": ["*"]
         })
 
         self.dynamodb_stack = DynamoDBStack(self)
