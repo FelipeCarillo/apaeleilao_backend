@@ -18,10 +18,10 @@ class ConfirmEmailCodeController:
             if not request['auth']:
                 raise MissingParameter('auth')
 
-            if not request['body']:
+            if not request['body']['body']:
                 raise MissingParameter('body')
 
-            confirm_email_code_usecase = self.__usecase(auth=request['auth'], body=request['body'])
+            confirm_email_code_usecase = self.__usecase(auth=request['auth'], body=request['body']['body'])
 
             return OK(body=confirm_email_code_usecase, message="Código confirmado com sucesso.")
 
