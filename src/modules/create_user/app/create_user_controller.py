@@ -28,8 +28,7 @@ class CreateUserController:
             password = request['body']['password']
             accepted_terms = request['body']['accepted_terms']
 
-            create_user_usecase = self.__usecase(email=email, cpf=cpf, first_name=first_name, last_name=last_name,
-                                                 phone=phone, password=password, accepted_terms=accepted_terms)
+            create_user_usecase = self.__usecase(request=request['body'])
 
             response = self.__viewmodel(create_user_usecase)
 

@@ -1,3 +1,5 @@
+from typing import Dict
+
 from src.shared.structure.entities.user import User
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
@@ -8,13 +10,13 @@ class GetUserUseCase:
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
 
-    def __call__(self, email: str, password: str) -> User:
-        if not email:
+    def __call__(self, request: Dict) -> User:
+        if not request['email']:
             raise MissingParameter('email')
-        if not password:
+        if not request['password']:
             raise MissingParameter('password')
 
-        auth = self.__user_interface.authenticate(email=email, password=password)
+        auth = self.__user_interface.authenticate(email=request['email'], password=request['password'])
         if not auth:
             raise UserNotAuthenticated()
 

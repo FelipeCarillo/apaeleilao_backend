@@ -141,9 +141,9 @@ class User(ABC):
         if email is None:
             raise MissingParameter("Email")
         if re.fullmatch(r"[A-Za-z0-9_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", email) is None:
-            raise InvalidParameter("email", "inválido")
+            raise InvalidParameter("Email", "inválido")
         if type(email) != str:
-            raise InvalidParameter("email", "deve ser str")
+            raise InvalidParameter("Email", "deve ser str")
         return email
 
     @staticmethod

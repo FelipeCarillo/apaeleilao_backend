@@ -20,11 +20,7 @@ class GetUserController:
             if not request['body']:
                 raise MissingParameter('body')
 
-            user_id = request['body'].get('user_id', None)
-            email = request['body'].get('email', None)
-            password = request['body']['password']
-
-            get_user_usecase = self.__usecase(email=email, password=password)
+            get_user_usecase = self.__usecase(request=request['body'])
 
             response = self.__viewmodel(get_user_usecase)
 

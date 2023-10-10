@@ -14,19 +14,18 @@ class CreateUserUseCase:
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
 
-    def __call__(self, email: str, cpf: str, first_name: str, last_name: str, password: str, phone: str,
-                 accepted_terms: bool) -> Dict:
+    def __call__(self, request: Dict) -> Dict:
 
-        if not email:
+        if not request['email']:
             raise MissingParameter('Email')
 
-        if not cpf:
+        if not request['cpf']:
             raise MissingParameter('CPF')
 
-        if self.__user_interface.get_user_by_email(email):
+        if self.__user_interface.get_user_by_email(request['email']):
             raise DataAlreadyUsed('Email')
 
-        if self.__user_interface.get_user_by_cpf(cpf):
+        if self.__user_interface.get_user_by_cpf(request['cpf']):
             raise DataAlreadyUsed('CPF')
 
         user_id = str(uuid.uuid4())
@@ -34,8 +33,9 @@ class CreateUserUseCase:
         suspensions = []
         date_joined = int(time())
 
-        user = User(user_id=user_id, first_name=first_name, last_name=last_name, cpf=cpf, email=email, phone=phone,
-                    password=password, accepted_terms=accepted_terms, status_account=status_account,
+        user = User(user_id=user_id, first_name=request['first_name'], last_name=request['last_name'],
+                    cpf=request['cpf'], email=request['email'], phone=request['phone'], password=request['password'],
+                    accepted_terms=request['accepted_terms'], status_account=status_account,
                     suspensions=suspensions, date_joined=date_joined)
 
         encrypted_key = os.environ.get('ENCRYPTED_KEY').encode('utf-8')
