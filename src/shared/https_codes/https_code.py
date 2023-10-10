@@ -32,9 +32,7 @@ class HttpResponse:
         return {
             "statusCode": self.status_code,
             "headers": {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "*",
-                "Access-Control-Allow-Methods": "*"
+                "Access-Control-Allow-Origin": "*",  # Required for CORS support to work
             },
             "body": json.dumps(self.body)
         }

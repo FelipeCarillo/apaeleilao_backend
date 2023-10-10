@@ -22,6 +22,7 @@ class LambdaStack(Construct):
             handler=f"app.{function_name}_presenter.lambda_handler",
             layers=[self.shared_layer, self.cryptography_layer],
             timeout=Duration.seconds(15),
+            memory_size=512,
         )
 
         restapi_resource.add_resource(function_name.replace("_", "-")).add_method(method,
