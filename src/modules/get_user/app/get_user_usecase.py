@@ -26,25 +26,17 @@ class GetUserUseCase:
         if STATUS_USER_ACCOUNT_ENUM(auth['status_account']) not in status_account_permitted:
             raise UserNotAuthenticated(message='Conta de usuário deletada.')
 
-        user_id = auth['user_id']
-        first_name = auth['first_name']
-        last_name = auth['last_name']
-        cpf = auth['cpf']
-        email = auth['email']
-        phone = auth['phone']
-        password = auth['password']
-        accepted_terms = auth['accepted_terms']
-        status_account = auth['status_account']
-        suspensions = auth['suspensions']
         date_joined = int(auth['date_joined']) if auth['date_joined'] else None
         verification_email_code = int(auth['verification_email_code']) if auth['verification_email_code'] else None
         verification_email_code_expires_at = int(auth['verification_email_code_expires_at']) if auth['verification_email_code_expires_at'] else None
         password_reset_code = int(auth['password_reset_code']) if auth['password_reset_code'] else None
         password_reset_code_expires_at = int(auth['password_reset_code_expires_at']) if auth['password_reset_code_expires_at'] else None
 
-        user = User(user_id=user_id, first_name=first_name, last_name=last_name, cpf=cpf, email=email, phone=phone,
-                    password=password, accepted_terms=accepted_terms, status_account=status_account,
-                    suspensions=suspensions, date_joined=date_joined, verification_email_code=verification_email_code,
+        user = User(user_id=auth['user_id'], first_name=auth['first_name'], last_name=auth['last_name'], cpf=auth['cpf'], email=auth['email'],
+                    phone=auth['phone'], password=auth['password'], accepted_terms=auth['accepted_terms'],
+                    status_account=auth['status_account'], suspensions=auth['suspensions'],
+                    date_joined=date_joined,
+                    verification_email_code=verification_email_code,
                     verification_email_code_expires_at=verification_email_code_expires_at,
                     password_reset_code=password_reset_code,
                     password_reset_code_expires_at=password_reset_code_expires_at)

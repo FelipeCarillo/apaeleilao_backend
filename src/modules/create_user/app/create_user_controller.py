@@ -20,14 +20,6 @@ class CreateUserController:
             if not request['body']:
                 raise MissingParameter('body')
 
-            email = request['body']['email']
-            cpf = request['body']['cpf']
-            first_name = request['body']['first_name']
-            last_name = request['body']['last_name']
-            phone = request['body']['phone']
-            password = request['body']['password']
-            accepted_terms = request['body']['accepted_terms']
-
             create_user_usecase = self.__usecase(request=request['body'])
 
             response = self.__viewmodel(create_user_usecase)
