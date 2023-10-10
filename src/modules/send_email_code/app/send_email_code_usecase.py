@@ -29,7 +29,7 @@ class SendEmailCodeUseCase:
             raise UserNotAuthenticated()
 
         verification_email_code = random.randint(10000, 99999)
-        verification_email_code_expires_at = int(time.time()) - 3 * 3600
+        verification_email_code_expires_at = int(time.time()) - 2 * 3600
 
         user = User(user_id=auth['user_id'], first_name=auth['first_name'], last_name=auth['last_name'],
                     cpf=auth['cpf'], email=auth['email'], phone=auth['phone'], password=auth['password'],
