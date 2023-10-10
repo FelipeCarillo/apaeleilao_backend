@@ -30,7 +30,9 @@ class ConfirmEmailCodeUsecase:
         if not auth:
             raise UserNotAuthenticated()
 
-        if int(time.time()) > auth['verification_email_code_expires_at']:
+        time_now = int(time.time()) - 3 * 3600
+
+        if time_now > auth['verification_email_code_expires_at']:
             raise InvalidParameter(parameter='Código de verificação', body='expirado')
 
         if int(body['verification_email_code']) != auth['verification_email_code']:
