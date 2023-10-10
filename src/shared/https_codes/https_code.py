@@ -32,7 +32,8 @@ class HttpResponse:
         return {
             "statusCode": self.status_code,
             "headers": {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
             },
             "isBase64Encoded": False,
             "body": json.dumps(self.body)

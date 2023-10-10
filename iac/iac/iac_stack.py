@@ -56,7 +56,7 @@ class IACStack(Stack):
         {
             "allow_origins": apigw.Cors.ALL_ORIGINS,
             "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-            "allow_headers": apigw.Cors.DEFAULT_HEADERS + ['Host', 'Token', 'Content-Type', 'email', 'password']
+            "allow_headers": ['*']
         })
 
         self.dynamodb_stack = DynamoDBStack(self)
