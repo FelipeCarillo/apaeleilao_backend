@@ -29,7 +29,7 @@ class SendEmailCodeUseCase:
             raise UserNotAuthenticated()
 
         verification_email_code = random.randint(10000, 99999)
-        verification_email_code_expires_at = int(time.time()) + 3600
+        verification_email_code_expires_at = int(time.time()) - 3 * 3600
 
         user = User(user_id=auth['user_id'], first_name=auth['first_name'], last_name=auth['last_name'],
                     cpf=auth['cpf'], email=auth['email'], phone=auth['phone'], password=auth['password'],
@@ -52,8 +52,9 @@ class SendEmailCodeUseCase:
             <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
         </head>
         
+        
         <body
-            style="margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; background-color: white; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+            style="margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; min-height: 75vh; background-color: white; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
             <table class="main"
                 style="width: 50vw; max-width: 600px; background-color: #E9E9E9; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); overflow: hidden;">
                 <tr>
@@ -61,7 +62,7 @@ class SendEmailCodeUseCase:
                         <table class="TittleBox" style="width: 100%; background-color: #2C4FBC; border-radius: 10px 10px 0 0;">
                             <tr>
                                 <td style="text-align: center; padding: 20px;">
-                                    <img alt="MauaFood Logo"
+                                    <img alt="Apae Leilão Logo"
                                         src="https://apaeleilaoimtphotos.s3.sa-east-1.amazonaws.com/logo-apaeleilao/logo-apaeleilao-branco.jpg" 
                                         style="width: 50%;"/>
                                     <h1 style="color: #FFFFFF; margin-top: 10px;"><b>Código de Validação!</b></h1>
@@ -74,7 +75,7 @@ class SendEmailCodeUseCase:
                                     <div class="TextsBox" style="word-wrap: break-word;">
                                         <h2 style="color: #949393;">Obrigado, {user.first_name}<p>Aqui está o seu código de validação do email:</p>
                                         </h2>
-                                        <h4 style="color: #000000; font-size: 26px;">{user.verification_email_code}</h4>
+                                        <h4 style="color: #000000; font-size: 26px; letter-spacing: 10px;">{user.verification_email_code}</h4>
                                         <h4 style="color: #000000;">Codigo válido até: {datetime_expire}</h4>
                                     </div>
                                 </td>

@@ -31,7 +31,7 @@ class CreateUserUseCase:
         user_id = str(uuid.uuid4())
         status_account = "PENDING"
         suspensions = []
-        date_joined = int(time())
+        date_joined = int(time()) - 3 * 3600
 
         user = User(user_id=user_id, first_name=request['first_name'], last_name=request['last_name'],
                     cpf=request['cpf'], email=request['email'], phone=request['phone'], password=request['password'],
