@@ -24,7 +24,7 @@ class SendEmailCodeUseCase:
         if not auth.get('password'):
             MissingParameter('password')
 
-        auth = self.__user_interface.authenticate(email=auth['email'], password=auth['password'])
+        auth = self.__user_interface.authenticate(email=auth['email'], password_hash=auth['password'])
         if not auth:
             raise UserNotAuthenticated()
 
@@ -40,7 +40,8 @@ class SendEmailCodeUseCase:
                     password_reset_code=auth['password_reset_code'],
                     password_reset_code_expires_at=auth['password_reset_code_expires_at'])
 
-        datetime_expire = datetime.datetime.fromtimestamp(verification_email_code_expires_at).strftime("%d/%m/%Y %H:%M:%S")
+        datetime_expire = datetime.datetime.fromtimestamp(verification_email_code_expires_at).strftime(
+            "%d/%m/%Y %H:%M:%S")
         self.__user_interface.update_user(user)
 
         email_format = f"""
@@ -96,7 +97,6 @@ class SendEmailCodeUseCase:
         </body>
         </html>
         """
-
 
         self.__client.send_email(
             Destination={
