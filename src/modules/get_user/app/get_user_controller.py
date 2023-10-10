@@ -17,10 +17,10 @@ class GetUserController:
             if not request:
                 raise InvalidRequest()
 
-            if not request['body']['body']:
+            if not request.get('body'):
                 raise MissingParameter('body')
 
-            get_user_usecase = self.__usecase(request=request['body']['body'])
+            get_user_usecase = self.__usecase(request=request['body'])
 
             response = self.__viewmodel(get_user_usecase)
 

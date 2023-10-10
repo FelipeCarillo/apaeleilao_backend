@@ -17,7 +17,7 @@ class CreateUserController:
             if not request:
                 raise InvalidRequest()
 
-            if not request['body']:
+            if not request.get('body'):
                 raise MissingParameter('body')
 
             create_user_usecase = self.__usecase(request=request['body'])

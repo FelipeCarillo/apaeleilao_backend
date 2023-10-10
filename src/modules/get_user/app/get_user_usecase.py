@@ -11,9 +11,9 @@ class GetUserUseCase:
         self.__user_interface = user_interface
 
     def __call__(self, request: Dict) -> User:
-        if not request['email']:
+        if not request.get('email'):
             raise MissingParameter('email')
-        if not request['password']:
+        if not request.get('password'):
             raise MissingParameter('password')
 
         auth = self.__user_interface.authenticate(email=request['email'], password=request['password'])

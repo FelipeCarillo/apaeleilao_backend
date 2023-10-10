@@ -17,13 +17,13 @@ class ConfirmEmailCodeUsecase:
     def __call__(self, auth: Dict, body: Dict):
         if not auth:
             MissingParameter('auth')
-        if not auth['email']:
+        if not auth.get('email'):
             MissingParameter('email')
-        if not auth['password']:
+        if not auth.get('password'):
             MissingParameter('password')
         if not body:
             MissingParameter('body')
-        if not body['verification_email_code']:
+        if not body.get('verification_email_code'):
             MissingParameter('verification_email_code')
 
         auth = self.__user_interface.authenticate(email=auth['email'], password=auth['password'])
