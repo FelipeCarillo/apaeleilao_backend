@@ -8,13 +8,19 @@ class HttpRequest:
         self.body = body
 
     def __call__(self):
-        if self.body:
-            if isinstance(self.body, str):
-                self.body = json.loads(self.body)
         if self.auth:
             if isinstance(self.auth, str):
                 self.auth = json.loads(self.auth)
-        return {'auth': self.auth, 'body': self.body}
+        response = {'auth': self.auth}
+        if self.body:
+            if isinstance(self.body, str):
+                self.body = json.loads(self.body)
+            if 'body' in self.body:
+                response['body'] = self.body['body']
+            else:
+                response['body'] = self.body
+
+        return response
 
 
 class HttpResponse:
