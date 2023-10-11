@@ -17,6 +17,7 @@ class GetUserViewModel:
                 'accepted_terms': user.accepted_terms,
                 'status_account': user.status_account.value,
                 'suspensions': user.suspensions,
+                'type_account': user.type_account.value,
                 'date_joined': user.date_joined,
                 'verification_email_code': user.verification_email_code,
                 'verification_email_code_expires_at': user.verification_email_code_expires_at,
