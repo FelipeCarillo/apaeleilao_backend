@@ -3,12 +3,11 @@ import os
 from .create_auction_usecase import CreateAuctionUseCase
 from .create_auction_controller import CreateAuctionController
 
-from src.shared.database.database_user_table import UserDynamodb
+from src.shared.database.database_auction_table import AuctionDynamodb
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
-from src.shared.structure.repository.user_repository_mock import UserRepositoryMock
 
 stage = os.environ.get("STAGE", "test")
-usecase = CreateAuctionUseCase(UserRepositoryMock()) if stage == "test" else CreateAuctionUseCase(UserDynamodb())
+usecase = CreateAuctionUseCase(AuctionDynamodb())
 controller = CreateAuctionController(usecase)
 
 

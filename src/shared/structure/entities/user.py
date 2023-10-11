@@ -3,8 +3,8 @@ from abc import ABC
 from typing import List, Optional
 
 from src.shared.structure.entities.suspension import Suspension
-from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 from src.shared.errors.modules_errors import MissingParameter, InvalidParameter
+from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM, TYPE_ACCOUNT_ENUM
 
 
 class User(ABC):
@@ -18,6 +18,7 @@ class User(ABC):
     accepted_terms: bool
     status_account: STATUS_USER_ACCOUNT_ENUM
     suspensions: List[Optional[Suspension]]
+    type_account: TYPE_ACCOUNT_ENUM
     date_joined: int
     verification_code: str
     verification_code_expires_at: int
@@ -29,7 +30,7 @@ class User(ABC):
 
     def __init__(self, user_id: str = None, first_name: str = None, last_name: str = None, cpf: str = None,
                  email: str = None, phone: str = None, password: str = None, accepted_terms: bool = None,
-                 status_account: str = None, suspensions: List[Optional[Suspension]] = None,
+                 status_account: str = None, suspensions: List[Optional[Suspension]] = None, type_account: str = None,
                  date_joined: int = None, verification_email_code: int = None,
                  verification_email_code_expires_at: int = None,
                  password_reset_code: int = None, password_reset_code_expires_at: int = None):
@@ -44,6 +45,7 @@ class User(ABC):
         self.accepted_terms = self.validate_and_set_accepted_terms(accepted_terms)
         self.status_account = self.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
         self.suspensions = self.validate_and_set_suspensions(suspensions)
+        self.type_account = self.validate_and_set_type_account(TYPE_ACCOUNT_ENUM(type_account))
         self.date_joined = self.validate_and_set_date_joined(date_joined)
         self.verification_email_code = self.validate_and_set_verification_email_code(verification_email_code)
         self.verification_email_code_expires_at = self.validate_and_set_verification_email_code_expires_at(
@@ -68,6 +70,7 @@ class User(ABC):
             'accepted_terms': self.accepted_terms,
             'status_account': self.status_account.value,
             'suspensions': self.suspensions,
+            'type_account': self.type_account.value,
             'date_joined': self.date_joined,
             'verification_email_code': self.verification_email_code,
             'verification_email_code_expires_at': self.verification_email_code_expires_at,
@@ -194,6 +197,14 @@ class User(ABC):
             if type(item) != Suspension and len(suspensions) > 0:
                 raise InvalidParameter("suspensions", "deve ser Suspension")
         return suspensions
+
+    @staticmethod
+    def validate_and_set_type_account(type_account: TYPE_ACCOUNT_ENUM):
+        if type_account is None:
+            raise MissingParameter("type_account")
+        if type(type_account) != TYPE_ACCOUNT_ENUM:
+            raise InvalidParameter("type_account", "deve ser TYPE_ACCOUNT_ENUM")
+        return type_account
 
     @staticmethod
     def validate_and_set_verification_email_code(verification_email_code: int) -> int or None:

@@ -15,7 +15,7 @@ class Suspension:
         self.date_suspension = self.validate_and_set_date_suspencion(date_suspension)
         self.date_reactivation = self.validate_and_set_date_reactivation(date_reactivation)
         self.reason = self.validate_and_set_reason(reason)
-        self.status = self.validate_and_set_status(status)
+        self.status = self.validate_and_set_status(STATUS_SUSPENSION_ENUM(status))
 
     def to_dict(self):
         return {
@@ -23,7 +23,7 @@ class Suspension:
             'date_suspension': self.date_suspencion,
             'date_reactivation': self.date_reactivation,
             'reason': self.reason,
-            'status': self.status
+            'status': self.status.value
         }
 
     @staticmethod
