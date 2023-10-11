@@ -17,10 +17,13 @@ class CreateAuctionController:
             if not request:
                 raise InvalidRequest()
 
+            if not request.get("auth"):
+                raise MissingParameter("auth")
+
             if not request.get("body"):
                 raise MissingParameter("body")
 
-            create_auction_usecase = self.__usecase(request=request["body"])
+            create_auction_usecase = self.__usecase(request=request)
 
             response = self.__viewmodel(create_auction_usecase)
 

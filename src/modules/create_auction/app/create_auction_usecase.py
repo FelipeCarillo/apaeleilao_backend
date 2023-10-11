@@ -13,13 +13,21 @@ class CreateAuctionUseCase:
     def __init__(self, auction_interface: AuctionInterface):
         self.__auction_interface = auction_interface
 
-    def __call__(self, request: Dict) -> Dict:
+    def __call__(self, auth: Dict, body: Dict) -> Dict:
 
-        if not request["auction_id"]:
-            raise MissingParameter("auction_id")
-        
-        if not request["title"]:
-            raise MissingParameter("title")
+        if not auth:
+            raise InvalidRequest()
+
+        if not request.get("auth"):
+            raise MissingParameter("auth")
+
+        if not request["auth"].get("email"):
+            raise MissingParameter("email")
+
+        if not request["auth"].get("password"):
+            raise MissingParameter("password")
+
+        auth = self.__auction_interface.authenticate(email=request["auth"]["email"], password=request["auth"]["password"])
         
         auction_id = str(uuid.uuid4())
 

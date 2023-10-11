@@ -7,6 +7,10 @@ from src.shared.structure.entities.auction import Auction
 class AuctionInterface(ABC):
 
     @abstractmethod
+    def authenticate(self, email: str, password: str) -> Optional[Dict]:
+        pass
+
+    @abstractmethod
     def get_all_auctions(self) -> Optional[Dict]:
         pass
 
