@@ -6,8 +6,8 @@ class CreateUserViewModel:
         user = body['body']
         return {
             'user': {
-                'user_id': user['user_id'],
                 'email': user['email'],
                 'password': user['password'],
+                'type_account': user['type_account'],
             }
         }
