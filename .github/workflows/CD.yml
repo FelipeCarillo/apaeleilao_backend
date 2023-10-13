@@ -37,10 +37,10 @@ jobs:
         run: |
           echo "Installing SRC dependencies"
           cd iac
-          rm -rf cryptography_layer
-          mkdir cryptography_layer
-          cd cryptography_layer
-          pip install cryptography==3.4.8 -t python
+          rm -rf bcrypt_layer 
+          mkdir bcrypt_layer
+          cd bcrypt_layer
+          pip install bcrypt_layer -t python
 
       - name: AWS Credentials
         run: |

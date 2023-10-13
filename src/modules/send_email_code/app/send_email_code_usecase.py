@@ -23,7 +23,7 @@ class SendEmailCodeUseCase:
         if not auth.get('password'):
             MissingParameter('password')
 
-        auth = self.__user_interface.authenticate(email=auth['email'], password_hash=auth['password'])
+        auth = self.__user_interface.authenticate(user_id=auth['user_id'], password_hash=auth['password'])
         if not auth:
             raise UserNotAuthenticated()
 

@@ -2,7 +2,7 @@ import os
 import uuid
 from time import time
 from typing import Dict
-from cryptography.fernet import Fernet
+from bcrypt import hashpw, gensalt
 
 from src.shared.structure.entities.user import User
 from src.shared.errors.modules_errors import DataAlreadyUsed, MissingParameter, UserNotAuthenticated
@@ -62,8 +62,6 @@ class CreateUserUseCase:
                     type_account=type_account,
                     date_joined=date_joined)
 
-        encrypted_key = os.environ.get('ENCRYPTED_KEY').encode('utf-8')
-        f = Fernet(encrypted_key)
-        user.password = f.encrypt(user.password.encode('utf-8')).decode('utf-8')
+        user.password = hashpw(user.password.encode('utf-8'), gensalt()).decode('utf-8')
 
         return self.__user_interface.create_user(user)

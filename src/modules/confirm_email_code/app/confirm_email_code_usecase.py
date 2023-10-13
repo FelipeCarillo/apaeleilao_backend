@@ -26,7 +26,7 @@ class ConfirmEmailCodeUsecase:
         if not body.get('verification_email_code'):
             MissingParameter('verification_email_code')
 
-        auth = self.__user_interface.authenticate(email=auth['email'], password=auth['password'])
+        auth = self.__user_interface.authenticate(user_id=auth['user_id'], password=auth['password'])
         if not auth:
             raise UserNotAuthenticated()
 

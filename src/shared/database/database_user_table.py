@@ -1,9 +1,9 @@
-import os
 from typing import Dict
-from cryptography.fernet import Fernet
 
-from .database import Database
+from bcrypt import checkpw
+from boto3.dynamodb.conditions import Key, Attr
 
+from src.shared.database.database import Database
 from src.shared.structure.entities.user import User
 from src.shared.structure.interface.user_interface import UserInterface
 
@@ -23,26 +23,31 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def authenticate(self, email: str, password: str = None, password_hash: str = None) -> Dict or None:
-
-        encrypted_key = os.environ.get('ENCRYPTED_KEY').encode('utf-8')
-        f = Fernet(encrypted_key)
-
+    def authenticate(self,
+                     user_id: str = None,
+                     email: str = None,
+                     password: str = None,
+                     password_hash: str = None
+                     ) -> Dict or None:
         try:
-            Key = {"email": email}
-            query = self.__dynamodb.get_item(Key=Key)
-            item = query.get('Item', None)
-
-            if not item:
-                return None
-
-            real_password = f.decrypt(item.get('password').encode('utf-8')).decode('utf-8')
-
-            if password_hash:
-                password_hash = f.decrypt(password_hash.encode('utf-8')).decode('utf-8')
-                return item if real_password == password_hash else None
-            if password:
-                return item if real_password == password else None
+            if email and password:
+                query = self.__dynamodb.query(IndexName='EmailIndex',
+                                              KeyConditionExpression=Key('email').eq(email))
+                item = query.get('Items', None)
+                item = item[0] if item else None
+                if item:
+                    if checkpw(password.encode('utf-8'), item['password'].encode('utf-8')):
+                        return item
+                    else:
+                        return None
+            if user_id and password_hash:
+                key = {'user_id': user_id}
+                query = self.__dynamodb.get_item(Key=key,
+                                                 FilterExpression=Attr('password').eq(password_hash))
+                item = query.get('Item', None)
+                return item
+            else:
+                raise Exception('Invalid parameters')
         except Exception as e:
             raise e
 
@@ -57,10 +62,14 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def get_user_by_email(self, email) -> Dict or None:
+    def get_user_by_email(self, email, password) -> Dict or None:
         try:
-            query = self.__dynamodb.get_item(Key={'email': email})
-            response = query.get('Item', None)
+            query = self.__dynamodb.query(
+                IndexName='EmailIndex',
+                KeyConditionExpression=Key('email').eq(email),
+                FilterExpression=Attr('password').eq(password)
+            )
+            response = query.get('Items', None)
             return response
         except Exception as e:
             raise e

@@ -36,7 +36,7 @@ class LambdaStack(Construct):
 
         self.cryptography_layer = _lambda.LayerVersion(
             self, "Cryptography_Layer",
-            code=_lambda.Code.from_asset("./cryptography_layer"),
+            code=_lambda.Code.from_asset("./bcrypt_layer"),
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
         )
 
