@@ -6,6 +6,7 @@ import datetime
 from typing import Dict
 
 from src.shared.structure.entities.user import User
+from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated
 
@@ -17,8 +18,6 @@ class SendEmailCodeUseCase:
         self.__client = boto3.client('ses', region_name=os.environ.get('SES_REGION'))
 
     def __call__(self, auth: Dict):
-        if not auth:
-            MissingParameter('auth')
         if not auth.get('email'):
             MissingParameter('email')
         if not auth.get('password'):
@@ -28,13 +27,25 @@ class SendEmailCodeUseCase:
         if not auth:
             raise UserNotAuthenticated()
 
+        status_account_permitted = [STATUS_USER_ACCOUNT_ENUM.PENDING]
+
+        if STATUS_USER_ACCOUNT_ENUM(auth.get('status_account')) not in status_account_permitted:
+            raise UserNotAuthenticated(message='Conta de usuário já validada.')
+
         verification_email_code = random.randint(10000, 99999)
         verification_email_code_expires_at = int(time.time()) - 2 * 3600
 
-        user = User(user_id=auth['user_id'], first_name=auth['first_name'], last_name=auth['last_name'],
-                    cpf=auth['cpf'], email=auth['email'], phone=auth['phone'], password=auth['password'],
-                    accepted_terms=auth['accepted_terms'], status_account=auth['status_account'],
-                    suspensions=auth['suspensions'], date_joined=int(auth['date_joined']),
+        user = User(user_id=auth['user_id'],
+                    first_name=auth['first_name'],
+                    last_name=auth['last_name'],
+                    cpf=auth['cpf'],
+                    email=auth['email'],
+                    phone=auth['phone'],
+                    password=auth['password'],
+                    accepted_terms=auth['accepted_terms'],
+                    status_account=auth['status_account'],
+                    suspensions=auth['suspensions'],
+                    date_joined=int(auth['date_joined']),
                     verification_email_code=verification_email_code,
                     verification_email_code_expires_at=verification_email_code_expires_at,
                     password_reset_code=auth['password_reset_code'],
@@ -120,5 +131,4 @@ class SendEmailCodeUseCase:
             Source=os.environ.get('SES_SENDER'),
         )
 
-        return {'body': {'email': auth['email'],
-                         'verification_email_code_expires_at': verification_email_code_expires_at}}
+        return {'body': {'email': user.email}}

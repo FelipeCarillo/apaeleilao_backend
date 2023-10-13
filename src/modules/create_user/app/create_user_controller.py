@@ -3,8 +3,9 @@ from typing import Dict
 from .create_user_usecase import CreateUserUseCase
 from .create_user_viewmodel import CreateUserViewModel
 
-from src.shared.https_codes.https_code import Created, BadRequest, InternalServerError, ParameterError
-from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, DataAlreadyUsed
+from src.shared.https_codes.https_code import Created, BadRequest, InternalServerError, ParameterError, Unauthorized
+from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, DataAlreadyUsed, \
+    UserNotAuthenticated
 
 
 class CreateUserController:
@@ -20,7 +21,7 @@ class CreateUserController:
             if not request.get('body'):
                 raise MissingParameter('body')
 
-            create_user_usecase = self.__usecase(request=request['body'])
+            create_user_usecase = self.__usecase(auth=request.get('auth'), body=request.get('body'))
 
             response = self.__viewmodel(create_user_usecase)
 
@@ -37,6 +38,9 @@ class CreateUserController:
 
         except MissingParameter as e:
             return BadRequest(message=e.message)
+
+        except UserNotAuthenticated as e:
+            return Unauthorized(message=e.message)
 
         except Exception as e:
             return InternalServerError(message=e.args[0])

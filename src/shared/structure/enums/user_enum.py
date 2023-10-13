@@ -18,6 +18,19 @@ class STATUS_USER_ACCOUNT_ENUM(Enum):
     BANED = 'BANED'
 
 
+class TYPE_ACCOUNT_USER_ENUM(Enum):
+    """
+    Enum for user account type. \n
+    - **ADMIN**: Account is admin.
+    - **MODERATOR**: Account is moderator.
+    - **USER**: Account is user.
+    """
+
+    ADMIN = 'ADMIN'
+    MODERATOR = 'MODERATOR'
+    USER = 'USER'
+
+
 
 
 

@@ -30,23 +30,33 @@ class ConfirmEmailCodeUsecase:
         if not auth:
             raise UserNotAuthenticated()
 
-        time_now = int(time.time()) - 3 * 3600
+        current_time = int(time.time()) - 3 * 3600
 
-        if time_now > auth['verification_email_code_expires_at']:
+        if current_time > auth.get('verification_email_code_expires_at'):
             raise InvalidParameter(parameter='Código de verificação', body='expirado')
 
-        if int(body['verification_email_code']) != auth['verification_email_code']:
+        if int(body['verification_email_code']) != auth.get('verification_email_code'):
             raise InvalidParameter(parameter='Código de verificação', body='inválido')
 
         status_account = STATUS_USER_ACCOUNT_ENUM.ACTIVE.value
 
-        user = User(user_id=auth['user_id'], first_name=auth['first_name'], last_name=auth['last_name'],
-                    cpf=auth['cpf'], email=auth['email'], phone=auth['phone'], password=auth['password'],
-                    accepted_terms=auth['accepted_terms'], status_account=status_account,
-                    suspensions=auth['suspensions'], date_joined=int(auth['date_joined']),
-                    verification_email_code=None,
-                    verification_email_code_expires_at=None,
-                    password_reset_code=auth['password_reset_code'],
-                    password_reset_code_expires_at=auth['password_reset_code_expires_at'])
+        user = User(
+            user_id=auth.get('user_id'),
+            first_name=auth.get('first_name'),
+            last_name=auth.get('last_name'),
+            cpf=auth.get('cpf'),
+            email=auth.get('email'),
+            phone=auth.get('phone'),
+            password=auth.get('password'),
+            accepted_terms=auth.get('accepted_terms'),
+            status_account=status_account,
+            type_account=auth.get('type_account'),
+            suspensions=auth.get('suspensions'),
+            date_joined=int(auth.get('date_joined')),
+            verification_email_code=None,
+            verification_email_code_expires_at=None,
+            password_reset_code=auth.get('password_reset_code'),
+            password_reset_code_expires_at=auth.get('password_reset_code_expires_at')
+        )
 
         return self.__user_interface.update_user(user)
