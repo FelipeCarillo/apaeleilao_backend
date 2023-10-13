@@ -40,7 +40,7 @@ jobs:
           rm -rf bcrypt_layer 
           mkdir bcrypt_layer
           cd bcrypt_layer
-          pip install bcrypt_layer -t python
+          pip install bcrypt -t python
 
       - name: AWS Credentials
         run: |
