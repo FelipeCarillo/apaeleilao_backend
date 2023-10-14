@@ -13,9 +13,8 @@ class UserDynamodb(UserInterface):
     def __init__(self):
         self.__dynamodb = Database().get_table_user()
 
-    def create_user(self, user: User) -> Dict or None:
+    def create_user(self, user: Dict) -> Dict or None:
         try:
-            user = user.to_dict()
             self.__dynamodb.put_item(Item=user)
             return {
                 'body': user

@@ -28,7 +28,7 @@ class UserInterface(ABC):
         pass
 
     @abstractmethod
-    def create_user(self, user: User) -> Optional[Dict]:
+    def create_user(self, user: Dict) -> Optional[Dict]:
         pass
 
     @abstractmethod

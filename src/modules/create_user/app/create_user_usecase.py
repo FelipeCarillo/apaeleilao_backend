@@ -46,7 +46,6 @@ class CreateUserUseCase:
             status_account = "ACTIVE"
 
         user_id = str(uuid.uuid4())
-        suspensions = []
         date_joined = int(time()) - 3 * 3600
 
         user = User(user_id=user_id,
@@ -62,5 +61,6 @@ class CreateUserUseCase:
                     date_joined=date_joined)
 
         user.password = hashpw(user.password.encode('utf-8'), gensalt()).decode('utf-8')
+        user = user.to_dict()
 
         return self.__user_interface.create_user(user)

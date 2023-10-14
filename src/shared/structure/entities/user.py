@@ -37,7 +37,6 @@ class User(ABC):
                  password: str = None,
                  accepted_terms: bool = None,
                  status_account: str = None,
-                 suspensions: List[Optional[Suspension]] = None,
                  type_account: str = None,
                  date_joined: int = None,
                  verification_email_code: int = None,
@@ -54,7 +53,6 @@ class User(ABC):
         self.password = self.validate_and_set_password(password)
         self.accepted_terms = self.validate_and_set_accepted_terms(accepted_terms)
         self.status_account = self.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
-        self.suspensions = self.validate_and_set_suspensions(suspensions)
         self.type_account = self.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
         self.date_joined = self.validate_and_set_date_joined(date_joined)
         self.verification_email_code = self.validate_and_set_verification_email_code(verification_email_code)
@@ -79,7 +77,6 @@ class User(ABC):
             'password': self.password,
             'accepted_terms': self.accepted_terms,
             'status_account': self.status_account.value,
-            'suspensions': self.suspensions,
             'type_account': self.type_account.value,
             'date_joined': self.date_joined,
             'verification_email_code': self.verification_email_code,
@@ -198,15 +195,6 @@ class User(ABC):
         if type(status_account) != STATUS_USER_ACCOUNT_ENUM:
             raise InvalidParameter("status_account", "deve ser STATUS_USER_ACCOUNT_ENUM")
         return status_account
-
-    @staticmethod
-    def validate_and_set_suspensions(suspensions: List[Optional[Suspension]]):
-        if suspensions is None:
-            raise MissingParameter("suspensions")
-        for item in suspensions:
-            if type(item) != Suspension and len(suspensions) > 0:
-                raise InvalidParameter("suspensions", "deve ser Suspension")
-        return suspensions
 
     @staticmethod
     def validate_and_set_type_account(type_account: TYPE_ACCOUNT_USER_ENUM):
