@@ -47,7 +47,7 @@ def create_global_secondary_index(table: dynamodb.Table,
             type=dynamodb.AttributeType.STRING
         ) if sort_key else None,
         non_key_attributes=attributes,
-        projection_type=dynamodb.ProjectionType.ALL
+        projection_type=dynamodb.ProjectionType.INCLUDE if attributes else dynamodb.ProjectionType.ALL
     )
 
 
