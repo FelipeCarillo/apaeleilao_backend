@@ -63,10 +63,6 @@ class User(ABC):
             password_reset_code_expires_at)
 
     def to_dict(self):
-        for index, item in enumerate(self.suspensions):
-            if item is not None:
-                self.suspensions[index] = item.to_dict()
-
         return {
             'user_id': self.user_id,
             'first_name': self.first_name,
