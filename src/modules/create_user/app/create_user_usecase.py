@@ -58,7 +58,6 @@ class CreateUserUseCase:
                     password=body.get('password'),
                     accepted_terms=body.get('accepted_terms'),
                     status_account=status_account,
-                    suspensions=suspensions,
                     type_account=type_account,
                     date_joined=date_joined)
 

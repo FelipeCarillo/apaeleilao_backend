@@ -38,8 +38,7 @@ class UserDynamodb(UserInterface):
                 if item:
                     if checkpw(password.encode('utf-8'), item['password'].encode('utf-8')):
                         return item
-                    else:
-                        return None
+                return item
             if user_id and password_hash:
                 key = {'user_id': user_id}
                 query = self.__dynamodb.get_item(Key=key,
@@ -48,6 +47,15 @@ class UserDynamodb(UserInterface):
                 return item
             else:
                 raise Exception('Invalid parameters')
+        except Exception as e:
+            raise e
+
+    def get_user_by_id(self, user_id: str) -> Dict or None:
+        try:
+            key = {'user_id': user_id}
+            query = self.__dynamodb.get_item(Key=key)
+            item = query.get('Item', None)
+            return item
         except Exception as e:
             raise e
 

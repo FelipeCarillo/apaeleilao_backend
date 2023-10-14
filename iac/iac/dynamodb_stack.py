@@ -1,3 +1,5 @@
+from typing import List
+
 from aws_cdk import (
     aws_dynamodb as dynamodb,
     RemovalPolicy,
@@ -31,6 +33,8 @@ def create_table(self,
 def create_global_secondary_index(table: dynamodb.Table,
                                   index_name: str,
                                   partition_key: str,
+                                  sort_key: str = None,
+                                  attributes: List = None,
                                   ) -> None:
     table.add_global_secondary_index(
         index_name=index_name,
@@ -38,6 +42,8 @@ def create_global_secondary_index(table: dynamodb.Table,
             name=partition_key,
             type=dynamodb.AttributeType.STRING
         ),
+        sort_key=sort_key,
+        non_key_attributes=attributes,
         projection_type=dynamodb.ProjectionType.ALL
     )
 
@@ -50,19 +56,23 @@ class DynamoDBStack(Construct):
         self.__user_table = create_table(self, "UserApaeLeilao", "user_id")
         create_global_secondary_index(self.__user_table, "EmailIndex", "email")
         create_global_secondary_index(self.__user_table, "CpfIndex", "cpf")
+        create_global_secondary_index(self.__user_table,
+                                      "SuspensionIndex",
+                                      "user_id",
+                                      "suspension_id",
+                                      ["suspension_id", "reason", "date_suspension",
+                                       "date_reactivation", "status_suspension"]
+                                      )
 
         self.__auction_table = create_table(self, "AuctionApaeLeilao", "auction_id")
-
-        self.__payment_table = create_table(self, "PaymentApaeLeilao", "payment_id")
-        create_global_secondary_index(self.__payment_table, "AuctionIdIndex", "auction_id")
-        create_global_secondary_index(self.__payment_table, "UserIdIndex", "user_id")
 
         self.__bid_table = create_table(self, "BidApaeLeilao", "bid_id")
         create_global_secondary_index(self.__bid_table, "AuctionIdIndex", "auction_id")
         create_global_secondary_index(self.__bid_table, "UserIdIndex", "user_id")
 
-        self.__suspension_table = create_table(self, "SuspensionApaeLeilao", "suspension_id")
-        create_global_secondary_index(self.__suspension_table, "UserIdIndex", "user_id")
+        self.__payment_table = create_table(self, "PaymentApaeLeilao", "payment_id")
+        create_global_secondary_index(self.__payment_table, "AuctionIdIndex", "auction_id")
+        create_global_secondary_index(self.__payment_table, "UserIdIndex", "user_id")
 
     @property
     def user_table(self) -> dynamodb.Table:
@@ -73,13 +83,9 @@ class DynamoDBStack(Construct):
         return self.__auction_table
 
     @property
-    def payment_table(self) -> dynamodb.Table:
-        return self.__payment_table
-
-    @property
     def bid_table(self) -> dynamodb.Table:
         return self.__bid_table
 
     @property
-    def suspension_table(self) -> dynamodb.Table:
-        return self.__suspension_table
+    def payment_table(self) -> dynamodb.Table:
+        return self.__payment_table
