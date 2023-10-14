@@ -20,7 +20,7 @@ class UserInterface(ABC):
         pass
 
     @abstractmethod
-    def get_user_by_email(self, email: str, password) -> Optional[Dict]:
+    def get_user_by_email(self, email: str) -> Optional[Dict]:
         pass
 
     @abstractmethod

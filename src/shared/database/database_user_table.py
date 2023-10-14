@@ -69,12 +69,11 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def get_user_by_email(self, email, password) -> Dict or None:
+    def get_user_by_email(self, email) -> Dict or None:
         try:
             query = self.__dynamodb.query(
                 IndexName='EmailIndex',
                 KeyConditionExpression=Key('email').eq(email),
-                FilterExpression=Attr('password').eq(password)
             )
             response = query.get('Items', None)
             return response
