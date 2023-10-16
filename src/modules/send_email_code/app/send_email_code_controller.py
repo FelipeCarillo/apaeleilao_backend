@@ -1,4 +1,5 @@
 from typing import Dict
+from jwt import ExpiredSignatureError, InvalidTokenError
 
 from .send_email_code_usecase import SendEmailCodeUseCase
 
@@ -21,6 +22,12 @@ class SendEmailCodeController:
             send_email_code_usecase = self.__usecase(auth=request.get('auth'))
 
             return OK(body=send_email_code_usecase['body'], message="Código enviado com sucesso.")
+
+        except ExpiredSignatureError:
+            return Unauthorized(message="Token expirado.")
+
+        except InvalidTokenError:
+            return Unauthorized(message="Token inválido.")
 
         except InvalidRequest as e:
             return BadRequest(message=e.message)

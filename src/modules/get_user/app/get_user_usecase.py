@@ -12,12 +12,13 @@ class GetUserUseCase:
         self.__user_interface = user_interface
         self.__token = TokenAuthy()
 
-    def __call__(self, body: Dict) -> User:
+    def __call__(self, body: Dict) -> Dict:
         if not body.get('Authorization'):
             raise MissingParameter('Authorization')
-        decoded_token = self.__token.decode(body["Authorization"])
-        user_id = decoded_token['user_id']
 
+        user_id = self.__token.decode(body["Authorization"]).get('user_id')
+        if not user_id:
+            raise UserNotAuthenticated()
         user = self.__user_interface.get_user_by_id(user_id=user_id)
 
         status_account_permitted = [STATUS_USER_ACCOUNT_ENUM.ACTIVE, STATUS_USER_ACCOUNT_ENUM.PENDING,

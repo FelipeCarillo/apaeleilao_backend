@@ -5,6 +5,7 @@ import random
 import datetime
 from typing import Dict
 
+from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.entities.user import User
 from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 from src.shared.structure.interface.user_interface import UserInterface
@@ -15,16 +16,18 @@ class SendEmailCodeUseCase:
 
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
+        self.__token = TokenAuthy()
         self.__client = boto3.client('ses', region_name=os.environ.get('SES_REGION'))
 
     def __call__(self, auth: Dict):
-        if not auth.get('email'):
-            MissingParameter('email')
-        if not auth.get('password'):
-            MissingParameter('password')
+        if not auth.get('Authorization'):
+            MissingParameter('Authorization')
 
-        auth = self.__user_interface.authenticate(user_id=auth['user_id'], password_hash=auth['password'])
-        if not auth:
+        user_id = self.__token.decode(auth['Authorization']).get('user_id')
+        if not user_id:
+            raise UserNotAuthenticated()
+        user = self.__user_interface.get_user_by_id(user_id=user_id)
+        if not user:
             raise UserNotAuthenticated()
 
         status_account_permitted = [STATUS_USER_ACCOUNT_ENUM.PENDING]
@@ -44,7 +47,6 @@ class SendEmailCodeUseCase:
                     password=auth['password'],
                     accepted_terms=auth['accepted_terms'],
                     status_account=auth['status_account'],
-                    suspensions=auth['suspensions'],
                     date_joined=int(auth['date_joined']),
                     verification_email_code=verification_email_code,
                     verification_email_code_expires_at=verification_email_code_expires_at,

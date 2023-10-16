@@ -8,7 +8,7 @@ from src.shared.helper_functions.time_manipulation import TimeManipulation
 
 class TokenAuthy(ABC):
     def __init__(self):
-        self.__secret = os.getenv('SECRET_KEY')
+        self.__secret = os.getenv('ENCRYPTED_KEY')
         self.__algorithm = os.getenv('JWT_ALGORITHM')
 
     def encode(self, user_id: str) -> str:

@@ -5,7 +5,7 @@ from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated
 
 
-class GetUserUseCase:
+class GetTokenUseCase:
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
         self.__token = TokenAuthy()

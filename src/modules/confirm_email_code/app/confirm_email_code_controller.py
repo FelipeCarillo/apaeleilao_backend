@@ -1,4 +1,5 @@
 from typing import Dict
+from jwt import ExpiredSignatureError, InvalidTokenError
 
 from .confirm_email_code_usecase import ConfirmEmailCodeUsecase
 
@@ -24,6 +25,12 @@ class ConfirmEmailCodeController:
             confirm_email_code_usecase = self.__usecase(auth=request['auth'], body=request['body'])
 
             return OK(body=confirm_email_code_usecase, message="Código confirmado com sucesso.")
+
+        except ExpiredSignatureError:
+            return Unauthorized(message="Token expirado.")
+
+        except InvalidTokenError:
+            return Unauthorized(message="Token inválido.")
 
         except InvalidRequest as e:
             return BadRequest(message=e.message)

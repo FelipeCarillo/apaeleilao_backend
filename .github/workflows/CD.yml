@@ -79,4 +79,4 @@ jobs:
           STACK_NAME: ${{ env.STACK_NAME }}
           BUCKET_NAME: ${{ env.BUCKET_NAME }}
           ENCRYPTED_KEY: ${{ secrets.ENCRYPTED_KEY }}
-
+          JWT_ALGORITHM: ${{ secrets.JWT_ALGORITHM }}

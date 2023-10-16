@@ -7,7 +7,7 @@ from src.shared.https_codes.https_code import OK, BadRequest, InternalServerErro
 from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
 
 
-class GetUserController:
+class GetTokenController:
     def __init__(self, usecase: GetTokenUseCase):
         self.__usecase = usecase
 
