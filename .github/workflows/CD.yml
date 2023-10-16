@@ -42,7 +42,7 @@ jobs:
           mkdir bcrypt_layer
           mkdir jwt_layer
           cd bcrypt_layer
-          pip install bcrypt -t python
+          pip install bcrypt==3.2.2 -t python
           cd ..
           cd jwt_layer
           pip install jwt -t python
