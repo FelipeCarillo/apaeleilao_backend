@@ -15,7 +15,7 @@ class LambdaStack(Construct):
             self, (function_name + "_apae_leilao").title(),
             function_name=(function_name + "_apae_leilao").title(),
             environment=environment_variables,
-            runtime=_lambda.Runtime.PYTHON_3_9,
+            runtime=_lambda.Runtime.PYTHON_3_8,
             code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
             handler=f"app.{function_name}_presenter.lambda_handler",
             layers=[self.shared_layer, self.jwt_layer, self.cryptography_layer],
@@ -33,21 +33,21 @@ class LambdaStack(Construct):
         super().__init__(scope, "ApaeLeilao_Lambdas")
 
         self.cryptography_layer = _lambda.LayerVersion(
-            self, "Cryptography_Layer",
+            self, "Bcrypt_Layer",
             code=_lambda.Code.from_asset("./bcrypt_layer"),
-            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_8]
         )
 
         self.jwt_layer = _lambda.LayerVersion(
             self, "Jwt_Layer",
             code=_lambda.Code.from_asset("./jwt_layer"),
-            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_8]
         )
 
         self.shared_layer = _lambda.LayerVersion(
             self, "ApaeLeilao_Layer",
             code=_lambda.Code.from_asset("./apaeleilao_layer"),
-            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_8]
         )
 
         self.create_user = self.create_lambda(
