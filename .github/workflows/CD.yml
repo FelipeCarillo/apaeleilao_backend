@@ -31,7 +31,7 @@ jobs:
           echo "Installing CDK dependencies"
           npm install -g aws-cdk
           cd iac
-          pip install -r requirements.txt
+          sudo pip install -r requirements.txt
 
       - name: Install SRC dependencies
         run: |
@@ -42,10 +42,10 @@ jobs:
           mkdir bcrypt_layer
           mkdir jwt_layer
           cd bcrypt_layer
-          pip install bcrypt==3.2.2 -t python
+          sudo pip install bcrypt==3.2.2 -t python
           cd ..
           cd jwt_layer
-          pip install jwt -t python
+          sudo pip install jwt -t python
 
       - name: AWS Credentials
         run: |
