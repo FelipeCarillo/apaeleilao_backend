@@ -16,8 +16,8 @@ class CreateUserUseCase:
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
         self.__token = TokenAuthy()
-        self.__encrypt_key = os.getenv('ENCRYPT_KEY')
-        self.__jwt_algorithm = os.getenv('JWT_ALGORITHM')
+        self.__encrypt_key = os.environ.get('ENCRYPT_KEY')
+        self.__jwt_algorithm = os.environ.get('JWT_ALGORITHM')
 
     def __call__(self, auth: Dict, body: Dict) -> Dict:
 
@@ -41,7 +41,7 @@ class CreateUserUseCase:
                 raise MissingParameter('auth')
             if not auth.get('Authorization'):
                 raise MissingParameter('Authorization')
-            user_id = self.__token.decode(auth.get('Authorization')).get('user_id')
+            user_id = self.__token.decode_token(auth.get('Authorization')).get('user_id')
             if not user_id:
                 raise UserNotAuthenticated()
             user = self.__user_interface.get_user_by_id(user_id)
