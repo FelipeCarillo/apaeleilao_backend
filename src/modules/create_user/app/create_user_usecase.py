@@ -39,14 +39,15 @@ class CreateUserUseCase:
         if TYPE_ACCOUNT_USER_ENUM(type_account) in type_account_need_permission:
             if not auth:
                 raise MissingParameter('auth')
-            if not auth.get('email'):
-                raise MissingParameter('email')
-            if not auth.get('password'):
-                raise MissingParameter('password')
-            auth = self.__user_interface.authenticate(email=auth['email'], password=auth['password'])
-            if not auth:
+            if not auth.get('Authorization'):
+                raise MissingParameter('Authorization')
+            user_id = self.__token.decode(auth.get('Authorization')).get('user_id')
+            if not user_id:
                 raise UserNotAuthenticated()
-            if auth.get('type_account') != TYPE_ACCOUNT_USER_ENUM.ADMIN.value:
+            user = self.__user_interface.get_user_by_id(user_id)
+            if not user:
+                raise UserNotAuthenticated()
+            if user.get('type_account') != TYPE_ACCOUNT_USER_ENUM.ADMIN.value:
                 raise UserNotAuthenticated()
             status_account = STATUS_USER_ACCOUNT_ENUM.ACTIVE.value
 

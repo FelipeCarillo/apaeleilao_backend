@@ -17,12 +17,3 @@ class TokenAuthy(ABC):
 
     def decode(self, token: str) -> Dict:
         return jwt.decode(token, self.__secret, algorithms=['HS256'])
-
-    def check_exp(self, token: str) -> bool:
-        time_now = TimeManipulation().get_current_time()
-        payload = self.decode(token)
-        return payload['exp'] > time_now
-
-    def check_user_id(self, token: str, user_id: str) -> bool:
-        payload = self.decode(token)
-        return payload['user_id'] == user_id

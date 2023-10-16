@@ -6,8 +6,6 @@ from .create_user_controller import CreateUserController
 from src.shared.database.database_user_table import UserDynamodb
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 
-
-stage = os.environ.get("STAGE", "test")
 usecase = CreateUserUseCase(UserDynamodb())
 controller = CreateUserController(usecase)
 
