@@ -95,7 +95,7 @@ class UserDynamodb(UserInterface):
         try:
             user = user
             response = self.__dynamodb.update_item(
-                Key={'email': user.email},
+                Key={'user_id': user.user_id},
                 UpdateExpression='SET first_name = :first_name,'
                                  'last_name = :last_name,'
                                  'cpf = :cpf,'
@@ -103,7 +103,6 @@ class UserDynamodb(UserInterface):
                                  'password = :password,'
                                  'accepted_terms = :accepted_terms,'
                                  'status_account = :status_account,'
-                                 'suspensions = :suspensions,'
                                  'type_account = :type_account,'
                                  'verification_email_code = :verification_email_code, '
                                  'verification_email_code_expires_at = :verification_email_code_expires_at, '
@@ -117,7 +116,6 @@ class UserDynamodb(UserInterface):
                     ':password': user.password,
                     ':accepted_terms': user.accepted_terms,
                     ':status_account': user.status_account,
-                    ':suspensions': user.suspensions,
                     ':type_account': user.type_account,
                     ':verification_email_code': user.verification_email_code,
                     ':verification_email_code_expires_at': user.verification_email_code_expires_at,

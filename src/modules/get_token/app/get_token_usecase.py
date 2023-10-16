@@ -19,6 +19,6 @@ class GetTokenUseCase:
         if not user:
             raise UserNotAuthenticated()
 
-        token = self.__token.encode(user_id=user['user_id'])
+        token = self.__token.generate_token(user_id=user['user_id'], keep_login=True)
 
         return {"token": token}

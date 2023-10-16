@@ -1,5 +1,4 @@
 from typing import Dict
-from jwt import ExpiredSignatureError, InvalidTokenError
 
 from .get_user_usecase import GetUserUseCase
 
@@ -22,12 +21,6 @@ class GetUserController:
             get_user_usecase = self.__usecase(body=request.get('auth'))
 
             return OK(body=get_user_usecase, message='Usuário encontrado com sucesso.')
-
-        except ExpiredSignatureError:
-            return Unauthorized(message="Token expirado.")
-
-        except InvalidTokenError:
-            return Unauthorized(message="Token inválido.")
 
         except UserNotAuthenticated as e:
             return Unauthorized(message=e.message)

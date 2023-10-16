@@ -1,14 +1,16 @@
 import os
-import time
-import boto3
 import random
+import smtplib
 import datetime
 from typing import Dict
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
-from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.entities.user import User
-from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
+from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.interface.user_interface import UserInterface
+from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
+from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated
 
 
@@ -17,15 +19,20 @@ class SendEmailCodeUseCase:
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
         self.__token = TokenAuthy()
-        self.__client = boto3.client('ses', region_name=os.environ.get('SES_REGION'))
+        self.__email = os.environ.get('EMAIL_SENDER')
+        self.__password = os.environ.get('EMAIL_PASSWORD')
+        self.__host = os.environ.get('EMAIL_HOST')
+        self.__port = int(os.environ.get('EMAIL_PORT'))
+        self.__server = smtplib.SMTP(self.__host, self.__port)
 
     def __call__(self, auth: Dict):
         if not auth.get('Authorization'):
             MissingParameter('Authorization')
 
-        user_id = self.__token.decode(auth['Authorization']).get('user_id')
-        if not user_id:
-            raise UserNotAuthenticated()
+        decoded_token = self.__token.decode_token(auth['Authorization'])
+        if not decoded_token:
+            raise UserNotAuthenticated("Token de acesso inválido ou expirado.")
+        user_id = decoded_token.get('user_id')
         user = self.__user_interface.get_user_by_id(user_id=user_id)
         if not user:
             raise UserNotAuthenticated()
@@ -36,36 +43,31 @@ class SendEmailCodeUseCase:
             raise UserNotAuthenticated(message='Conta de usuário já validada.')
 
         verification_email_code = random.randint(10000, 99999)
-        verification_email_code_expires_at = int(time.time()) - 2 * 3600
+        verification_email_code_expires_at = TimeManipulation().plus_hour(1)
 
-        user = User(user_id=auth['user_id'],
-                    first_name=auth['first_name'],
-                    last_name=auth['last_name'],
-                    cpf=auth['cpf'],
-                    email=auth['email'],
-                    phone=auth['phone'],
-                    password=auth['password'],
-                    accepted_terms=auth['accepted_terms'],
-                    status_account=auth['status_account'],
-                    date_joined=int(auth['date_joined']),
+        user = User(user_id=user['user_id'],
+                    first_name=user['first_name'],
+                    last_name=user['last_name'],
+                    cpf=user['cpf'],
+                    email=user['email'],
+                    phone=user['phone'],
+                    password=user['password'],
+                    accepted_terms=user['accepted_terms'],
+                    status_account=user['status_account'],
+                    date_joined=int(user['date_joined']),
                     verification_email_code=verification_email_code,
                     verification_email_code_expires_at=verification_email_code_expires_at,
-                    password_reset_code=auth['password_reset_code'],
-                    password_reset_code_expires_at=auth['password_reset_code_expires_at'])
+                    password_reset_code=user['password_reset_code'],
+                    password_reset_code_expires_at=user['password_reset_code_expires_at'])
 
         datetime_expire = datetime.datetime.fromtimestamp(verification_email_code_expires_at).strftime(
             "%d/%m/%Y %H:%M:%S")
         self.__user_interface.update_user(user)
 
         email_format = f"""
-        <!DOCTYPE html>
         <html lang="pt-br" charset="UTF-8">
-        
         <head>
-            <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
         </head>
-        
-        
         <body
             style="margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; min-height: 75vh; background-color: white; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
             <table class="main"
@@ -112,25 +114,16 @@ class SendEmailCodeUseCase:
         </html>
         """
 
-        self.__client.send_email(
-            Destination={
-                'ToAddresses': [
-                    user.email,
-                ],
-            },
-            Message={
-                'Body': {
-                    'Html': {
-                        'Charset': 'UTF-8',
-                        'Data': email_format,
-                    }
-                },
-                'Subject': {
-                    'Charset': 'UTF-8',
-                    'Data': 'Código de verificação',
-                }
-            },
-            Source=os.environ.get('SES_SENDER'),
-        )
+        message = MIMEMultipart("alternative")
+        message["Subject"] = "Código de verificação Apae Leilão"
+        message["From"] = self.__email
+        message["To"] = user.email
+
+        part = MIMEText(email_format, "html")
+        message.attach(part)
+        self.__server.starttls()
+        self.__server.login(self.__email, self.__password)
+        self.__server.sendmail(self.__email, user.email, message.as_string())
+        self.__server.quit()
 
         return {'body': {'email': user.email}}

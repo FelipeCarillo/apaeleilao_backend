@@ -1,5 +1,3 @@
-import os
-
 from .create_user_usecase import CreateUserUseCase
 from .create_user_controller import CreateUserController
 

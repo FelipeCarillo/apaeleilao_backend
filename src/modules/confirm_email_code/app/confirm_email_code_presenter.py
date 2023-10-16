@@ -1,22 +1,18 @@
 import os
 
-from .confirm_email_code_controller import ConfirmEmailCodeController
 from .confirm_email_code_usecase import ConfirmEmailCodeUsecase
+from .confirm_email_code_controller import ConfirmEmailCodeController
 
-from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 from src.shared.database.database_user_table import UserDynamodb
-from src.shared.structure.repository.user_repository_mock import UserRepositoryMock
+from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 
 stage = os.environ.get("STAGE", "test")
-if stage == "test":
-    usecase = ConfirmEmailCodeUsecase(UserRepositoryMock())
-else:
-    usecase = ConfirmEmailCodeUsecase(UserDynamodb())
+usecase = ConfirmEmailCodeUsecase(UserDynamodb())
 controller = ConfirmEmailCodeController(usecase)
 
 
 def lambda_handler(event, context):
-    request = HttpRequest(auth=event['queryStringParameters'], body=event['body'])
+    request = HttpRequest(auth=event['headers'], body=event['body'])
     response = controller(request=request())
     http_response = HttpResponse(status_code=response.status_code, body=response.body)
 
