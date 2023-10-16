@@ -9,15 +9,14 @@ from src.shared.helper_functions.time_manipulation import TimeManipulation
 class TokenAuthy(ABC):
     def __init__(self):
         self.__secret = os.environ.get('ENCRYPTED_KEY')
-        self.__algorithm = os.environ.get('JWT_ALGORITHM')
 
     def encode(self, user_id: str) -> str:
         date_exp = TimeManipulation().plus_day(30)
         return jwt.encode({"user_id": user_id, "exp": date_exp}, self.__secret,
-                          algorithm=self.__algorithm)
+                          algorithm='HS256')
 
     def decode(self, token: str) -> Dict:
-        return jwt.decode(token, self.__secret, algorithms=[self.__algorithm])
+        return jwt.decode(token, self.__secret, algorithms=['HS256'])
 
     def check_exp(self, token: str) -> bool:
         time_now = TimeManipulation().get_current_time()
