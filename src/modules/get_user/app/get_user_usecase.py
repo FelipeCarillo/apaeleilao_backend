@@ -37,6 +37,7 @@ class GetUserUseCase:
             password=user.get('password'),
             accepted_terms=user.get('accepted_terms'),
             status_account=user.get('status_account'),
+            type_account=user.get('type_account'),
             date_joined=int(user.get('date_joined')) if user.get('date_joined') else None,
             verification_email_code=int(user.get('verification_email_code')) if user.get(
                 'verification_email_code') else None,
