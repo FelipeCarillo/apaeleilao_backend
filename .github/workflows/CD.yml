@@ -31,6 +31,7 @@ jobs:
           echo "Installing CDK dependencies"
           npm install -g aws-cdk
           cd iac
+          python3.8 -m pip install --platform manylinux2014_x86_64 --only-binary=:all: -t /someOutputFolder -r requirements.txt
           pip install -r requirements.txt
 
       - name: Install SRC dependencies

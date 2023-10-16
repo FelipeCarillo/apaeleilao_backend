@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 from aws_cdk import (
     aws_lambda as _lambda,
     aws_apigateway as apigw,
@@ -11,6 +11,7 @@ class LambdaStack(Construct):
 
     def create_lambda(self, function_name: str, method: str, restapi_resource: apigw.Resource,
                       environment_variables: Dict[str, str]) -> _lambda.Function:
+
         function = _lambda.Function(
             self, (function_name + "_apae_leilao").title(),
             function_name=(function_name + "_apae_leilao").title(),
@@ -18,7 +19,7 @@ class LambdaStack(Construct):
             runtime=_lambda.Runtime.PYTHON_3_8,
             code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
             handler=f"app.{function_name}_presenter.lambda_handler",
-            layers=[self.shared_layer, self.jwt_layer, self.cryptography_layer],
+            layers=[self.shared_layer, self.cryptography_layer, self.jwt_layer],
             timeout=Duration.seconds(15),
             memory_size=512,
         )
