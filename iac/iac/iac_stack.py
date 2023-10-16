@@ -19,15 +19,21 @@ class IACStack(Stack):
 
         stage = os.environ.get("STAGE", "test")
         bucket_name = os.environ.get("BUCKET_NAME", "")
-        ses_sender = os.environ.get("SES_SENDER", "")
-        ses_region = os.environ.get("SES_REGION", "")
         encrypted_key = os.environ.get("ENCRYPTED_KEY", "")
+        jwt_algorithm = os.environ.get("JWT_ALGORITHM", "")
+        email_sender = os.environ.get("EMAIL_SENDER", "")
+        email_password = os.environ.get("EMAIL_PASSWORD", "")
+        email_host = os.environ.get("EMAIL_HOST", "")
+        email_port = os.environ.get("EMAIL_PORT", "")
 
         ENVIRONMENT_VARIABLES = {
             "STAGE": stage,
-            "SES_SENDER": ses_sender,
-            "SES_REGION": ses_region,
             "ENCRYPTED_KEY": encrypted_key,
+            "JWT_ALGORITHM": jwt_algorithm,
+            "EMAIL_SENDER": email_sender,
+            "EMAIL_PASSWORD": email_password,
+            "EMAIL_HOST": email_host,
+            "EMAIL_PORT": email_port,
         }
 
         self.__bucket = s3.Bucket(

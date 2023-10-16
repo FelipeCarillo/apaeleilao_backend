@@ -64,12 +64,13 @@ class CreateUserUseCase:
                     accepted_terms=body.get('accepted_terms'),
                     status_account=status_account,
                     type_account=type_account,
-                    date_joined=date_joined)
+                    date_joined=date_joined
+                    )
 
         user.password = hashpw(user.password.encode('utf-8'), gensalt()).decode('utf-8')
 
-        self.__user_interface.create_user(user.to_dict())
+        token = self.__token.generate_token(user_id=user_id)
 
-        token = self.__token.encode(user_id=user_id)
+        self.__user_interface.create_user(user.to_dict())
 
         return {"token": token}

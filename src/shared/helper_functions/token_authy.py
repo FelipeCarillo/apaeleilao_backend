@@ -15,7 +15,7 @@ class TokenAuthy(ABC):
         if keep_login:
             date_exp = TimeManipulation().plus_day(30)
         else:
-            date_exp = TimeManipulation().plus_hour(1)
+            date_exp = TimeManipulation().plus_day(1)
         return jwt.encode({"user_id": user_id, "exp": date_exp}, self.__secret,
                           algorithm='HS256')
 
