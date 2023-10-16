@@ -38,9 +38,14 @@ jobs:
           echo "Installing SRC dependencies"
           cd iac
           rm -rf bcrypt_layer 
+          rm -rf jwt_layer
           mkdir bcrypt_layer
+          mkdir jwt_layer
           cd bcrypt_layer
           pip install bcrypt==3.2.0 -t python
+          cd ..
+          cd jwt_layer
+          pip install jwt==3.2.0 -t python
 
       - name: AWS Credentials
         run: |

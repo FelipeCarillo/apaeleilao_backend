@@ -1,10 +1,12 @@
 import os
 import uuid
-from time import time
+
+import jwt
 from typing import Dict
 from bcrypt import hashpw, gensalt
 
 from src.shared.structure.entities.user import User
+from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.errors.modules_errors import DataAlreadyUsed, MissingParameter, UserNotAuthenticated
 from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM, TYPE_ACCOUNT_USER_ENUM
 from src.shared.structure.interface.user_interface import UserInterface
@@ -13,6 +15,8 @@ from src.shared.structure.interface.user_interface import UserInterface
 class CreateUserUseCase:
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
+        self.__encrypt_key = os.getenv('ENCRYPT_KEY')
+        self.__jwt_algorithm = os.getenv('JWT_ALGORITHM')
 
     def __call__(self, auth: Dict, body: Dict) -> Dict:
 
@@ -30,7 +34,7 @@ class CreateUserUseCase:
 
         type_account_need_permission = [TYPE_ACCOUNT_USER_ENUM.ADMIN, TYPE_ACCOUNT_USER_ENUM.MODERATOR]
         type_account = body.get('type_account', 'USER')
-        status_account = "PENDING"
+        status_account = STATUS_USER_ACCOUNT_ENUM.PENDING.value
         if TYPE_ACCOUNT_USER_ENUM(type_account) in type_account_need_permission:
             if not auth:
                 raise MissingParameter('auth')
@@ -43,10 +47,10 @@ class CreateUserUseCase:
                 raise UserNotAuthenticated()
             if auth.get('type_account') != TYPE_ACCOUNT_USER_ENUM.ADMIN.value:
                 raise UserNotAuthenticated()
-            status_account = "ACTIVE"
+            status_account = STATUS_USER_ACCOUNT_ENUM.ACTIVE.value
 
         user_id = str(uuid.uuid4())
-        date_joined = int(time()) - 3 * 3600
+        date_joined = TimeManipulation.get_current_time()
 
         user = User(user_id=user_id,
                     first_name=body.get('first_name'),
@@ -61,6 +65,10 @@ class CreateUserUseCase:
                     date_joined=date_joined)
 
         user.password = hashpw(user.password.encode('utf-8'), gensalt()).decode('utf-8')
-        user = user.to_dict()
 
-        return self.__user_interface.create_user(user)
+        self.__user_interface.create_user(user.to_dict())
+
+        token = jwt.encode({'user_id': user.user_id, 'exp': TimeManipulation.plus_day(date_joined, 30)},
+                           self.__encrypt_key, algorithm=self.__jwt_algorithm)
+
+        return token

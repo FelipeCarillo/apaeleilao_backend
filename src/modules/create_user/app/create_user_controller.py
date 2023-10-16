@@ -1,7 +1,6 @@
 from typing import Dict
 
 from .create_user_usecase import CreateUserUseCase
-from .create_user_viewmodel import CreateUserViewModel
 
 from src.shared.https_codes.https_code import Created, BadRequest, InternalServerError, ParameterError, Unauthorized
 from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, DataAlreadyUsed, \
@@ -11,7 +10,6 @@ from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, I
 class CreateUserController:
     def __init__(self, usecase: CreateUserUseCase):
         self.__usecase = usecase
-        self.__viewmodel = CreateUserViewModel()
 
     def __call__(self, request: Dict):
         try:
@@ -23,9 +21,7 @@ class CreateUserController:
 
             create_user_usecase = self.__usecase(auth=request.get('auth'), body=request.get('body'))
 
-            response = self.__viewmodel(create_user_usecase)
-
-            return Created(response, message='Usuário criado com sucesso.')
+            return Created(create_user_usecase, message='Usuário criado com sucesso.')
 
         except DataAlreadyUsed as e:
             return ParameterError(message=e.message)
