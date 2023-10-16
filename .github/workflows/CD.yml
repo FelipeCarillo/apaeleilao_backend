@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       - name: Get Stack and Bucket name
         run: |
@@ -31,7 +31,6 @@ jobs:
           echo "Installing CDK dependencies"
           npm install -g aws-cdk
           cd iac
-          sudo python3 -m pip install --platform manylinux2014_x86_64 --only-binary=:all: -t /someOutputFolder -r requirements.txt
           pip install -r requirements.txt
 
       - name: Install SRC dependencies
