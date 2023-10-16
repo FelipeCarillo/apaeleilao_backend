@@ -45,7 +45,7 @@ jobs:
           pip install bcrypt==3.2.2 -t python
           cd ..
           cd jwt_layer
-          pip install jwt -t python
+          pip install pyjwt -t python
 
       - name: AWS Credentials
         run: |
