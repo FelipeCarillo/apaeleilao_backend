@@ -1,20 +1,21 @@
 import os
 import uuid
 
-import jwt
 from typing import Dict
 from bcrypt import hashpw, gensalt
 
 from src.shared.structure.entities.user import User
-from src.shared.helper_functions.time_manipulation import TimeManipulation
-from src.shared.errors.modules_errors import DataAlreadyUsed, MissingParameter, UserNotAuthenticated
-from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM, TYPE_ACCOUNT_USER_ENUM
+from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.interface.user_interface import UserInterface
+from src.shared.helper_functions.time_manipulation import TimeManipulation
+from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM, TYPE_ACCOUNT_USER_ENUM
+from src.shared.errors.modules_errors import DataAlreadyUsed, MissingParameter, UserNotAuthenticated
 
 
 class CreateUserUseCase:
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
+        self.__token = TokenAuthy()
         self.__encrypt_key = os.getenv('ENCRYPT_KEY')
         self.__jwt_algorithm = os.getenv('JWT_ALGORITHM')
 
@@ -68,7 +69,6 @@ class CreateUserUseCase:
 
         self.__user_interface.create_user(user.to_dict())
 
-        token = jwt.encode({'user_id': user.user_id, 'exp': TimeManipulation.plus_day(date_joined, 30)},
-                           self.__encrypt_key, algorithm=self.__jwt_algorithm)
+        token = self.__token.encode(user_id=user_id)
 
-        return token
+        return {"token": token}
