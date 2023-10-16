@@ -11,15 +11,18 @@ class TokenAuthy(ABC):
         self.__secret = os.getenv('SECRET_KEY')
         self.__algorithm = os.getenv('JWT_ALGORITHM')
 
-    def encode(self, payload: Dict) -> str:
-        return jwt.encode(payload, self.__secret, algorithm=self.__algorithm)
+    def encode(self, user_id: str) -> str:
+        time = TimeManipulation()
+        return jwt.encode({"user_id": user_id, "exp": time.plus_day(30)}, self.__secret,
+                          algorithm=self.__algorithm)
 
     def decode(self, token: str) -> Dict:
         return jwt.decode(token, self.__secret, algorithms=[self.__algorithm])
 
     def check_exp(self, token: str) -> bool:
+        time = TimeManipulation()
         payload = self.decode(token)
-        return payload['exp'] > TimeManipulation.get_current_time()
+        return payload['exp'] > time.get_current_time()
 
     def check_user_id(self, token: str, user_id: str) -> bool:
         payload = self.decode(token)

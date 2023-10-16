@@ -1,14 +1,14 @@
 from typing import Dict
 from jwt import ExpiredSignatureError, InvalidTokenError
 
-from .get_user_usecase import GetUserUseCase
+from .get_token_usecase import GetTokenUseCase
 
 from src.shared.https_codes.https_code import OK, BadRequest, InternalServerError, Unauthorized, ParameterError
 from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
 
 
 class GetUserController:
-    def __init__(self, usecase: GetUserUseCase):
+    def __init__(self, usecase: GetTokenUseCase):
         self.__usecase = usecase
 
     def __call__(self, request: Dict):
@@ -16,12 +16,12 @@ class GetUserController:
             if not request:
                 raise InvalidRequest()
 
-            if not request.get('auth'):
-                raise MissingParameter('auth')
+            if not request.get('body'):
+                raise MissingParameter('body')
 
-            get_user_usecase = self.__usecase(body=request.get('auth'))
+            get_user_usecase = self.__usecase(body=request.get('body'))
 
-            return OK(body=get_user_usecase, message='Usuário encontrado com sucesso.')
+            return OK(body=get_user_usecase, message='Token gerado com sucesso.')
 
         except ExpiredSignatureError:
             return Unauthorized(message="Token expirado.")
