@@ -18,7 +18,7 @@ class User(ABC):
     accepted_terms: bool
     status_account: STATUS_USER_ACCOUNT_ENUM
     suspensions: List[Optional[Suspension]]
-    status_account: TYPE_ACCOUNT_USER_ENUM
+    type_account: TYPE_ACCOUNT_USER_ENUM
     date_joined: int
     verification_code: str
     verification_code_expires_at: int

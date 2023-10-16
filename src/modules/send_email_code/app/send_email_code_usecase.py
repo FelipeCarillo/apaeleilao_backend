@@ -54,6 +54,7 @@ class SendEmailCodeUseCase:
                     password=user['password'],
                     accepted_terms=user['accepted_terms'],
                     status_account=user['status_account'],
+                    type_account=user['type_account'],
                     date_joined=int(user['date_joined']),
                     verification_email_code=verification_email_code,
                     verification_email_code_expires_at=verification_email_code_expires_at,
