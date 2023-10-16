@@ -8,8 +8,6 @@ from constructs import Construct
 
 
 class LambdaStack(Construct):
-    USER_TABLE = 'UserApaeLeilao'
-    AUCTION_TABLE = 'AuctionApaeLeilao'
 
     def create_lambda(self, function_name: str, method: str, restapi_resource: apigw.Resource,
                       environment_variables: Dict[str, str]) -> _lambda.Function:
@@ -20,7 +18,7 @@ class LambdaStack(Construct):
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
             handler=f"app.{function_name}_presenter.lambda_handler",
-            layers=[self.shared_layer, self.cryptography_layer],
+            layers=[self.shared_layer, self.jwt_layer, self.cryptography_layer],
             timeout=Duration.seconds(15),
             memory_size=512,
         )
@@ -37,6 +35,12 @@ class LambdaStack(Construct):
         self.cryptography_layer = _lambda.LayerVersion(
             self, "Cryptography_Layer",
             code=_lambda.Code.from_asset("./bcrypt_layer"),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
+        )
+
+        self.jwt_layer = _lambda.LayerVersion(
+            self, "Jwt_Layer",
+            code=_lambda.Code.from_asset("./jwt_layer"),
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
         )
 
@@ -84,6 +88,13 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
+        self.get_token = self.create_lambda(
+            function_name="get_token",
+            method="POST",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
@@ -91,6 +102,7 @@ class LambdaStack(Construct):
             self.get_user,
             self.send_email_code,
             self.confirm_email_code,
+            self.get_token,
         )
 
     @property
