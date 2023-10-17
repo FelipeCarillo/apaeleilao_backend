@@ -1,6 +1,6 @@
 from typing import Dict
 
-from .send_password_reset_code_usecase import SendVerificationEmailCodeUseCase
+from .send_password_reset_code_usecase import SendPasswordResetCodeUseCase
 
 from src.shared.https_codes.https_code import OK, BadRequest, InternalServerError, Unauthorized, ParameterError, \
     NotFound
@@ -9,7 +9,7 @@ from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, I
 
 
 class SendPasswordResetCodeController:
-    def __init__(self, usecase: SendVerificationEmailCodeUseCase):
+    def __init__(self, usecase: SendPasswordResetCodeUseCase):
         self.__usecase = usecase
 
     def __call__(self, request: Dict):
@@ -22,7 +22,7 @@ class SendPasswordResetCodeController:
 
             send_email_code_usecase = self.__usecase(body=request.get('body'))
 
-            return OK(body=send_email_code_usecase['body'], message="Código enviado com sucesso.")
+            return OK(body=send_email_code_usecase, message="Código enviado com sucesso.")
 
         except InvalidRequest as e:
             return BadRequest(message=e.message)

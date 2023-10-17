@@ -3,14 +3,14 @@ import datetime
 from typing import Dict
 
 from src.shared.structure.entities.user import User
-from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.helper_functions.email_function import Email
+from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.errors.modules_errors import MissingParameter, DataNotFound
 
 
-class SendVerificationEmailCodeUseCase:
+class SendPasswordResetCodeUseCase:
 
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
@@ -99,10 +99,12 @@ class SendVerificationEmailCodeUseCase:
         </html>
         """
 
-        self.__email.send_email(
+        email = self.__email.send_email(
             to=user.email,
             subject="Código de Validação",
             body=email_format
         )
+        if email is False:
+            raise Exception("Erro ao enviar o email.")
 
-        return {'email': user.email}
+        return {'cpf': user.cpf}

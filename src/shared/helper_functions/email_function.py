@@ -13,12 +13,15 @@ class Email:
         self.__server = smtplib.SMTP(self.__host, self.__port)
 
     def send_email(self, to: str, subject: str, body: str):
-        message = MIMEMultipart()
-        message['From'] = self.__email
-        message['To'] = to
-        message['Subject'] = subject
-        message.attach(MIMEText(body, 'html'))
-        self.__server.starttls()
-        self.__server.login(self.__email, self.__password)
-        self.__server.sendmail(self.__email, to, message.as_string())
-        self.__server.quit()
+        try:
+            message = MIMEMultipart()
+            message['From'] = self.__email
+            message['To'] = to
+            message['Subject'] = subject
+            message.attach(MIMEText(body, 'html'))
+            self.__server.starttls()
+            self.__server.login(self.__email, self.__password)
+            self.__server.sendmail(self.__email, to, message.as_string())
+            self.__server.quit()
+        except Exception as e:
+            raise e
