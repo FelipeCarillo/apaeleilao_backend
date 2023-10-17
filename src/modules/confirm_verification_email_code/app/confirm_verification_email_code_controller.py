@@ -1,13 +1,13 @@
 from typing import Dict
 
-from .confirm_email_code_usecase import ConfirmEmailCodeUsecase
+from .confirm_verification_email_code_usecase import ConfirmVerificationEmailCodeUseCase
 
 from src.shared.https_codes.https_code import OK, BadRequest, InternalServerError, Unauthorized, ParameterError
 from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
 
 
-class ConfirmEmailCodeController:
-    def __init__(self, usecase: ConfirmEmailCodeUsecase):
+class ConfirmVerificationEmailCodeController:
+    def __init__(self, usecase: ConfirmVerificationEmailCodeUseCase):
         self.__usecase = usecase
 
     def __call__(self, request: Dict):

@@ -82,8 +82,8 @@ class LambdaStack(Construct):
 
         self.send_email_code.add_to_role_policy(ses_policy)
 
-        self.confirm_email_code = self.create_lambda(
-            function_name="confirm_email_code",
+        self.confirm_verification_email_code = self.create_lambda(
+            function_name="confirm_verification_email_code",
             method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
@@ -109,7 +109,7 @@ class LambdaStack(Construct):
             self.create_user,
             self.get_user,
             self.send_email_code,
-            self.confirm_email_code,
+            self.confirm_verification_email_code,
             self.get_token,
             self.update_user,
         )
