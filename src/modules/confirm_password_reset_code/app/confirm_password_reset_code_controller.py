@@ -1,13 +1,13 @@
 from typing import Dict
 
-from .confirm_password_reset_code_usecase import ConfirmVerificationEmailCodeUseCase
+from .confirm_password_reset_code_usecase import ConfirmPasswordResetCodeUseCase
 
 from src.shared.https_codes.https_code import OK, BadRequest, InternalServerError, Unauthorized, ParameterError
 from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
 
 
 class ConfirmVerificationEmailCodeController:
-    def __init__(self, usecase: ConfirmVerificationEmailCodeUseCase):
+    def __init__(self, usecase: ConfirmPasswordResetCodeUseCase):
         self.__usecase = usecase
 
     def __call__(self, request: Dict):
@@ -15,13 +15,10 @@ class ConfirmVerificationEmailCodeController:
             if not request:
                 raise InvalidRequest()
 
-            if not request['auth']:
-                raise MissingParameter('auth')
-
             if not request['body']:
                 raise MissingParameter('body')
 
-            confirm_email_code_usecase = self.__usecase(auth=request['auth'], body=request['body'])
+            confirm_email_code_usecase = self.__usecase(body=request['body'])
 
             return OK(body=confirm_email_code_usecase, message="Código confirmado com sucesso.")
 
