@@ -13,9 +13,9 @@ class TokenAuthy(ABC):
 
     def generate_token(self, user_id: str, keep_login: bool = False, exp_time: int = None) -> str:
         if keep_login:
-            date_exp = TimeManipulation().plus_day(30)
+            date_exp = TimeManipulation().plus_day(30) + 3 * 3600
         else:
-            date_exp = TimeManipulation().plus_day(1)
+            date_exp = TimeManipulation().plus_day(1) + 3 * 3600
         if exp_time:
             date_exp = exp_time
         return jwt.encode({"user_id": user_id, "exp": date_exp}, self.__secret,
