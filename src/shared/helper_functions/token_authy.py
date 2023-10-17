@@ -11,7 +11,7 @@ class TokenAuthy(ABC):
     def __init__(self):
         self.__secret = os.environ.get('ENCRYPTED_KEY')
 
-    def generate_token(self, user_id: str, keep_login: bool = True) -> str:
+    def generate_token(self, user_id: str, keep_login: bool = False) -> str:
         if keep_login:
             date_exp = TimeManipulation().plus_day(30)
         else:
