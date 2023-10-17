@@ -4,10 +4,10 @@ from typing import Dict
 
 from src.shared.structure.entities.user import User
 from src.shared.helper_functions.email_function import Email
+from src.shared.errors.modules_errors import MissingParameter
 from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.helper_functions.time_manipulation import TimeManipulation
-from src.shared.errors.modules_errors import MissingParameter, DataNotFound
 
 
 class SendPasswordResetCodeUseCase:
@@ -45,7 +45,7 @@ class SendPasswordResetCodeUseCase:
                     password_reset_code_expires_at=code_expires_at
                     )
 
-        datetime_expire = datetime.datetime.fromtimestamp(user.password_reset_code_expires_at).strftime(
+        datetime_expire = datetime.datetime.fromtimestamp(code_expires_at).strftime(
             "%d/%m/%Y %H:%M:%S")
         self.__user_interface.update_user(user)
 
@@ -88,7 +88,6 @@ class SendPasswordResetCodeUseCase:
                                     <div class="TextsBox" style="color: #949393; word-wrap: break-word;">
                                         <h2>Atenciosamente,</h2>
                                         <h2><b>APAE São Caetano do Sul - IMT</b></h2>
-                                        <h3>site: <a href="https://techimtgroup.net" target="_blank">techimtgroup.net</a></h3>
                                     </div>
                                 </td>
                             </tr>
@@ -100,12 +99,10 @@ class SendPasswordResetCodeUseCase:
         </html>
         """
 
-        email = self.__email.send_email(
+        self.__email.send_email(
             to=user.email,
-            subject="Código de Validação",
+            subject="Código de Redefinir Senha.",
             body=email_format
         )
-        if email is False:
-            raise Exception("Erro ao enviar o email.")
 
-        return {'email': user.email}
+        return {'email': user.email, 'code_expires_at': code_expires_at}
