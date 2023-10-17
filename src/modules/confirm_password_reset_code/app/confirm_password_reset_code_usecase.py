@@ -59,4 +59,6 @@ class ConfirmPasswordResetCodeUseCase:
             password_reset_code_expires_at=None
         )
 
-        return None
+        return {
+            'token': self.__token.generate_token(user_id=user.user_id),
+        }

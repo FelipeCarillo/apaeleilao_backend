@@ -11,6 +11,7 @@ from src.shared.helper_functions.time_manipulation import TimeManipulation
 
 
 class SendPasswordResetCodeUseCase:
+    TIME_EXPIRE = 1.5
 
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
@@ -26,7 +27,7 @@ class SendPasswordResetCodeUseCase:
             return {'email': body.get('email')}
 
         code = random.randint(10000, 99999)
-        code_expires_at = TimeManipulation().plus_minute(1.5)
+        code_expires_at = TimeManipulation().plus_minute(self.TIME_EXPIRE)
 
         user = User(user_id=user['user_id'],
                     first_name=user['first_name'],
