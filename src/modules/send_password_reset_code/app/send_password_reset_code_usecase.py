@@ -105,4 +105,7 @@ class SendPasswordResetCodeUseCase:
             body=email_format
         )
 
-        return {'email': user.email, 'code_expires_at': code_expires_at}
+        return {
+                'token': self.__token.generate_token(user_id=user.email, exp_time=code_expires_at),
+                'code_expires_at': code_expires_at
+                }

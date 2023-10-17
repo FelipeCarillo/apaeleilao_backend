@@ -17,3 +17,6 @@ class TimeManipulation:
 
     def plus_minute(self, minutes: float or int) -> int:
         return int(self.__time_now + minutes * 60)
+
+    def plus_seconds(self, seconds: float or int) -> int:
+        return int(self.__time_now + seconds)

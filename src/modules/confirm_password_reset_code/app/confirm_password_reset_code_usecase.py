@@ -1,4 +1,3 @@
-import time
 from typing import Dict
 
 from src.shared.structure.entities.user import User
@@ -14,15 +13,25 @@ class ConfirmPasswordResetCodeUseCase:
         self.__user_interface = user_interface
         self.__token = TokenAuthy()
 
-    def __call__(self, body: Dict):
-        if not body:
-            MissingParameter('body')
-        if not body.get('email'):
-            MissingParameter('Email')
-        if not body.get('password_reset_code'):
-            MissingParameter('Código de redefinição')
+    def __call__(self, auth: Dict, body: Dict):
+        if not auth:
+            raise MissingParameter('auth')
+        if not auth.get('Authorization'):
+            raise MissingParameter('Authorization')
 
-        user = self.__user_interface.get_user_by_email(email=body.get('email'))
+        if not body:
+            raise MissingParameter('body')
+        if not body.get('email'):
+            raise MissingParameter('Email')
+        if not body.get('password_reset_code'):
+            raise MissingParameter('Código de redefinição')
+
+        decoded_token = self.__token.decode_token(auth.get("Authorization"))
+        if not decoded_token:
+            raise UserNotAuthenticated("Token de acesso inválido ou expirado.")
+        email = decoded_token.get('user_id')
+
+        user = self.__user_interface.get_user_by_email(email=email)
         if not user:
             raise UserNotAuthenticated()
 
