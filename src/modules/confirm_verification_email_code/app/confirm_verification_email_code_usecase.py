@@ -75,4 +75,4 @@ class ConfirmVerificationEmailCodeUseCase:
                 'password_reset_code_expires_at')
         )
 
-        return None
+        return self.__user_interface.update_user(user)
