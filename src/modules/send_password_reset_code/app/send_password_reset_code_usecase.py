@@ -18,12 +18,12 @@ class SendPasswordResetCodeUseCase:
         self.__email = Email()
 
     def __call__(self, body: Dict):
-        if not body.get('cpf'):
-            MissingParameter('CPF')
+        if not body.get('email'):
+            MissingParameter('Email')
 
-        user = self.__user_interface.get_user_by_cpf(cpf=body.get('cpf'))
+        user = self.__user_interface.get_user_by_email(email=body.get('email'))
         if not user:
-            raise DataNotFound('CPF')
+            return {'email': body.get('email')}
 
         code = random.randint(10000, 99999)
         code_expires_at = TimeManipulation().plus_minute(1.5)
@@ -88,6 +88,7 @@ class SendPasswordResetCodeUseCase:
                                     <div class="TextsBox" style="color: #949393; word-wrap: break-word;">
                                         <h2>Atenciosamente,</h2>
                                         <h2><b>APAE São Caetano do Sul - IMT</b></h2>
+                                        <h3>site: <a href="https://techimtgroup.net" target="_blank">techimtgroup.net</a></h3>
                                     </div>
                                 </td>
                             </tr>
@@ -107,4 +108,4 @@ class SendPasswordResetCodeUseCase:
         if email is False:
             raise Exception("Erro ao enviar o email.")
 
-        return {'cpf': user.cpf}
+        return {'email': user.email}
