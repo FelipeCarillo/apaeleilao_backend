@@ -24,7 +24,7 @@ class ConfirmVerificationEmailCodeUseCase:
         if not body:
             MissingParameter('body')
         if not body.get('verification_email_code') and not body.get('password_reset_code'):
-            raise MissingParameter('verification_email_code ou password_reset_code')
+            raise MissingParameter('Código de validação')
         if body.get('verification_email_code') and body.get('password_reset_code'):
             raise InvalidParameter('verification_email_code ou password_reset_code',
                                    'não pode ser enviado os dois códigos ao mesmo tempo')
