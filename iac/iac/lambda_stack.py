@@ -79,20 +79,6 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
-        self.get_token = self.create_lambda(
-            function_name="get_token",
-            method="POST",
-            restapi_resource=restapi_resource,
-            environment_variables=environment_variables,
-        )
-
-        self.update_user = self.create_lambda(
-            function_name="update_user",
-            method="PUT",
-            restapi_resource=restapi_resource,
-            environment_variables=environment_variables,
-        )
-
         self.send_password_reset_code = self.create_lambda(
             function_name="send_password_reset_code",
             method="GET",
@@ -106,6 +92,20 @@ class LambdaStack(Construct):
         #     restapi_resource=restapi_resource,
         #     environment_variables=environment_variables,
         # )
+
+        self.get_token = self.create_lambda(
+            function_name="get_token",
+            method="POST",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
+        self.update_user = self.create_lambda(
+            function_name="update_user",
+            method="PUT",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
 
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
