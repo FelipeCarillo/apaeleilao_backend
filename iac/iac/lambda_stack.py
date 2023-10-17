@@ -74,7 +74,7 @@ class LambdaStack(Construct):
         )
 
         self.send_email_code = self.create_lambda(
-            function_name="send_email_code",
+            function_name="send_verification_email_code",
             method="GET",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,

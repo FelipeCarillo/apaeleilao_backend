@@ -14,7 +14,7 @@ from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated, InvalidParameter
 
 
-class SendEmailCodeUseCase:
+class SendVerificationEmailCodeUseCase:
 
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
