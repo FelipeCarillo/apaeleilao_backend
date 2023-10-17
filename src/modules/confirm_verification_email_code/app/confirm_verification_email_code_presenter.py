@@ -1,14 +1,14 @@
 import os
 
-from .confirm_email_code_usecase import ConfirmEmailCodeUsecase
-from .confirm_email_code_controller import ConfirmEmailCodeController
+from .confirm_verification_email_code_usecase import ConfirmVerificationEmailCodeUseCase
+from .confirm_verification_email_code_controller import ConfirmVerificationEmailCodeController
 
 from src.shared.database.database_user_table import UserDynamodb
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 
 stage = os.environ.get("STAGE", "test")
-usecase = ConfirmEmailCodeUsecase(UserDynamodb())
-controller = ConfirmEmailCodeController(usecase)
+usecase = ConfirmVerificationEmailCodeUseCase(UserDynamodb())
+controller = ConfirmVerificationEmailCodeController(usecase)
 
 
 def lambda_handler(event, context):

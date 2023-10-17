@@ -1,13 +1,13 @@
 from typing import Dict
 
-from .send_email_code_usecase import SendEmailCodeUseCase
+from .send_verification_email_code_usecase import SendVerificationEmailCodeUseCase
 
 from src.shared.https_codes.https_code import OK, BadRequest, InternalServerError, Unauthorized, ParameterError
 from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
 
 
-class SendEmailCodeController:
-    def __init__(self, usecase: SendEmailCodeUseCase):
+class SendVerificationEmailCodeController:
+    def __init__(self, usecase: SendVerificationEmailCodeUseCase):
         self.__usecase = usecase
 
     def __call__(self, request: Dict):
@@ -18,12 +18,10 @@ class SendEmailCodeController:
             if not request.get('auth'):
                 raise MissingParameter('auth')
 
-            if not request.get('body'):
-                raise MissingParameter('body')
 
-            send_email_code_usecase = self.__usecase(auth=request.get('auth'), body=request.get('body'))
+            send_email_code_usecase = self.__usecase(auth=request.get('auth'))
 
-            return OK(body=send_email_code_usecase['body'], message="Código enviado com sucesso.")
+            return OK(body=send_email_code_usecase, message="Código enviado com sucesso.")
 
         except InvalidRequest as e:
             return BadRequest(message=e.message)
