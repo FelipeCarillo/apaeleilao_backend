@@ -65,22 +65,12 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
-        ses_policy = iam.PolicyStatement(
-            effect=iam.Effect.ALLOW,
-            actions=[
-                "ses:*",
-            ],
-            resources=["*"],
-        )
-
-        self.send_email_code = self.create_lambda(
+        self.send_verification_email_code = self.create_lambda(
             function_name="send_verification_email_code",
             method="GET",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
-
-        self.send_email_code.add_to_role_policy(ses_policy)
 
         self.confirm_verification_email_code = self.create_lambda(
             function_name="confirm_verification_email_code",
@@ -122,8 +112,10 @@ class LambdaStack(Construct):
         return (
             self.create_user,
             self.get_user,
-            self.send_email_code,
+            self.send_verification_email_code,
             self.confirm_verification_email_code,
+            self.send_password_reset_code,
+            # self.confirm_password_reset_code,
             self.get_token,
             self.update_user,
         )
