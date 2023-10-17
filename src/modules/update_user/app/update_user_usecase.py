@@ -38,6 +38,7 @@ class UpdateUserUseCase:
         first_name = body.get("first_name", user.get("first_name"))
         last_name = body.get("last_name", user.get("last_name"))
         phone = body.get("phone", user.get("phone"))
+        password = body.get("password", user.get("password"))
 
         user = User(
             user_id=user["user_id"],
@@ -46,7 +47,7 @@ class UpdateUserUseCase:
             cpf=user.get("cpf"),
             email=user.get("email"),
             phone=phone,
-            password=user.get("password"),
+            password=password,
             accepted_terms=user.get("accepted_terms"),
             status_account=user.get("status_account"),
             type_account=user.get("type_account"),
