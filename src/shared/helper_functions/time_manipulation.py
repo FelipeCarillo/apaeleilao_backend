@@ -9,8 +9,11 @@ class TimeManipulation:
     def get_current_time() -> int:
         return int(time.time() - 3 * 3600)
 
-    def plus_hour(self, hours: int) -> int:
-        return self.__time_now + hours * 3600
+    def plus_hour(self, hours: float or int) -> int:
+        return int(self.__time_now + hours * 3600)
 
-    def plus_day(self, days: int) -> int:
-        return self.__time_now + days * 24 * 3600
+    def plus_day(self, days: float or int) -> int:
+        return int(self.__time_now + days * 24 * 3600)
+
+    def plus_minute(self, minutes: float or int) -> int:
+        return int(self.__time_now + minutes * 60)

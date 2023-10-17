@@ -21,6 +21,11 @@ class DataAlreadyUsed(MainError):
         super().__init__(f"{message} está em uso.")
 
 
+class DataNotFound(MainError):
+    def __init__(self, message: str):
+        super().__init__(f"{message} não encontrado.")
+
+
 class UserNotAuthenticated(MainError):
     def __init__(self, message: str = None):
         if message:
