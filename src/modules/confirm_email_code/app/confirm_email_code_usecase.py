@@ -20,10 +20,14 @@ class ConfirmEmailCodeUsecase:
             MissingParameter('auth')
         if not auth.get('Authorization'):
             MissingParameter('Authorization')
+
         if not body:
             MissingParameter('body')
-        if not body.get('verification_email_code'):
-            MissingParameter('verification_email_code')
+        if not body.get('verification_email_code') and not body.get('password_reset_code'):
+            raise MissingParameter('verification_email_code ou password_reset_code')
+        if body.get('verification_email_code') and body.get('password_reset_code'):
+            raise InvalidParameter('verification_email_code ou password_reset_code',
+                                   'não pode ser enviado os dois códigos ao mesmo tempo')
 
         decoded_token = self.__token.decode_token(auth['Authorization'])
         if not decoded_token:
@@ -35,10 +39,17 @@ class ConfirmEmailCodeUsecase:
 
         current_time = TimeManipulation().get_current_time()
 
-        if current_time > user.get('verification_email_code_expires_at'):
+        user_expire_at = user.get('password_reset_code_expires_at') if body.get('password_reset_code') else user.get(
+            'verification_email_code_expires_at')
+        user_code = user.get('password_reset_code') if body.get('password_reset_code') else user.get(
+            'verification_email_code')
+        request_code = body.get('password_reset_code') if body.get('password_reset_code') else body.get(
+            'verification_email_code')
+
+        if current_time > user_expire_at:
             raise InvalidParameter(parameter='Código de verificação', body='expirado')
 
-        if int(body['verification_email_code']) != user.get('verification_email_code'):
+        if int(request_code) != user_code:
             raise InvalidParameter(parameter='Código de verificação', body='inválido')
 
         status_account = STATUS_USER_ACCOUNT_ENUM.ACTIVE.value
@@ -55,10 +66,13 @@ class ConfirmEmailCodeUsecase:
             status_account=status_account,
             type_account=user.get('type_account'),
             date_joined=int(user.get('date_joined')),
-            verification_email_code=None,
-            verification_email_code_expires_at=None,
-            password_reset_code=user.get('password_reset_code'),
-            password_reset_code_expires_at=user.get('password_reset_code_expires_at')
+            verification_email_code=None if body.get('verification_email_code') else user.get(
+                'verification_email_code'),
+            verification_email_code_expires_at=None if body.get('verification_email_code') else user.get(
+                'verification_email_code_expires_at'),
+            password_reset_code=None if body.get('password_reset_code') else user.get('password_reset_code'),
+            password_reset_code_expires_at=None if body.get('password_reset_code') else user.get(
+                'password_reset_code_expires_at')
         )
 
         return self.__user_interface.update_user(user)

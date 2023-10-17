@@ -11,7 +11,7 @@ from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 from src.shared.helper_functions.time_manipulation import TimeManipulation
-from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated
+from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated, InvalidParameter
 
 
 class SendEmailCodeUseCase:
@@ -25,25 +25,31 @@ class SendEmailCodeUseCase:
         self.__port = int(os.environ.get('EMAIL_PORT'))
         self.__server = smtplib.SMTP(self.__host, self.__port)
 
-    def __call__(self, auth: Dict):
+    def __call__(self, auth: Dict, body: Dict):
         if not auth.get('Authorization'):
             MissingParameter('Authorization')
+
+        if not body.get('password_reset_code') and not body.get('verification_email_code'):
+            raise MissingParameter('password_reset_code ou verification_email_code')
+        if body.get('password_reset_code') and body.get('verification_email_code'):
+            raise InvalidParameter('password_reset_code ou verification_email_code',
+                                   'não pode ser enviado os dois códigos ao mesmo tempo')
 
         decoded_token = self.__token.decode_token(auth['Authorization'])
         if not decoded_token:
             raise UserNotAuthenticated("Token de acesso inválido ou expirado.")
+
         user_id = decoded_token.get('user_id')
         user = self.__user_interface.get_user_by_id(user_id=user_id)
         if not user:
             raise UserNotAuthenticated()
 
         status_account_permitted = [STATUS_USER_ACCOUNT_ENUM.PENDING]
-
         if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) not in status_account_permitted:
             raise UserNotAuthenticated(message='Conta de usuário já validada.')
 
-        verification_email_code = random.randint(10000, 99999)
-        verification_email_code_expires_at = TimeManipulation().plus_hour(1)
+        code = random.randint(10000, 99999)
+        code_expires_at = TimeManipulation().plus_hour(1)
 
         user = User(user_id=user['user_id'],
                     first_name=user['first_name'],
@@ -56,14 +62,17 @@ class SendEmailCodeUseCase:
                     status_account=user['status_account'],
                     type_account=user['type_account'],
                     date_joined=int(user['date_joined']),
-                    verification_email_code=verification_email_code,
-                    verification_email_code_expires_at=verification_email_code_expires_at,
-                    password_reset_code=user['password_reset_code'],
-                    password_reset_code_expires_at=user['password_reset_code_expires_at'])
+                    verification_email_code=code if body.get('verification_email_code') else user['verification_email_code'],
+                    verification_email_code_expires_at=code_expires_at if body.get('verification_email_code') else user['verification_email_code_expires_at'],
+                    password_reset_code=code if body.get('password_reset_code') else user['password_reset_code'],
+                    password_reset_code_expires_at=code_expires_at if body.get('password_reset_code') else user['password_reset_code_expires_at']
+                    )
 
-        datetime_expire = datetime.datetime.fromtimestamp(verification_email_code_expires_at).strftime(
+        datetime_expire = datetime.datetime.fromtimestamp(code_expires_at).strftime(
             "%d/%m/%Y %H:%M:%S")
         self.__user_interface.update_user(user)
+
+        txt = "validação do email" if body.get('verification_email_code') else "recuperação de senha"
 
         email_format = f"""
         <html lang="pt-br" charset="UTF-8">
@@ -89,7 +98,7 @@ class SendEmailCodeUseCase:
                             <tr>
                                 <td style="text-align: center; padding: 20px;">
                                     <div class="TextsBox" style="word-wrap: break-word;">
-                                        <h2 style="color: #949393;">Obrigado, {user.first_name}<p>Aqui está o seu código de validação do email:</p>
+                                        <h2 style="color: #949393;">Obrigado, {user.first_name}<p>Aqui está o seu código de {txt}:</p>
                                         </h2>
                                         <h4 style="color: #000000; font-size: 26px; letter-spacing: 10px;">{user.verification_email_code}</h4>
                                         <h4 style="color: #000000;">Codigo válido até: {datetime_expire}</h4>
