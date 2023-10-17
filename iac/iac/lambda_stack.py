@@ -103,6 +103,20 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
+        self.send_password_reset_code = self.create_lambda(
+            function_name="send_password_reset_code",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
+        # self.confirm_password_reset_code = self.create_lambda(
+        #     function_name="confirm_password_reset_code",
+        #     method="POST",
+        #     restapi_resource=restapi_resource,
+        #     environment_variables=environment_variables,
+        # )
+
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
