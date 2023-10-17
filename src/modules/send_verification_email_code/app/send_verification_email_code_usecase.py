@@ -25,15 +25,9 @@ class SendVerificationEmailCodeUseCase:
         self.__port = int(os.environ.get('EMAIL_PORT'))
         self.__server = smtplib.SMTP(self.__host, self.__port)
 
-    def __call__(self, auth: Dict, body: Dict):
+    def __call__(self, auth: Dict):
         if not auth.get('Authorization'):
             MissingParameter('Authorization')
-
-        if not body.get('password_reset_code') and not body.get('verification_email_code'):
-            raise MissingParameter('password_reset_code ou verification_email_code')
-        if body.get('password_reset_code') and body.get('verification_email_code'):
-            raise InvalidParameter('password_reset_code ou verification_email_code',
-                                   'não pode ser enviado os dois códigos ao mesmo tempo')
 
         decoded_token = self.__token.decode_token(auth['Authorization'])
         if not decoded_token:
@@ -45,9 +39,8 @@ class SendVerificationEmailCodeUseCase:
             raise UserNotAuthenticated()
 
         status_account_permitted = [STATUS_USER_ACCOUNT_ENUM.PENDING]
-        if body.get('verification_email_code'):
-            if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) not in status_account_permitted:
-                raise UserNotAuthenticated(message='Conta de usuário já validada.')
+        if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) not in status_account_permitted:
+            raise UserNotAuthenticated(message='Conta de usuário já validada.')
 
         code = random.randint(10000, 99999)
         code_expires_at = TimeManipulation().plus_hour(1)
@@ -63,17 +56,17 @@ class SendVerificationEmailCodeUseCase:
                     status_account=user['status_account'],
                     type_account=user['type_account'],
                     date_joined=int(user['date_joined']),
-                    verification_email_code=code if body.get('verification_email_code') else user['verification_email_code'],
-                    verification_email_code_expires_at=code_expires_at if body.get('verification_email_code') else user['verification_email_code_expires_at'],
-                    password_reset_code=code if body.get('password_reset_code') else user['password_reset_code'],
-                    password_reset_code_expires_at=code_expires_at if body.get('password_reset_code') else user['password_reset_code_expires_at']
+                    verification_email_code=code,
+                    verification_email_code_expires_at=code_expires_at,
+                    password_reset_code=user['password_reset_code'],
+                    password_reset_code_expires_at=user['password_reset_code_expires_at']
                     )
 
         datetime_expire = datetime.datetime.fromtimestamp(code_expires_at).strftime(
             "%d/%m/%Y %H:%M:%S")
         self.__user_interface.update_user(user)
 
-        txt = "validação do email" if body.get('verification_email_code') else "recuperação de senha"
+        txt = "validação do email"
 
         email_format = f"""
         <html lang="pt-br" charset="UTF-8">
@@ -137,4 +130,4 @@ class SendVerificationEmailCodeUseCase:
         self.__server.sendmail(self.__email, user.email, message.as_string())
         self.__server.quit()
 
-        return {'body': {'email': user.email}}
+        return {'email': user.email}
