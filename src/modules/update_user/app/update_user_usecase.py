@@ -1,9 +1,9 @@
 from typing import Dict
+from bcrypt import checkpw
 
 from src.shared.structure.entities.user import User
 from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.interface.user_interface import UserInterface
-from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated, InvalidParameter
 
 
@@ -30,11 +30,14 @@ class UpdateUserUseCase:
         if not user:
             raise UserNotAuthenticated()
         
+        if checkpw(body.get("password").encode("utf-8"), user.get("password").encode("utf-8")):
+            raise InvalidParameter("Senha", "deve ser diferente da anterior")
+        
         first_name = body.get("first_name", user.get("first_name"))
         last_name = body.get("last_name", user.get("last_name"))
         phone = body.get("phone", user.get("phone"))
         password = body.get("password", user.get("password"))
-
+ 
         user = User(
             user_id=user["user_id"],
             first_name=first_name,
