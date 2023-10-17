@@ -7,6 +7,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 from src.shared.structure.entities.user import User
+from src.shared.helper_functions.email_function import Email
 from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
@@ -19,11 +20,7 @@ class SendVerificationEmailCodeUseCase:
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
         self.__token = TokenAuthy()
-        self.__email = os.environ.get('EMAIL_SENDER')
-        self.__password = os.environ.get('EMAIL_PASSWORD')
-        self.__host = os.environ.get('EMAIL_HOST')
-        self.__port = int(os.environ.get('EMAIL_PORT'))
-        self.__server = smtplib.SMTP(self.__host, self.__port)
+        self.__email = Email()
 
     def __call__(self, auth: Dict):
         if not auth.get('Authorization'):
@@ -43,7 +40,7 @@ class SendVerificationEmailCodeUseCase:
             raise UserNotAuthenticated(message='Conta de usuário já validada.')
 
         code = random.randint(10000, 99999)
-        code_expires_at = TimeManipulation().plus_hour(1)
+        code_expires_at = TimeManipulation().plus_minute(1.5)
 
         user = User(user_id=user['user_id'],
                     first_name=user['first_name'],
@@ -65,8 +62,6 @@ class SendVerificationEmailCodeUseCase:
         datetime_expire = datetime.datetime.fromtimestamp(code_expires_at).strftime(
             "%d/%m/%Y %H:%M:%S")
         self.__user_interface.update_user(user)
-
-        txt = "validação do email"
 
         email_format = f"""
         <html lang="pt-br" charset="UTF-8">
@@ -92,7 +87,7 @@ class SendVerificationEmailCodeUseCase:
                             <tr>
                                 <td style="text-align: center; padding: 20px;">
                                     <div class="TextsBox" style="word-wrap: break-word;">
-                                        <h2 style="color: #949393;">Obrigado, {user.first_name}<p>Aqui está o seu código de {txt}:</p>
+                                        <h2 style="color: #949393;">Obrigado, {user.first_name}<p>Aqui está o seu código de validação do email:</p>
                                         </h2>
                                         <h4 style="color: #000000; font-size: 26px; letter-spacing: 10px;">{user.verification_email_code}</h4>
                                         <h4 style="color: #000000;">Codigo válido até: {datetime_expire}</h4>
@@ -106,7 +101,7 @@ class SendVerificationEmailCodeUseCase:
                                 <td style="text-align: center; padding: 20px;">
                                     <div class="TextsBox" style="color: #949393; word-wrap: break-word;">
                                         <h2>Atenciosamente,</h2>
-                                        <h2><b>APAE São Caetano do Sul</b></h2>
+                                        <h2><b>APAE São Caetano do Sul - IMT</b></h2>
                                     </div>
                                 </td>
                             </tr>
@@ -118,16 +113,8 @@ class SendVerificationEmailCodeUseCase:
         </html>
         """
 
-        message = MIMEMultipart("alternative")
-        message["Subject"] = "Código de verificação Apae Leilão"
-        message["From"] = self.__email
-        message["To"] = user.email
+        self.__email.send_email(to=user.email, 
+                                subject="Código de Validação.", 
+                                body=email_format)
 
-        part = MIMEText(email_format, "html")
-        message.attach(part)
-        self.__server.starttls()
-        self.__server.login(self.__email, self.__password)
-        self.__server.sendmail(self.__email, user.email, message.as_string())
-        self.__server.quit()
-
-        return {'email': user.email}
+        return {"email": user.email, 'code_expires_at': code_expires_at}
