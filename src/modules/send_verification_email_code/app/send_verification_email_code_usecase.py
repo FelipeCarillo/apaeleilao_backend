@@ -53,7 +53,7 @@ class SendVerificationEmailCodeUseCase:
                     status_account=user['status_account'],
                     type_account=user['type_account'],
                     date_joined=int(user['date_joined']),
-                    verification_email_code=code,
+                    verification_email_code=str(code),
                     verification_email_code_expires_at=code_expires_at,
                     password_reset_code=user['password_reset_code'],
                     password_reset_code_expires_at=user['password_reset_code_expires_at']

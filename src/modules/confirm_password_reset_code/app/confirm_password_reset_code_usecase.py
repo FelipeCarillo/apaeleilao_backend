@@ -21,8 +21,6 @@ class ConfirmPasswordResetCodeUseCase:
 
         if not body:
             raise MissingParameter('body')
-        if not body.get('email'):
-            raise MissingParameter('Email')
         if not body.get('password_reset_code'):
             raise MissingParameter('Código de redefinição')
 
@@ -40,7 +38,7 @@ class ConfirmPasswordResetCodeUseCase:
         if current_time > user.get('password_reset_code_expires_at'):
             raise InvalidParameter(parameter='Código de redefinição', body='expirado')
 
-        if int(body.get('password_reset_code')) != user.get('password_reset_code'):
+        if body.get('password_reset_code') != user.get('password_reset_code'):
             raise InvalidParameter(parameter='Código de redefinição', body='inválido')
 
         user = User(

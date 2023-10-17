@@ -39,9 +39,9 @@ class User(ABC):
                  status_account: str = None,
                  type_account: str = None,
                  date_joined: int = None,
-                 verification_email_code: int = None,
+                 verification_email_code: str = None,
                  verification_email_code_expires_at: int = None,
-                 password_reset_code: int = None,
+                 password_reset_code: str = None,
                  password_reset_code_expires_at: int = None):
 
         self.user_id = self.validate_and_set_user_id(user_id)
@@ -201,10 +201,10 @@ class User(ABC):
         return type_account
 
     @staticmethod
-    def validate_and_set_verification_email_code(verification_email_code: int) -> int or None:
+    def validate_and_set_verification_email_code(verification_email_code: str) -> str or None:
         if verification_email_code is None:
             return None
-        if type(verification_email_code) != int:
+        if type(verification_email_code) != str:
             raise InvalidParameter("verification_code", "deve ser str")
         return verification_email_code
 
@@ -217,10 +217,10 @@ class User(ABC):
         return verification_email_code_expires_at
 
     @staticmethod
-    def validate_and_set_password_reset_code(password_reset_code: int) -> int or None:
+    def validate_and_set_password_reset_code(password_reset_code: str) -> str or None:
         if password_reset_code is None:
             return None
-        if type(password_reset_code) != int:
+        if type(password_reset_code) != str:
             raise InvalidParameter("password_reset_code", "deve ser str")
         return password_reset_code
 

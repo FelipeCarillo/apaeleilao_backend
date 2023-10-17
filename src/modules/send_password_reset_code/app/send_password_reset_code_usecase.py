@@ -41,7 +41,7 @@ class SendPasswordResetCodeUseCase:
                     date_joined=int(user['date_joined']),
                     verification_email_code=user['verification_email_code'],
                     verification_email_code_expires_at=user['verification_email_code_expires_at'],
-                    password_reset_code=code,
+                    password_reset_code=str(code),
                     password_reset_code_expires_at=code_expires_at
                     )
 
