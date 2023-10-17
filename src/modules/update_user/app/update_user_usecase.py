@@ -21,12 +21,7 @@ class UpdateUserUseCase:
 
         if not body:
             MissingParameter('body')
-        if not body.get('verification_email_code') and not body.get('password_reset_code'):
-            raise MissingParameter('verification_email_code ou password_reset_code')
-        if body.get('verification_email_code') and body.get('password_reset_code'):
-            raise InvalidParameter('verification_email_code ou password_reset_code',
-                                   'não pode ser enviado os dois códigos ao mesmo tempo')
-
+        
         decoded_token = self.__token.decode_token(auth['Authorization'])
         if not decoded_token:
             raise UserNotAuthenticated("Token de acesso inválido ou expirado.")
