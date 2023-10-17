@@ -24,7 +24,7 @@ class ConfirmPasswordResetCodeUseCase:
         if not body.get('password_reset_code'):
             raise MissingParameter('Código de redefinição')
 
-        decoded_token = self.__token.decode_token(auth.get("Authorization"))
+        decoded_token = self.__token.decode_token(token=auth.get("Authorization"))
         if not decoded_token:
             raise UserNotAuthenticated("Token de acesso inválido ou expirado.")
         email = decoded_token.get('user_id')
