@@ -15,12 +15,10 @@ class GetTokenUseCase:
             raise MissingParameter('Email')
         if not body.get('password'):
             raise MissingParameter('Password')
-        if not body.get('keep_login'):
-            raise MissingParameter('Keep Login')
 
         user = self.__user_interface.authenticate(email=body['email'], password=body['password'])
         if not user:
             raise UserNotAuthenticated()
-        token = self.__token.generate_token(user_id=user['user_id'], keep_login=body['keep_login'])
+        token = self.__token.generate_token(user_id=user['user_id'], keep_login=True if body.get("keep_login") else False)
 
         return {"token": token}
