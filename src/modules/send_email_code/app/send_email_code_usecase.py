@@ -45,8 +45,9 @@ class SendEmailCodeUseCase:
             raise UserNotAuthenticated()
 
         status_account_permitted = [STATUS_USER_ACCOUNT_ENUM.PENDING]
-        if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) not in status_account_permitted:
-            raise UserNotAuthenticated(message='Conta de usuário já validada.')
+        if body.get('verification_email_code'):
+            if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) not in status_account_permitted:
+                raise UserNotAuthenticated(message='Conta de usuário já validada.')
 
         code = random.randint(10000, 99999)
         code_expires_at = TimeManipulation().plus_hour(1)
