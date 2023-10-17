@@ -76,7 +76,7 @@ class UserDynamodb(UserInterface):
                 KeyConditionExpression=Key('email').eq(email),
             )
             response = query.get('Items', None)
-            return response
+            return response[0] if response else None
         except Exception as e:
             raise e
 
