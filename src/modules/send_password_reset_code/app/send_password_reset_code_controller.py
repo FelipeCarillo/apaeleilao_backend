@@ -2,8 +2,10 @@ from typing import Dict
 
 from .send_password_reset_code_usecase import SendVerificationEmailCodeUseCase
 
-from src.shared.https_codes.https_code import OK, BadRequest, InternalServerError, Unauthorized, ParameterError
-from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
+from src.shared.https_codes.https_code import OK, BadRequest, InternalServerError, Unauthorized, ParameterError, \
+    NotFound
+from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated, \
+    DataNotFound
 
 
 class SendPasswordResetCodeController:
@@ -24,6 +26,9 @@ class SendPasswordResetCodeController:
 
         except InvalidRequest as e:
             return BadRequest(message=e.message)
+
+        except DataNotFound as e:
+            return NotFound(message=e.message)
 
         except MissingParameter as e:
             return BadRequest(message=e.message)
