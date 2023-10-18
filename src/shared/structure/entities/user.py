@@ -16,6 +16,7 @@ class User(ABC):
     phone: str
     password: str
     accepted_terms: bool
+    suspensions: List[Optional[Suspension]]
     status_account: STATUS_USER_ACCOUNT_ENUM
     suspensions: List[Optional[Suspension]]
     type_account: TYPE_ACCOUNT_USER_ENUM
@@ -36,6 +37,7 @@ class User(ABC):
                  phone: str = None,
                  password: str = None,
                  accepted_terms: bool = None,
+                 suspensions: List = None,
                  status_account: str = None,
                  type_account: str = None,
                  date_joined: int = None,
@@ -52,6 +54,7 @@ class User(ABC):
         self.phone = self.validate_and_set_phone(phone)
         self.password = self.validate_and_set_password(password)
         self.accepted_terms = self.validate_and_set_accepted_terms(accepted_terms)
+        self.suspensions = self.validate_and_set_suspendions(suspensions)
         self.status_account = self.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
         self.type_account = self.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
         self.date_joined = self.validate_and_set_date_joined(date_joined)
@@ -175,6 +178,17 @@ class User(ABC):
         if type(accepted_terms) != bool:
             raise InvalidParameter("accepted_terms", "deve ser bool")
         return accepted_terms
+
+    @staticmethod
+    def validate_and_set_suspendions(suspensions: List) -> List or None:
+        if suspensions is None:
+            suspensions = []
+        if type(suspensions) != List:
+            raise InvalidParameter("suspensions", "deve ser List")
+        if any(type(suspension) != Suspension for suspension in suspensions):
+            raise InvalidParameter("suspensions", "deve ser List[Suspension]")
+
+        return suspensions
 
     @staticmethod
     def validate_and_set_date_joined(date_joined: int) -> int or None:

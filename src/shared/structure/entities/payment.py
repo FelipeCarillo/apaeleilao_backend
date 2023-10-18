@@ -3,6 +3,8 @@ from src.shared.structure.enums.auction_enum import STATUS_AUCTION_PAYMENT_ENUM
 
 
 class Payment:
+    payment_id: str
+    user_id: str
     price: float
     payment_expires_at: int or None
     status: STATUS_AUCTION_PAYMENT_ENUM

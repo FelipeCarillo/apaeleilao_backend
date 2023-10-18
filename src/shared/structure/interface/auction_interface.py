@@ -4,11 +4,15 @@ from typing import Optional, Dict
 
 class AuctionInterface(ABC):
     @abstractmethod
-    def authenticate(self, email: str, password: str = None, password_hash: str = None) -> Optional[Dict]:
+    def create_auction(self, auction: Dict) -> Optional[Dict]:
         pass
 
     @abstractmethod
-    def get_all_auctions(self) -> Optional[Dict]:
+    def create_bid(self, auction: str, bid: Dict) -> Optional[Dict]:
+        pass
+
+    @abstractmethod
+    def get_all_auctions(self, exclusive_start_key: str = None, amount: int = 15) -> Optional[Dict]:
         pass
 
     @abstractmethod

@@ -1,7 +1,8 @@
-from typing import Dict, List
+from typing import List
 
 from src.shared.errors.modules_errors import *
 from src.shared.structure.entities.bid import Bid
+from src.shared.structure.entities.payment import Payment
 from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM, STATUS_AUCTION_PAYMENT_ENUM
 
 
@@ -12,10 +13,11 @@ class Auction:
     start_date: int
     end_date: int
     start_price: float
-    current_price: float
     bids: List[Bid]
+    best_bid: Bid
+    second_best_bid: Bid
+    payment: List[Payment]
     status_auction: STATUS_AUCTION_ENUM
-    status_payment: STATUS_AUCTION_PAYMENT_ENUM
     AUCTION_ID_LENGTH = 36
     TITTLE_MAX_LENGTH = 100
     TITTLE_MIN_LENGTH = 5
@@ -32,7 +34,7 @@ class Auction:
                  status_auction: str = None,
                  status_payment: str = None):
     
-        self.auction_id = self.validate_and_set_auctio_id(auction_id)
+        self.auction_id = self.validate_and_set_auction_id(auction_id)
         self.tittle = self.validate_and_set_tittle(tittle)
         self.description = self.validate_and_set_description(description)
         self.start_date = self.validate_set_start_date(start_date)
@@ -58,16 +60,12 @@ class Auction:
     
     @staticmethod
     def validate_and_set_auction_id(auction_id: str) -> str or None:
-
         if auction_id is None:
             raise MissingParameter("auction_id")
-        
         if type(auction_id) is not str:
             raise InvalidParameter("auction_id", "deve ser uma str")
-        
         if len(auction_id) != Auction.AUCTION_ID_LENGTH:
             raise InvalidParameter("auction_id", "deve ter 36 caracteres")
-        
         return auction_id
     
     @staticmethod

@@ -50,6 +50,7 @@ class ConfirmPasswordResetCodeUseCase:
             phone=user.get('phone'),
             password=user.get('password'),
             accepted_terms=user.get('accepted_terms'),
+            suspensions=user.get('suspensions'),
             status_account=user.get('status_account'),
             type_account=user.get('type_account'),
             date_joined=int(user.get('date_joined')),
