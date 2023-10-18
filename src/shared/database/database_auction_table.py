@@ -20,6 +20,14 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_all_auctions(self, exclusive_start_key: str = None, amount: int = 6) -> Dict or None:
         try:
+            if not exclusive_start_key:
+                query = self.__dynamodb.scan(
+                    Limit=amount,
+                    Sortby='created_at',
+                    SortOrder='DESC'
+                )
+                response = query.get('Items', None)
+                return response
             query = self.__dynamodb.scan(
                 ExclusiveStartKey=exclusive_start_key,
                 Limit=amount
