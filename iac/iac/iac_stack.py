@@ -1,4 +1,5 @@
 import os
+import boto3
 
 from aws_cdk import (
     aws_apigateway as apigw,
@@ -28,6 +29,7 @@ class IACStack(Stack):
 
         ENVIRONMENT_VARIABLES = {
             "STAGE": stage,
+            "BUCKET_NAME": bucket_name,
             "ENCRYPTED_KEY": encrypted_key,
             "JWT_ALGORITHM": jwt_algorithm,
             "EMAIL_SENDER": email_sender,
@@ -37,11 +39,17 @@ class IACStack(Stack):
         }
 
         self.__bucket = s3.Bucket(
-            self, f"Apae_Leilao_Bucket_{stage}",
+            self, f"Apae_Leilao_Imt_Bucket",
             bucket_name=bucket_name,
             versioned=True,
             removal_policy=RemovalPolicy.DESTROY,
+            access_control=s3.BucketAccessControl.PUBLIC_READ,
         )
+
+        client = boto3.client('s3')
+        get_bucket_folder = client.get_object(Bucket=bucket_name, Key="auctions/")
+        if not get_bucket_folder:
+            client.put_object(Bucket=bucket_name, Key="auctions/")
 
         self.__restapi = apigw.RestApi(
             self, f"Apae_Leilao_Restapi",
