@@ -30,12 +30,7 @@ class Auction:
                  start_date: int = None,
                  end_date: int = None,
                  start_amount: float = None,
-                 current_amount: float = None,
-                 bids: List[Bid] = None,
-                 payments: List[Payment] = None,
                  images: List[str] = None,
-                 best_bid: Bid = None,
-                 second_best_bid: Bid = None,
                  status_auction: STATUS_AUCTION_ENUM = None,
                  ):
     

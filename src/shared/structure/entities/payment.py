@@ -7,6 +7,7 @@ class Payment:
     payment_id: str
     user_id: str
     auction_id: str
+    bid_id: str
     amount: float
     date_payment: int
     payment_expires_at: int or None

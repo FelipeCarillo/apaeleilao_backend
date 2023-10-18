@@ -5,11 +5,12 @@ from src.shared.errors.modules_errors import InvalidParameter
 
 class Bid:
     bid_id: str
+    auction_id: str
     user_id: str
     amount: float
     date_bid: int
 
-    def __int__(self, bid_id: str, user_id: str, amount: float, date_bid: int):
+    def __int__(self, bid_id: str, auction_id:str, user_id: str, amount: float, date_bid: int):
         self.bid_id = bid_id
         self.user_id = user_id
         self.amount = self.validated_and_set_amount(amount)
