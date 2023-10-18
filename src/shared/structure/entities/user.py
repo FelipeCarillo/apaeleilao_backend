@@ -66,6 +66,11 @@ class User(ABC):
             password_reset_code_expires_at)
 
     def to_dict(self):
+        suspensions = []
+        for suspension in self.suspensions:
+            if suspension is not None:
+                suspensions.append(suspension.to_dict())
+
         return {
             'user_id': self.user_id,
             'first_name': self.first_name,
@@ -75,6 +80,7 @@ class User(ABC):
             'phone': self.phone,
             'password': self.password,
             'accepted_terms': self.accepted_terms,
+            'suspensions': suspensions,
             'status_account': self.status_account.value,
             'type_account': self.type_account.value,
             'date_joined': self.date_joined,
