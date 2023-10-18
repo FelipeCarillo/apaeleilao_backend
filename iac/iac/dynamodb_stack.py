@@ -34,6 +34,7 @@ def create_global_secondary_index(table: dynamodb.Table,
                                   index_name: str,
                                   partition_key: str,
                                   sort_key: str = None,
+                                  sort_key_type: dynamodb.AttributeType = None,
                                   attributes: List = None,
                                   ) -> None:
     table.add_global_secondary_index(
@@ -44,7 +45,7 @@ def create_global_secondary_index(table: dynamodb.Table,
         ),
         sort_key=dynamodb.Attribute(
             name=sort_key,
-            type=dynamodb.AttributeType.STRING
+            type=dynamodb.AttributeType.STRING if not sort_key_type else sort_key_type
         ) if sort_key else None,
         non_key_attributes=attributes,
         projection_type=dynamodb.ProjectionType.INCLUDE if attributes else dynamodb.ProjectionType.ALL
@@ -59,16 +60,10 @@ class DynamoDBStack(Construct):
         self.__user_table = create_table(self, "UserApaeLeilao", "user_id")
         create_global_secondary_index(self.__user_table, "EmailIndex", "email")
         create_global_secondary_index(self.__user_table, "CpfIndex", "cpf")
-        create_global_secondary_index(self.__user_table,
-                                      "SuspensionIndex",
-                                      "user_id",
-                                      "suspension_id",
-                                      ["suspension_id", "reason", "date_suspension",
-                                       "date_reactivation", "status_suspension"]
-                                      )
 
         self.__auction_table = create_table(self, "AuctionApaeLeilao", "auction_id")
-        create_global_secondary_index(self.__auction_table, "Status-CreateAt-Index", "status_auction", "create_at")
+        create_global_secondary_index(self.__auction_table, "Status-CreateAt-Index",
+                                      "status_auction", "create_at", dynamodb.AttributeType.NUMBER)
 
         self.__bid_table = create_table(self, "BidApaeLeilao", "bid_id")
         create_global_secondary_index(self.__bid_table, "AuctionIdIndex", "auction_id")
