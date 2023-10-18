@@ -14,6 +14,10 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
+    def get_all_auctions_menu(self) -> Optional[Dict]:
+        pass
+
+    @abstractmethod
     def get_auction_by_id(self, auction_id: str) -> Optional[Dict]:
         pass
 

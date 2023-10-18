@@ -13,6 +13,7 @@ class Auction:
     start_date: int
     end_date: int
     start_amount: float
+    current_amount: float
     images: List[str]
     status_auction: STATUS_AUCTION_ENUM
     create_at: int
@@ -28,6 +29,7 @@ class Auction:
                  start_date: int = None,
                  end_date: int = None,
                  start_amount: float = None,
+                 current_amount: float = None,
                  images: List[str] = None,
                  status_auction: STATUS_AUCTION_ENUM = None,
                  create_at: int = None,
@@ -38,7 +40,8 @@ class Auction:
         self.description = self.validate_and_set_description(description)
         self.start_date = self.validate_set_start_date(start_date)
         self.end_date = self.validate_set_end_date(end_date)
-        self.start_price = self.validate_and_set_start_amount(start_amount)
+        self.start_price = self.validate_and_set_amount(start_amount)
+        self.current_amount = self.validate_and_set_amount(current_amount)
         self.images = self.validate_and_set_images(images)
         self.status_auction = self.validate_and_set_status_auction(STATUS_AUCTION_ENUM(status_auction))
         self.create_at = self.validate_and_set_create_at(create_at)
@@ -51,7 +54,8 @@ class Auction:
             "start_date": self.start_date,
             "end_date": self.end_date,
             "start_price": self.start_price,
-            "bids": self.bids,
+            "current_amount": self.current_amount,
+            "images": self.images,
             "status_auction": self.status_auction.value,
             "create_at": self.create_at
         }
@@ -107,7 +111,7 @@ class Auction:
         return end_date
 
     @staticmethod
-    def validate_and_set_start_amount(start_amount: float) -> float:
+    def validate_and_set_amount(start_amount: float) -> float:
         if start_amount is None:
             raise MissingParameter("start_price")
         if type(start_amount) != float:
