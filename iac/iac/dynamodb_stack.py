@@ -68,6 +68,7 @@ class DynamoDBStack(Construct):
                                       )
 
         self.__auction_table = create_table(self, "AuctionApaeLeilao", "auction_id")
+        create_global_secondary_index(self.__auction_table, "Status-CreateAt-Index", "status_auction", "create_at")
 
         self.__bid_table = create_table(self, "BidApaeLeilao", "bid_id")
         create_global_secondary_index(self.__bid_table, "AuctionIdIndex", "auction_id")

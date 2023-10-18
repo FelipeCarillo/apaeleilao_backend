@@ -3,19 +3,19 @@ from enum import Enum
 
 class STATUS_AUCTION_ENUM(Enum):
     """
+    PENDING: The auction is waiting to start
     OPEN: The auction is open
     CLOSED: The auction is closed
-    SUSPENDED: The auction is suspended
     """
 
+    PENDING = 'PENDING'
     OPEN = 'OPEN'
     CLOSED = 'CLOSED'
-    SUSPENDED = 'SUSPENDED'
 
 
 class STATUS_AUCTION_PAYMENT_ENUM(Enum):
     """
-    PENDING: The auction is open and the payment is pending
+    PENDING: The auction is closed and the payment is pending
     PAID: The auction is closed and the payment is paid
     EXPIRED: The auction is closed and the payment is expired
     """
