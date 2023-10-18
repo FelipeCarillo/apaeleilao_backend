@@ -183,8 +183,8 @@ class User(ABC):
     def validate_and_set_suspendions(suspensions: List) -> List or None:
         if suspensions is None:
             suspensions = []
-        if type(suspensions) != List:
-            raise InvalidParameter("suspensions", "deve ser List")
+        if isinstance(suspensions, list) is False:
+            raise InvalidParameter("suspensions", "deve ser list")
         if any(type(suspension) != Suspension for suspension in suspensions):
             raise InvalidParameter("suspensions", "deve ser List[Suspension]")
 
