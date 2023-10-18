@@ -12,37 +12,46 @@ class Auction:
     description: str
     start_date: int
     end_date: int
-    start_price: float
+    start_amount: float
+    current_amount: float
     bids: List[Bid]
-    best_bid: Bid
-    second_best_bid: Bid
-    payment: List[Payment]
+    payments: List[Payment]
+    images: List[str]
     status_auction: STATUS_AUCTION_ENUM
     AUCTION_ID_LENGTH = 36
     TITTLE_MAX_LENGTH = 100
-    TITTLE_MIN_LENGTH = 5
+    TITTLE_MIN_LENGTH = 3
     DESCRIPTION_MAX_LENGTH = 350
-    DESCRIPTION_MIN_LENGTH = 10
+    DESCRIPTION_MIN_LENGTH = 5
 
     def __init__(self, auction_id: str = None,
                  tittle: str = None,
                  description: str = None,
                  start_date: int = None,
                  end_date: int = None,
-                 start_price: float = None,
-                 current_price: float = None,
-                 status_auction: str = None,
-                 status_payment: str = None):
+                 start_amount: float = None,
+                 current_amount: float = None,
+                 bids: List[Bid] = None,
+                 payments: List[Payment] = None,
+                 images: List[str] = None,
+                 best_bid: Bid = None,
+                 second_best_bid: Bid = None,
+                 status_auction: STATUS_AUCTION_ENUM = None,
+                 ):
     
         self.auction_id = self.validate_and_set_auction_id(auction_id)
         self.tittle = self.validate_and_set_tittle(tittle)
         self.description = self.validate_and_set_description(description)
         self.start_date = self.validate_set_start_date(start_date)
         self.end_date = self.validate_set_end_date(end_date)
-        self.start_price = self.validate_and_set_start_price(start_price)
-        self.current_price = self.validate_and_set_current_price(current_price)
+        self.start_price = self.validate_and_set_start_amount(start_amount)
+        self.current_price = self.validate_and_set_current_amount(current_amount)
+        self.bids = self.validate_and_set_bids(bids)
+        self.payments = self.validate_and_set_payments(payments)
+        self.images = self.validate_and_set_images(images)
+        self.best_bid = self.validate_and_set_best_bid(best_bid)
+        self.second_best_bid = self.validate_and_set_second_best_bid(second_best_bid)
         self.status_auction = self.validate_and_set_status_auction(STATUS_AUCTION_ENUM(status_auction))
-        self.status_payment = self.validate_and_set_status_payment(STATUS_AUCTION_PAYMENT_ENUM(status_payment))
     
     def to_dict(self):
         return {
@@ -54,8 +63,10 @@ class Auction:
             "start_price": self.start_price,
             "current_price": self.current_price,
             "bids": self.bids,
+            "payments": self.payments,
+            "best_bid": self.best_bid,
+            "second_best_bid": self.second_best_bid,
             "status_auction": self.status_auction.value,
-            "status_payment": self.status_payment.value
         }
     
     @staticmethod
@@ -84,7 +95,7 @@ class Auction:
     def validate_and_set_description(description: str) -> str or None:
         if description is None:
             return None
-        if Auction.DESCRIPTION_MIN_LENGTH > len(description) or len(description) > Auction.DESCRIPTION_MAX_LENGTH:
+        if Auction.DESCRIPTION_MIN_LENGTH >= len(description) or len(description) >= Auction.DESCRIPTION_MAX_LENGTH:
             raise InvalidParameter(
                 "description", 
                 f"deve ter no mínimo {Auction.DESCRIPTION_MIN_LENGTH} caracteres e no máximo {Auction.DESCRIPTION_MAX_LENGTH}")
@@ -93,7 +104,7 @@ class Auction:
         return description
 
     @staticmethod
-    def validate_set_start_date(start_date: int) -> int or None:
+    def validate_set_start_date(start_date: int) -> int:
         if start_date is None:
             raise MissingParameter("start_date")
         if type(start_date) != int:
@@ -101,7 +112,7 @@ class Auction:
         return start_date
 
     @staticmethod
-    def validate_set_end_date(end_date: int) -> int or None:
+    def validate_set_end_date(end_date: int) -> int:
         if end_date is None:
             raise MissingParameter("end_date") 
         if type(end_date) != int:
@@ -109,20 +120,69 @@ class Auction:
         return end_date
 
     @staticmethod
-    def validate_and_set_start_price(start_price: float) -> float or None:
-        if start_price is None:
+    def validate_and_set_start_amount(start_amount: float) -> float:
+        if start_amount is None:
             raise MissingParameter("start_price")
-        if type(start_price) != float:
+        if type(start_amount) != float:
             raise InvalidParameter("start_price", "deve ser um float")
-        return start_price
+        return start_amount
 
     @staticmethod
-    def validate_and_set_current_price(current_price: float) -> float or None:
-        if current_price is None:
+    def validate_and_set_current_amount(current_amount: float) -> float:
+        if current_amount is None:
             raise MissingParameter("current_price")
-        if type(current_price) != float:
+        if type(current_amount) != float:
             raise InvalidParameter("current_price", "deve ser um float")
-        return current_price
+        return current_amount
+
+    @staticmethod
+    def validate_and_set_bids(bids: List[Bid]) -> List[Bid] or List[None]:
+        if bids is None:
+            return []
+        if isinstance(bids, list):
+            raise InvalidParameter("bids", "deve ser uma lista")
+        for bid in bids:
+            if not isinstance(bid, Bid):
+                raise InvalidParameter("bids", "deve ser uma lista de Bid")
+        return bids
+
+    @staticmethod
+    def validate_and_set_payments(payments: List[Payment]) -> List[Payment] or List[None]:
+        if payments is None:
+            return []
+        if isinstance(payments, list):
+            raise InvalidParameter("payments", "deve ser uma lista")
+        for payment in payments:
+            if not isinstance(payment, Payment):
+                raise InvalidParameter("payments", "deve ser uma lista de Payment")
+        return payments
+
+    @staticmethod
+    def validate_and_set_images(images: List[str]) -> List[str] or List[None]:
+        if images is None:
+            return []
+        if isinstance(images, list):
+            raise InvalidParameter("images", "deve ser uma lista")
+        for image in images:
+            if not isinstance(image, str):
+                raise InvalidParameter("images", "deve ser uma lista de str")
+        return images
+
+    @staticmethod
+    def validate_and_set_best_bid(best_bid: Bid) -> Bid or None:
+        if best_bid is None:
+            return None
+        if not isinstance(best_bid, Bid):
+            raise InvalidParameter("best_bid", "deve ser uma Bid")
+        return best_bid
+
+    @staticmethod
+    def validate_and_set_second_best_bid(second_best_bid: Bid) -> Bid or None:
+        if second_best_bid is None:
+            return None
+        if not isinstance(second_best_bid, Bid):
+            raise InvalidParameter("second_best_bid", "deve ser uma Bid")
+        return second_best_bid
 
     @staticmethod
     def validate_and_set_status_auction(status_auction: STATUS_AUCTION_ENUM) -> STATUS_AUCTION_ENUM or None:
@@ -131,11 +191,3 @@ class Auction:
         if type(status_auction) != STATUS_AUCTION_ENUM:
             raise InvalidParameter("status_auction", "deve ser um STATUS_AUCTION_ENUM")
         return status_auction
-
-    @staticmethod
-    def validate_and_set_status_payment(status_payment: STATUS_AUCTION_PAYMENT_ENUM) -> STATUS_AUCTION_PAYMENT_ENUM or None:
-        if status_payment is None:
-            raise MissingParameter("status_payment")
-        if type(status_payment) != STATUS_AUCTION_PAYMENT_ENUM:
-            raise InvalidParameter("status_payment", "deve ser um STATUS_AUCTION_PAYMENT_ENUM")
-        return status_payment

@@ -1,14 +1,16 @@
 from src.shared.errors.modules_errors import InvalidParameter
+from src.shared.structure.entities.user import User
 from src.shared.structure.enums.auction_enum import STATUS_AUCTION_PAYMENT_ENUM
 
 
 class Payment:
     payment_id: str
     user_id: str
-    price: float
+    auction_id: str
+    amount: float
+    date_payment: int
     payment_expires_at: int or None
-    status: STATUS_AUCTION_PAYMENT_ENUM
-    voucher: str or None
+    status_payment: STATUS_AUCTION_PAYMENT_ENUM
 
     def __init__(self, price: float = None,
                  payment_expires_at: int = None,
