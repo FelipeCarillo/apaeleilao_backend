@@ -39,7 +39,7 @@ class AuctionDynamodb(AuctionInterface):
         try:
             query = self.__dynamodb.query(
                 IndexName='Status-CreateAt-Index',
-                KeyConditionExpression=Key('status').eq('PENDING'),
+                KeyConditionExpression=Key('status_auction').eq('PENDING'),
                 ScanIndexForward=True,
                 Limit=6
             )
