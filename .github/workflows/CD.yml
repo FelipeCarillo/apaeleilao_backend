@@ -24,7 +24,7 @@ jobs:
         run: |
           echo "Defining stack and bucket name"
           echo "STACK_NAME=ApaeLeilaoStack${{ github.ref_name }}" >> $GITHUB_ENV
-          echo "BUCKET_NAME=apae-leilao-bucket-${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "BUCKET_NAME=apae-leilao-imt-bucket" >> $GITHUB_ENV
 
       - name: Install CDK dependencies
         run: |
