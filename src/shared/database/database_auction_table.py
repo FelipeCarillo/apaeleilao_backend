@@ -1,7 +1,8 @@
-from typing import Dict
+from typing import Dict, List
+
+from boto3.dynamodb.conditions import Attr, Key
 
 from src.shared.database.database import Database
-from src.shared.structure.entities.bid import Bid
 from src.shared.structure.entities.auction import Auction
 from src.shared.structure.interface.auction_interface import AuctionInterface
 
@@ -18,19 +19,29 @@ class AuctionDynamodb(AuctionInterface):
         except Exception as e:
             raise e
 
-    def get_all_auctions(self, exclusive_start_key: str = None, amount: int = 6) -> Dict or None:
+    def get_all_auctions(self, exclusive_start_key: str = None, amount: int = 6) -> List[Dict] or None:
         try:
             if not exclusive_start_key:
                 query = self.__dynamodb.scan(
                     Limit=amount,
-                    Sortby='created_at',
-                    SortOrder='DESC'
                 )
-                response = query.get('Items', None)
-                return response
-            query = self.__dynamodb.scan(
-                ExclusiveStartKey=exclusive_start_key,
-                Limit=amount
+            else:
+                query = self.__dynamodb.scan(
+                    ExclusiveStartKey=exclusive_start_key,
+                    Limit=amount
+                )
+            response = query.get('Items', None)
+            return response
+        except Exception as e:
+            raise e
+
+    def get_auctions_menu(self) -> List[Dict] or None:
+        try:
+            query = self.__dynamodb.query(
+                IndexName='Status-CreateAt-Index',
+                KeyConditionExpression=Key('status').eq('PENDING'),
+                ScanIndexForward=True,
+                Limit=6
             )
             response = query.get('Items', None)
             return response
