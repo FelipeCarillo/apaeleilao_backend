@@ -62,6 +62,7 @@ class CreateUserUseCase:
                     phone=body.get('phone'),
                     password=body.get('password'),
                     accepted_terms=body.get('accepted_terms'),
+                    suspensions=[],
                     status_account=status_account,
                     type_account=type_account,
                     date_joined=date_joined
