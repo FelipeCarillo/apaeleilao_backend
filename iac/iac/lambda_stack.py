@@ -107,6 +107,13 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
+        self.get_auction_menu = self.create_lambda(
+            function_name="get_auction_menu",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
@@ -118,6 +125,7 @@ class LambdaStack(Construct):
             self.confirm_password_reset_code,
             self.get_token,
             self.update_user,
+            self.get_auction_menu,
         )
 
     @property
