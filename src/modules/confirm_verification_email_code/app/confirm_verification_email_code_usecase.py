@@ -23,11 +23,8 @@ class ConfirmVerificationEmailCodeUseCase:
 
         if not body:
             MissingParameter('body')
-        if not body.get('verification_email_code') and not body.get('password_reset_code'):
+        if not body.get('verification_email_code'):
             raise MissingParameter('Código de validação')
-        if body.get('verification_email_code') and body.get('password_reset_code'):
-            raise InvalidParameter('verification_email_code ou password_reset_code',
-                                   'não pode ser enviado os dois códigos ao mesmo tempo')
 
         decoded_token = self.__token.decode_token(auth['Authorization'])
         if not decoded_token:
@@ -39,18 +36,11 @@ class ConfirmVerificationEmailCodeUseCase:
 
         current_time = TimeManipulation().get_current_time()
 
-        user_expire_at = user.get('password_reset_code_expires_at') if body.get('password_reset_code') else user.get(
-            'verification_email_code_expires_at')
-        user_code = user.get('password_reset_code') if body.get('password_reset_code') else user.get(
-            'verification_email_code')
-        request_code = body.get('password_reset_code') if body.get('password_reset_code') else body.get(
-            'verification_email_code')
+        if current_time > user.get('verification_email_code_expires_at'):
+            raise InvalidParameter(parameter='Código de validação', body='expirado')
 
-        if current_time > user_expire_at:
-            raise InvalidParameter(parameter='Código de verificação', body='expirado')
-
-        if int(request_code) != user_code:
-            raise InvalidParameter(parameter='Código de verificação', body='inválido')
+        if body.get('verification_email_code') != user.get('verification_email_code'):
+            raise InvalidParameter(parameter='Código de validação', body='inválido')
 
         status_account = STATUS_USER_ACCOUNT_ENUM.ACTIVE.value
 
