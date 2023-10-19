@@ -107,6 +107,18 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
+        s3_permissions = iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=[
+                "s3:PutObject",
+                "s3:DeleteObject",
+                "s3:GetObject",
+            ],
+            resources=[
+                f"arn:aws:s3:::{environment_variables['BUCKET_NAME']}/*"
+            ]
+        )
+
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (

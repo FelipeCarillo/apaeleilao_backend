@@ -16,8 +16,6 @@ class CreateUserUseCase:
     def __init__(self, user_interface: UserInterface):
         self.__user_interface = user_interface
         self.__token = TokenAuthy()
-        self.__encrypt_key = os.environ.get('ENCRYPT_KEY')
-        self.__jwt_algorithm = os.environ.get('JWT_ALGORITHM')
 
     def __call__(self, auth: Dict, body: Dict) -> Dict:
 

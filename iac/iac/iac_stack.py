@@ -46,11 +46,6 @@ class IACStack(Stack):
             access_control=s3.BucketAccessControl.PUBLIC_READ,
         )
 
-        client = boto3.client('s3')
-        get_bucket_folder = client.get_object(Bucket=bucket_name, Key="auctions/")
-        if not get_bucket_folder:
-            client.put_object(Bucket=bucket_name, Key="auctions/")
-
         self.__restapi = apigw.RestApi(
             self, f"Apae_Leilao_Restapi",
             rest_api_name=f"Apae_Leilao_RestApi",
