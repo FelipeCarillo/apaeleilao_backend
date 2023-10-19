@@ -3,7 +3,7 @@ from typing import List, Optional
 from src.shared.errors.modules_errors import *
 from src.shared.structure.entities.bid import Bid
 from src.shared.structure.entities.payment import Payment
-from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM, STATUS_AUCTION_PAYMENT_ENUM
+from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
 
 
 class Auction:

@@ -10,9 +10,7 @@ from constructs import Construct
 
 def create_table(self,
                  name: str,
-                 partition_key: str,
-                 sort_key: str = None,
-                 sort_key_type: dynamodb.AttributeType = None,
+                 partition_key: str
                  ) -> dynamodb.Table:
     table = dynamodb.Table(self,
                            name,
@@ -21,10 +19,6 @@ def create_table(self,
                                name=partition_key,
                                type=dynamodb.AttributeType.STRING
                            ),
-                           sort_key=dynamodb.Attribute(
-                               name=sort_key,
-                               type=dynamodb.AttributeType.STRING if not sort_key_type else sort_key_type
-                           ) if sort_key else None,
                            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
                            removal_policy=RemovalPolicy.DESTROY
                            )
@@ -40,8 +34,7 @@ def create_global_secondary_index(table: dynamodb.Table,
                                   index_name: str,
                                   partition_key: str,
                                   sort_key: str = None,
-                                  sort_key_type: dynamodb.AttributeType = None,
-                                  attributes: List = None,
+                                  sort_key_type: dynamodb.AttributeType = None
                                   ) -> None:
     table.add_global_secondary_index(
         index_name=index_name,
@@ -52,9 +45,7 @@ def create_global_secondary_index(table: dynamodb.Table,
         sort_key=dynamodb.Attribute(
             name=sort_key,
             type=dynamodb.AttributeType.STRING if not sort_key_type else sort_key_type
-        ) if sort_key else None,
-        non_key_attributes=attributes,
-        projection_type=dynamodb.ProjectionType.INCLUDE if attributes else dynamodb.ProjectionType.ALL
+        ) if sort_key else None
     )
 
 
@@ -63,19 +54,13 @@ class DynamoDBStack(Construct):
     def __init__(self, scope: Construct) -> None:
         super().__init__(scope, "ApaeLeilao_DynamoDB")
 
-        self.__user_table = create_table(self, "User_Apae_Leilao", "user_id", "create_at", dynamodb.AttributeType.NUMBER)
-        create_global_secondary_index(self.__user_table, "EmailIndex", "email")
-        create_global_secondary_index(self.__user_table, "CpfIndex", "cpf")
+        self.__user_table = create_table(self, "User_Apae_Leilao", "user_id")
+        create_global_secondary_index(self.__user_table, "email-index", "email")
+        create_global_secondary_index(self.__user_table, "cpf-index", "cpf")
 
-        self.__auction_table = create_table(self, "Auction_Apae_Leilao", "auction_id", "create_at", dynamodb.AttributeType.NUMBER)
-
-        self.__bid_table = create_table(self, "BidApaeLeilao", "bid_id")
-        create_global_secondary_index(self.__bid_table, "AuctionIdIndex", "auction_id")
-        create_global_secondary_index(self.__bid_table, "UserIdIndex", "user_id")
-
-        self.__payment_table = create_table(self, "PaymentApaeLeilao", "payment_id")
-        create_global_secondary_index(self.__payment_table, "AuctionIdIndex", "auction_id")
-        create_global_secondary_index(self.__payment_table, "UserIdIndex", "user_id")
+        self.__auction_table = create_table(self, "Auction_Apae_Leilao", "auction_id")
+        create_global_secondary_index(self.__auction_table, "status-auction-index", "status_auction", 'start_date',
+                                      dynamodb.AttributeType.NUMBER)
 
     @property
     def user_table(self) -> dynamodb.Table:
@@ -84,11 +69,3 @@ class DynamoDBStack(Construct):
     @property
     def auction_table(self) -> dynamodb.Table:
         return self.__auction_table
-
-    @property
-    def bid_table(self) -> dynamodb.Table:
-        return self.__bid_table
-
-    @property
-    def payment_table(self) -> dynamodb.Table:
-        return self.__payment_table

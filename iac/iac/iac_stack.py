@@ -67,7 +67,7 @@ class IACStack(Stack):
             "allow_headers": ["*"]
         })
 
-        # self.dynamodb_stack = DynamoDBStack(self)
+        self.dynamodb_stack = DynamoDBStack(self)
 
         self.lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,
                                            environment_variables=ENVIRONMENT_VARIABLES)
