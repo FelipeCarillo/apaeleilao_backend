@@ -57,6 +57,7 @@ class DynamoDBStack(Construct):
         self.__user_table = create_table(self, "User_Apae_Leilao", "user_id")
         create_global_secondary_index(self.__user_table, "email-index", "email")
         create_global_secondary_index(self.__user_table, "cpf-index", "cpf")
+        create_global_secondary_index(self.__user_table, "access_key-index", "access_key")
 
         self.__auction_table = create_table(self, "Auction_Apae_Leilao", "auction_id")
         create_global_secondary_index(self.__auction_table, "status-auction-index", "status_auction", 'start_date',

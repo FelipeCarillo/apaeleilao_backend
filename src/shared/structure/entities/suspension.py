@@ -1,8 +1,10 @@
+from abc import ABC
+
 from src.shared.errors.modules_errors import InvalidParameter
 from src.shared.structure.enums.suspension_enum import STATUS_SUSPENSION_ENUM
 
 
-class Suspension:
+class Suspension(ABC):
     suspension_id: str
     date_suspencion: int
     date_reactivation: int

@@ -25,9 +25,6 @@ class User(ABC):
     verification_code_expires_at: int
     password_reset_code: str
     password_reset_code_expires_at: int
-    USER_ID_LENGTH = 36
-    NAME_MIN_LENGTH = 3
-    NAME_MAX_LENGTH = 200
 
     def __init__(self, user_id: str = None,
                  first_name: str = None,
@@ -46,23 +43,23 @@ class User(ABC):
                  password_reset_code: str = None,
                  password_reset_code_expires_at: int = None):
 
-        self.user_id = self.validate_and_set_user_id(user_id)
-        self.first_name = self.validate_and_set_first_name(first_name)
-        self.last_name = self.validate_and_set_last_name(last_name)
-        self.cpf = self.validate_and_set_cpf(cpf)
-        self.email = self.validate_and_set_email(email)
-        self.phone = self.validate_and_set_phone(phone)
-        self.password = self.validate_and_set_password(password)
-        self.accepted_terms = self.validate_and_set_accepted_terms(accepted_terms)
-        self.suspensions = self.validate_and_set_suspendions(suspensions)
-        self.status_account = self.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
-        self.type_account = self.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
-        self.date_joined = self.validate_and_set_date_joined(date_joined)
-        self.verification_email_code = self.validate_and_set_verification_email_code(verification_email_code)
-        self.verification_email_code_expires_at = self.validate_and_set_verification_email_code_expires_at(
+        self.user_id = UserValidator.validate_and_set_user_id(user_id)
+        self.first_name = UserValidator.validate_and_set_first_name(first_name)
+        self.last_name = UserValidator.validate_and_set_last_name(last_name)
+        self.cpf = UserValidator.validate_and_set_cpf(cpf)
+        self.email = UserValidator.validate_and_set_email(email)
+        self.phone = UserValidator.validate_and_set_phone(phone)
+        self.password = UserValidator.validate_and_set_password(password)
+        self.accepted_terms = UserValidator.validate_and_set_accepted_terms(accepted_terms)
+        self.suspensions = UserValidator.validate_and_set_suspendions(suspensions)
+        self.status_account = UserValidator.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
+        self.type_account = UserValidator.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
+        self.date_joined = UserValidator.validate_and_set_date_joined(date_joined)
+        self.verification_email_code = UserValidator.validate_and_set_verification_email_code(verification_email_code)
+        self.verification_email_code_expires_at = UserValidator.validate_and_set_verification_email_code_expires_at(
             verification_email_code_expires_at)
-        self.password_reset_code = self.validate_and_set_password_reset_code(password_reset_code)
-        self.password_reset_code_expires_at = self.validate_and_set_password_reset_code_expires_at(
+        self.password_reset_code = UserValidator.validate_and_set_password_reset_code(password_reset_code)
+        self.password_reset_code_expires_at = UserValidator.validate_and_set_password_reset_code_expires_at(
             password_reset_code_expires_at)
 
     def to_dict(self):
@@ -90,24 +87,148 @@ class User(ABC):
             'password_reset_code_expires_at': self.password_reset_code_expires_at,
         }
 
+
+class UserModerator(ABC):
+    user_id: str
+    access_key: str
+    first_name: str
+    last_name: str
+    cpf: str
+    password: str
+    accepted_terms: bool
+    status_account: STATUS_USER_ACCOUNT_ENUM
+    type_account: TYPE_ACCOUNT_USER_ENUM
+    date_joined: int
+    USER_ID_LENGTH = 36
+    NAME_MIN_LENGTH = 3
+    NAME_MAX_LENGTH = 200
+    PERMITTED_TYPE_ACCOUNT = [TYPE_ACCOUNT_USER_ENUM.MODERATOR]
+
+    def __init__(self, user_id: str = None,
+                 access_key: str = None,
+                 first_name: str = None,
+                 last_name: str = None,
+                 cpf: str = None,
+                 password: str = None,
+                 accepted_terms: bool = None,
+                 status_account: str = None,
+                 type_account: str = None,
+                 date_joined: int = None):
+        self.user_id = UserValidator.validate_and_set_user_id(user_id)
+        self.access_key = UserValidator.validate_and_set_access_key(access_key)
+        self.first_name = UserValidator.validate_and_set_first_name(first_name)
+        self.last_name = UserValidator.validate_and_set_last_name(last_name)
+        self.cpf = UserValidator.validate_and_set_cpf(cpf)
+        self.password = UserValidator.validate_and_set_password(password)
+        self.accepted_terms = UserValidator.validate_and_set_accepted_terms(accepted_terms)
+        self.status_account = UserValidator.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
+        self.type_account = self.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
+        self.date_joined = UserValidator.validate_and_set_date_joined(date_joined)
+
+    def to_dict(self):
+        return {
+            'user_id': self.user_id,
+            'access_key': self.access_key,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'cpf': self.cpf,
+            'password': self.password,
+            'accepted_terms': self.accepted_terms,
+            'status_account': self.status_account.value,
+            'type_account': self.type_account.value,
+            'date_joined': self.date_joined,
+        }
+
+    @staticmethod
+    def validate_and_set_type_account(type_account: TYPE_ACCOUNT_USER_ENUM):
+        if type_account is None:
+            raise MissingParameter("type_account")
+        if type(type_account) != TYPE_ACCOUNT_USER_ENUM:
+            raise InvalidParameter("type_account", "deve ser TYPE_ACCOUNT_USER_ENUM")
+        if type_account not in UserModerator.PERMITTED_TYPE_ACCOUNT:
+            raise InvalidParameter("type_account",
+                                   f"deve ser um dos seguintes valores: {UserModerator.PERMITTED_TYPE_ACCOUNT}")
+        return type_account
+
+
+class UserAdmin(ABC):
+    user_id: str
+    access_key: str
+    password: str
+    status_account: STATUS_USER_ACCOUNT_ENUM
+    type_account: TYPE_ACCOUNT_USER_ENUM
+    date_joined: int
+    PERMITTED_TYPE_ACCOUNT = [TYPE_ACCOUNT_USER_ENUM.ADMIN]
+
+    def __init__(self, user_id: str = None,
+                 access_key: str = None,
+                 password: str = None,
+                 status_account: str = None,
+                 type_account: str = None,
+                 date_joined: int = None):
+        self.user_id = UserValidator.validate_and_set_user_id(user_id)
+        self.access_key = UserValidator.validate_and_set_access_key(access_key)
+        self.password = UserValidator.validate_and_set_password(password)
+        self.status_account = UserValidator.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
+        self.type_account = self.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
+        self.date_joined = UserValidator.validate_and_set_date_joined(date_joined)
+
+    def to_dict(self):
+        return {
+            'user_id': self.user_id,
+            'access_key': self.access_key,
+            'password': self.password,
+            'status_account': self.status_account.value,
+            'type_account': self.type_account.value,
+            'date_joined': self.date_joined,
+        }
+
+    @staticmethod
+    def validate_and_set_type_account(type_account: TYPE_ACCOUNT_USER_ENUM):
+        if type_account is None:
+            raise MissingParameter("type_account")
+        if type(type_account) != TYPE_ACCOUNT_USER_ENUM:
+            raise InvalidParameter("type_account", "deve ser TYPE_ACCOUNT_USER_ENUM")
+        if type_account not in UserAdmin.PERMITTED_TYPE_ACCOUNT:
+            raise InvalidParameter("type_account",
+                                   f"deve ser um dos seguintes valores: {UserAdmin.PERMITTED_TYPE_ACCOUNT}")
+        return type_account
+
+
+class UserValidator(ABC):
+    USER_ID_LENGTH = 36
+    ACCESS_KEY_LENGTH = 12
+    NAME_MIN_LENGTH = 3
+    NAME_MAX_LENGTH = 200
+
     @staticmethod
     def validate_and_set_user_id(user_id: str) -> str or None:
         if user_id is None:
             raise MissingParameter("user_id")
         if type(user_id) != str:
             raise InvalidParameter("user_id", "deve ser str")
-        if len(user_id) != User.USER_ID_LENGTH:
+        if len(user_id) != UserValidator.USER_ID_LENGTH:
             raise InvalidParameter("user_id", "deve ter 36 caracteres")
         return user_id
+
+    @staticmethod
+    def validate_and_set_access_key(access_key: str) -> str or None:
+        if access_key is None:
+            raise MissingParameter("access_key")
+        if type(access_key) != str:
+            raise InvalidParameter("access_key", "deve ser str")
+        if len(access_key) != UserValidator.ACCESS_KEY_LENGTH:
+            raise InvalidParameter("access_key", f"deve ter {UserValidator.ACCESS_KEY_LENGTH} caracteres")
+        return access_key
 
     @staticmethod
     def validate_and_set_first_name(first_name: str) -> str or None:
         if first_name is None:
             raise MissingParameter("Nome")
-        if User.NAME_MIN_LENGTH < len(first_name) >= User.NAME_MAX_LENGTH:
+        if UserValidator.NAME_MIN_LENGTH < len(first_name) >= UserValidator.NAME_MAX_LENGTH:
             raise InvalidParameter(
                 "first_name",
-                f"deve ter no mínimo {User.NAME_MIN_LENGTH} caracteres e no máximo {User.NAME_MAX_LENGTH}")
+                f"deve ter no mínimo {UserValidator.NAME_MIN_LENGTH} caracteres e no máximo {UserValidator.NAME_MAX_LENGTH}")
         if type(first_name) != str:
             raise InvalidParameter("first_name", "deve ser str")
         return first_name
@@ -118,9 +239,9 @@ class User(ABC):
             raise MissingParameter("Sobrenome")
         if type(last_name) != str:
             raise InvalidParameter("last_name", "deve ser str")
-        if User.NAME_MIN_LENGTH < len(last_name) >= User.NAME_MAX_LENGTH:
+        if UserValidator.NAME_MIN_LENGTH < len(last_name) >= UserValidator.NAME_MAX_LENGTH:
             raise InvalidParameter("last_name",
-                                   f"deve ter no mínimo {User.NAME_MIN_LENGTH} caracteres e no máximo {User.NAME_MAX_LENGTH}")
+                                   f"deve ter no mínimo {UserValidator.NAME_MIN_LENGTH} caracteres e no máximo {UserValidator.NAME_MAX_LENGTH}")
         return last_name
 
     @staticmethod
@@ -218,6 +339,8 @@ class User(ABC):
             raise MissingParameter("type_account")
         if type(type_account) != TYPE_ACCOUNT_USER_ENUM:
             raise InvalidParameter("type_account", "deve ser TYPE_ACCOUNT_USER_ENUM")
+        if type_account != TYPE_ACCOUNT_USER_ENUM.USER:
+            raise InvalidParameter("type_account", "deve ser USER")
         return type_account
 
     @staticmethod

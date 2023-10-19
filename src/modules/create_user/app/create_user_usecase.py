@@ -32,6 +32,9 @@ class CreateUserUseCase:
             raise DataAlreadyUsed('CPF')
 
         user_id = str(uuid.uuid4())
+        while self.__user_interface.get_user_by_id(user_id):
+            user_id = str(uuid.uuid4())
+
         date_joined = TimeManipulation.get_current_time()
 
         user = User(user_id=user_id,

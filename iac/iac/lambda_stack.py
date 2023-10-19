@@ -131,7 +131,7 @@ class LambdaStack(Construct):
         )
 
         self.create_auction = self.create_lambda(
-            function_name="create_auction",
+            function_name="create_auction_admin",
             method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,

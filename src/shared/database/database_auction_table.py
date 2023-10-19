@@ -1,6 +1,6 @@
+from decimal import Decimal
 from typing import Dict, List
-
-from boto3.dynamodb.conditions import Attr, Key
+from boto3.dynamodb.conditions import Key, Attr
 
 from src.shared.database.database import Database
 from src.shared.structure.entities.auction import Auction
@@ -83,10 +83,25 @@ class AuctionDynamodb(AuctionInterface):
         except Exception as e:
             raise e
 
-    def update_auction(self, auction: Auction) -> Dict or None:
+    def update_auction_information(self, auction: Auction) -> Dict or None:
         try:
-            auction = auction.to_dict()
-            self.__dynamodb.put_item(Item=auction)
-            return auction
+            response = self.__dynamodb.update_item(
+                Key={'auction_id': auction.auction_id},
+                UpdateExpression='SET tittle = :tittle, description = :description, start_date = :start_date, '
+                                 'end_date = :end_date, start_amount = :start_amount, current_amount = '
+                                 ':current_amount, images = :images, status_auction = :status_auction',
+                ExpressionAttributeValues={
+                    ':tittle': auction.tittle,
+                    ':description': auction.description,
+                    ':start_date': auction.start_date,
+                    ':end_date': auction.end_date,
+                    ':start_amount': auction.start_price,
+                    ':current_amount': auction.current_amount,
+                    ':images': auction.images,
+                    ':status_auction': auction.status_auction.value
+                },
+                ReturnValues='UPDATED_NEW'
+            )
+            return response['Attributes']
         except Exception as e:
             raise e

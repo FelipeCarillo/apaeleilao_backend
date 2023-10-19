@@ -1,9 +1,11 @@
+from decimal import Decimal
 from typing import List, Optional, Dict
 
 from src.shared.errors.modules_errors import *
 from src.shared.structure.entities.bid import Bid
 from src.shared.structure.entities.payment import Payment
 from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
+from src.shared.helper_functions.time_manipulation import TimeManipulation
 
 
 class Auction:
@@ -13,8 +15,8 @@ class Auction:
     description: str
     start_date: int
     end_date: int
-    start_amount: float
-    current_amount: float
+    start_amount: Decimal
+    current_amount: Decimal
     bids: List[Optional[Bid]]
     payments: List[Optional[Payment]]
     images: List[Dict[str]]
@@ -32,8 +34,8 @@ class Auction:
                  description: str = None,
                  start_date: int = None,
                  end_date: int = None,
-                 start_amount: float = None,
-                 current_amount: float = None,
+                 start_amount: str = None,
+                 current_amount: str = None,
                  bids: List[Optional[Bid]] = None,
                  payments: List[Optional[Payment]] = None,
                  images: List[Dict[str]] = None,
@@ -63,14 +65,34 @@ class Auction:
             "description": self.description,
             "start_date": self.start_date,
             "end_date": self.end_date,
-            "start_price": self.start_price,
-            "current_amount": self.current_amount,
+            "start_price": float(self.start_price),
+            "current_amount": float(self.current_amount),
             "bids": [bid.to_dict() for bid in self.bids] if len(self.bids) > 0 else [],
             "payments": [payment.to_dict() for payment in self.payments] if len(self.payments) > 0 else [],
             "images": self.images,
             "status_auction": self.status_auction.value,
             "create_at": self.create_at
         }
+
+    def check_time(self):
+        """
+        Check if the auction is open or closed
+        """
+        time = TimeManipulation.get_current_time()
+        if self.status_auction == STATUS_AUCTION_ENUM.OPEN:
+            if self.end_date <= time:
+                self.status_auction = STATUS_AUCTION_ENUM.CLOSED
+        if self.status_auction == STATUS_AUCTION_ENUM.PENDING:
+            if self.start_date <= time:
+                self.status_auction = STATUS_AUCTION_ENUM.OPEN
+
+    def check_current_amount(self):
+        """
+        Check the current amount of the auction
+        """
+        if self.status_auction == STATUS_AUCTION_ENUM.OPEN:
+            if len(self.bids) > 0:
+                self.current_amount = max(self.bids, key=lambda bid: bid.amount).amount
 
     @staticmethod
     def validate_and_set_auction_id(auction_id: str) -> str or None:
@@ -133,12 +155,15 @@ class Auction:
         return end_date
 
     @staticmethod
-    def validate_and_set_amount(start_amount: float) -> float:
+    def validate_and_set_amount(start_amount: str) -> Decimal:
         if start_amount is None:
-            raise MissingParameter("start_price")
-        if type(start_amount) != float:
-            raise InvalidParameter("start_price", "deve ser um float")
-        return start_amount
+            raise MissingParameter("start_amount")
+        if type(start_amount) != str:
+            raise InvalidParameter("start_amount", "deve ser um str")
+        start_amount = start_amount.replace(',', '.')
+        if len(start_amount.split('.')) > 2:
+            raise InvalidParameter("start_amount", "deve ser um número com 2 digitos pós a virgula")
+        return Decimal(start_amount)
 
     @staticmethod
     def validate_and_set_images(images: List[Dict[str]]) -> List[Dict[str]] or List[None]:

@@ -22,7 +22,25 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
-    def update_auction(self, auction: Auction) -> Optional[Dict]:
+    def update_auction_information(self, auction: Auction) -> Optional[Dict]:
+        """
+        Update the basics information of the auction
+        Don't update the bids, payments and created_by
+        """
+        pass
+
+    @abstractmethod
+    def update_auction_bids(self, auction: Auction) -> Optional[Dict]:
+        """
+        Update the bids of the auction
+        """
+        pass
+
+    @abstractmethod
+    def update_auction_payments(self, auction: Auction) -> Optional[Dict]:
+        """
+        Update the payments of the auction
+        """
         pass
 
     @abstractmethod
