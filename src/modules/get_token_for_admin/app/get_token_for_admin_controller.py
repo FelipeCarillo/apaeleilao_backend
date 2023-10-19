@@ -1,6 +1,6 @@
 from typing import Dict
 
-from .get_token_usecase import GetTokenUseCase
+from .get_token_for_admin_usecase import GetTokenUseCase
 
 from src.shared.https_codes.https_code import OK, BadRequest, InternalServerError, Unauthorized, ParameterError
 from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated

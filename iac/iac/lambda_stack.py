@@ -11,18 +11,6 @@ class LambdaStack(Construct):
 
     def create_lambda(self, function_name: str, method: str,
                       restapi_resource: apigw.Resource, environment_variables: Dict[str, str]) -> _lambda.Function:
-        """
-        :param function_name:
-        :param method:
-        :param restapi_resource:
-        :param environment_variables:
-        :return:
-
-        **This function creates a lambda function and add it to the restapi_resource.**
-
-        **If the function name contains the word "admin" it will create a new resource called "admin" and add the
-        function to it.**
-        """
 
         function = _lambda.Function(
             self, (function_name + "_apae_leilao").title(),
@@ -30,7 +18,7 @@ class LambdaStack(Construct):
             environment=environment_variables,
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
-            handler=f"app.{function_name.replace('_admin', '')}_presenter.lambda_handler",
+            handler=f"app.{function_name}_presenter.lambda_handler",
             layers=[self.shared_layer, self.jwt_layer, self.bcrypt_layer],
             timeout=Duration.seconds(15),
             memory_size=512,
@@ -121,21 +109,21 @@ class LambdaStack(Construct):
         )
 
         self.create_auction = self.create_lambda(
-            function_name="create_auction_admin",
+            function_name="create_auction",
             method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
 
-        self.create_user_admin = self.create_lambda(
-            function_name="create_user_admin",
+        self.create_user_by_admin = self.create_lambda(
+            function_name="create_user_by_admin",
             method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
 
-        self.create_auction_admin = self.create_lambda(
-            function_name="create_auction_admin",
+        self.create_auction_by_admin = self.create_lambda(
+            function_name="create_auction",
             method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
@@ -143,6 +131,13 @@ class LambdaStack(Construct):
 
         self.get_auction = self.create_lambda(
             function_name="get_auction",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
+        self.get_token_for_admin = self.create_lambda(
+            function_name="get_token_for_admin",
             method="GET",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,

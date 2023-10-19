@@ -1,7 +1,7 @@
 import os
 
-from .get_token_usecase import GetTokenUseCase
-from .get_token_controller import GetTokenController
+from .get_token_for_admin_usecase import GetTokenUseCase
+from .get_token_for_admin_controller import GetTokenController
 
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 from src.shared.database.database_user_table import UserDynamodb

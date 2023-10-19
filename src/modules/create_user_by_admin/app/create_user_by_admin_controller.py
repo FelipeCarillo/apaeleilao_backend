@@ -1,6 +1,6 @@
 from typing import Dict
 
-from .create_user_usecase import CreateUserUseCase
+from .create_user_by_admin_usecase import CreateUserUseCase
 
 from src.shared.https_codes.https_code import Created, BadRequest, InternalServerError, ParameterError, Unauthorized
 from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, DataAlreadyUsed, \
