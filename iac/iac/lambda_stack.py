@@ -122,13 +122,6 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
-        self.create_auction_by_admin = self.create_lambda(
-            function_name="create_auction",
-            method="POST",
-            restapi_resource=restapi_resource,
-            environment_variables=environment_variables,
-        )
-
         self.get_auction = self.create_lambda(
             function_name="get_auction",
             method="GET",
@@ -155,8 +148,7 @@ class LambdaStack(Construct):
             self.get_token,
             self.update_user,
             self.create_auction,
-            self.create_user_admin,
-            self.create_auction_admin,
+            self.create_user_by_admin,
             self.get_auction,
         )
 
