@@ -19,6 +19,9 @@ class CreateUserController:
             if not request.get('body'):
                 raise MissingParameter('body')
 
+            if not request.get('auth'):
+                raise MissingParameter('auth')
+
             create_user_usecase = self.__usecase(auth=request.get('auth'), body=request.get('body'))
 
             return Created(create_user_usecase, message='Usuário criado com sucesso.')

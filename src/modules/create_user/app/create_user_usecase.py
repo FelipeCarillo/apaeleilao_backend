@@ -17,7 +17,7 @@ class CreateUserUseCase:
         self.__user_interface = user_interface
         self.__token = TokenAuthy()
 
-    def __call__(self, auth: Dict, body: Dict) -> Dict:
+    def __call__(self, body: Dict) -> Dict:
 
         if not body.get('email'):
             raise MissingParameter('Email')
@@ -31,24 +31,6 @@ class CreateUserUseCase:
         if self.__user_interface.get_user_by_cpf(body['cpf']):
             raise DataAlreadyUsed('CPF')
 
-        type_account_need_permission = [TYPE_ACCOUNT_USER_ENUM.ADMIN, TYPE_ACCOUNT_USER_ENUM.MODERATOR]
-        type_account = body.get('type_account', 'USER')
-        status_account = STATUS_USER_ACCOUNT_ENUM.PENDING.value
-        if TYPE_ACCOUNT_USER_ENUM(type_account) in type_account_need_permission:
-            if not auth:
-                raise MissingParameter('auth')
-            if not auth.get('Authorization'):
-                raise MissingParameter('Authorization')
-            user_id = self.__token.decode_token(auth.get('Authorization')).get('user_id')
-            if not user_id:
-                raise UserNotAuthenticated()
-            user = self.__user_interface.get_user_by_id(user_id)
-            if not user:
-                raise UserNotAuthenticated()
-            if user.get('type_account') != TYPE_ACCOUNT_USER_ENUM.ADMIN.value:
-                raise UserNotAuthenticated()
-            status_account = STATUS_USER_ACCOUNT_ENUM.ACTIVE.value
-
         user_id = str(uuid.uuid4())
         date_joined = TimeManipulation.get_current_time()
 
@@ -61,8 +43,8 @@ class CreateUserUseCase:
                     password=body.get('password'),
                     accepted_terms=body.get('accepted_terms'),
                     suspensions=[],
-                    status_account=status_account,
-                    type_account=type_account,
+                    status_account=STATUS_USER_ACCOUNT_ENUM.PENDING.value,
+                    type_account=TYPE_ACCOUNT_USER_ENUM.USER.value,
                     date_joined=date_joined
                     )
 
