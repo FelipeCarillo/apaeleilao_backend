@@ -20,7 +20,7 @@ class Bid(ABC):
         return {
             'bid_id': self.bid_id,
             'user_id': self.user_id,
-            'amount': self.amount,
+            'amount': float(self.amount),
             'date_bid': self.date_bid
         }
 
@@ -43,9 +43,12 @@ class Bid(ABC):
     @staticmethod
     def validated_and_set_amount(amount: str) -> Decimal:
         if not amount:
-            raise InvalidParameter('amount', 'é obrigatório')
+            raise InvalidParameter('amount', 'is required')
         if not isinstance(amount, str):
-            raise InvalidParameter('amount', 'deve ser str')
+            raise InvalidParameter('amount', 'must be a str')
+        amount = amount.replace(',', '.')
+        if len(amount.split('.')[-1]) > 2:
+            raise InvalidParameter('amount', 'must have 2 decimal places')
         return Decimal(amount)
 
     @staticmethod

@@ -19,7 +19,7 @@ class Payment(ABC):
                  payment_expires_at: int or None, status_payment: STATUS_AUCTION_PAYMENT_ENUM):
         self.payment_id = self.validate_and_set_payment_id(payment_id)
         self.user_id = self.validate_and_set_user_id(user_id)
-        self.amount = self.validate_and_set_price(amount)
+        self.amount = self.validate_and_set_amount(amount)
         self.created_at = self.validate_and_set_created_at(created_at)
         self.date_payment = self.validate_and_set_date_payment(date_payment)
         self.payment_expires_at = self.validate_and_set_payment_expires_at(payment_expires_at)
@@ -29,7 +29,7 @@ class Payment(ABC):
         return {
             'payment_id': self.payment_id,
             'user_id': self.user_id,
-            'amount': self.amount,
+            'amount': float(self.amount),
             'created_at': self.created_at,
             'date_payment': self.date_payment,
             'payment_expires_at': self.payment_expires_at,

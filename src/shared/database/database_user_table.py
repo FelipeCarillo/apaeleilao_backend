@@ -21,29 +21,21 @@ class UserDynamodb(UserInterface):
             raise e
 
     def authenticate(self,
-                     user_id: str = None,
                      email: str = None,
                      password: str = None,
-                     password_hash: str = None
                      ) -> Dict or None:
         try:
-            if email and password:
-                query = self.__dynamodb.query(IndexName='EmailIndex',
-                                              KeyConditionExpression=Key('email').eq(email))
-                item = query.get('Items', None)
-                item = item[0] if item else None
-                if item:
-                    if checkpw(password.encode('utf-8'), item['password'].encode('utf-8')):
-                        return item
-                return item
-            if user_id and password_hash:
-                key = {'user_id': user_id}
-                query = self.__dynamodb.get_item(Key=key,
-                                                 FilterExpression=Attr('password').eq(password_hash))
-                item = query.get('Item', None)
-                return item
+            query = self.__dynamodb.query(IndexName='email-index',
+                                          KeyConditionExpression=Key('email').eq(email))
+            item = query.get('Items', None)
+            item = item[0] if item else None
+            if item:
+                if checkpw(password.encode('utf-8'), item['password'].encode('utf-8')):
+                    return item
+                else:
+                    return None
             else:
-                raise Exception('Invalid parameters')
+                return None
         except Exception as e:
             raise e
 
@@ -70,7 +62,7 @@ class UserDynamodb(UserInterface):
     def get_user_by_email(self, email) -> Dict or None:
         try:
             query = self.__dynamodb.query(
-                IndexName='EmailIndex',
+                IndexName='email-index',
                 KeyConditionExpression=Key('email').eq(email),
             )
             response = query.get('Items', None)
@@ -120,7 +112,7 @@ class UserDynamodb(UserInterface):
                     ':password_reset_code': user.password_reset_code,
                     ':password_reset_code_expires_at': user.password_reset_code_expires_at
                 },
-                ReturnValues='UPDATED_NEW'
+                ReturnValues='ALL_NEW'
             )
             return response['Attributes'] if response else None
         except Exception as e:

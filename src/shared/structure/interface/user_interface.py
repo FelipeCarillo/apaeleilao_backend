@@ -8,10 +8,8 @@ class UserInterface(ABC):
 
     @abstractmethod
     def authenticate(self,
-                     user_id: str = None,
                      email: str = None,
                      password: str = None,
-                     password_hash: str = None
                      ) -> Optional[Dict]:
         pass
 

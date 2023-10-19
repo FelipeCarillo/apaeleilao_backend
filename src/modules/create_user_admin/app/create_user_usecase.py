@@ -3,7 +3,7 @@ import uuid
 from typing import Dict
 from bcrypt import hashpw, gensalt
 
-from src.shared.structure.entities.user import User
+from src.shared.structure.entities.user import UserModerator
 from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.helper_functions.time_manipulation import TimeManipulation
@@ -49,19 +49,16 @@ class CreateUserUseCase:
             user_id = str(uuid.uuid4())
         date_joined = TimeManipulation.get_current_time()
 
-        user = User(user_id=user_id,
-                    first_name=body.get('first_name'),
-                    last_name=body.get('last_name'),
-                    cpf=body.get('cpf'),
-                    email=body.get('email'),
-                    phone=body.get('phone'),
-                    password=body.get('password'),
-                    accepted_terms=body.get('accepted_terms'),
-                    suspensions=[],
-                    status_account=STATUS_USER_ACCOUNT_ENUM.ACTIVE.value,
-                    type_account=TYPE_ACCOUNT_USER_ENUM.MODERATOR.value,
-                    date_joined=date_joined
-                    )
+        user = UserModerator(user_id=user_id,
+                             first_name=body.get('first_name'),
+                             last_name=body.get('last_name'),
+                             cpf=body.get('cpf'),
+                             password=body.get('password'),
+                             accepted_terms=body.get('accepted_terms'),
+                             status_account=STATUS_USER_ACCOUNT_ENUM.ACTIVE.value,
+                             type_account=TYPE_ACCOUNT_USER_ENUM.MODERATOR.value,
+                             date_joined=date_joined
+                             )
 
         user.password = hashpw(user.password.encode('utf-8'), gensalt()).decode('utf-8')
 
