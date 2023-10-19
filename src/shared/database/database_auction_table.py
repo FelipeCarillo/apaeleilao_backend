@@ -71,6 +71,18 @@ class AuctionDynamodb(AuctionInterface):
         except Exception as e:
             raise e
 
+    def get_last_auction_id(self) -> int or None:
+        try:
+            query = self.__dynamodb.scan(
+                Limit=1,
+                ScanIndexForward=False,
+                ProjectionExpression='auction_id'
+            )
+            response = query.get('Items', None)
+            return int(response[0].get('auction_id')) if len(response) > 0 else None
+        except Exception as e:
+            raise e
+
     def update_auction(self, auction: Auction) -> Dict or None:
         try:
             auction = auction.to_dict()

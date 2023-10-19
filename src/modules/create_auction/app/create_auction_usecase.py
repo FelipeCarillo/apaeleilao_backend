@@ -49,14 +49,19 @@ class CreateUserUseCase:
         if not body.get('images'):
             raise MissingParameter('Imagens')
 
+        last_auction_id = self.__auction_interface.get_last_auction_id()
+        auction_id = last_auction_id + 1 if last_auction_id else 1
+
         auction = Auction(
-            auction_id=str(uuid.uuid4()),
+            auction_id=str(auction_id),
             tittle=body.get('tittle'),
             description=body.get('description'),
             start_date=body.get('start_date'),
             end_date=body.get('end_date'),
             start_amount=body.get('start_amount'),
             current_amount=body.get('start_amount'),
+            bids=[],
+            payments=[],
             images=body.get('images'),
             status_auction=STATUS_USER_ACCOUNT_ENUM.PENDING.value,
             create_at=TimeManipulation.get_current_time()

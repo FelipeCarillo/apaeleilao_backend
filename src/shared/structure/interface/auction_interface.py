@@ -25,5 +25,10 @@ class AuctionInterface(ABC):
     def update_auction(self, auction: Auction) -> Optional[Dict]:
         pass
 
+    @abstractmethod
     def get_auction_between_dates(self, start_date: int, end_date: int) -> Optional[Dict]:
+        pass
+
+    @abstractmethod
+    def get_last_auction_id(self) -> Optional[int]:
         pass

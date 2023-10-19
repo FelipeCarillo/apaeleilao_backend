@@ -32,6 +32,8 @@ class Auction:
                  end_date: int = None,
                  start_amount: float = None,
                  current_amount: float = None,
+                 bids: List[Optional[Bid]] = None,
+                 payments: List[Optional[Payment]] = None,
                  images: List[str] = None,
                  status_auction: STATUS_AUCTION_ENUM = None,
                  create_at: int = None,
@@ -44,6 +46,8 @@ class Auction:
         self.end_date = self.validate_set_end_date(end_date)
         self.start_price = self.validate_and_set_amount(start_amount)
         self.current_amount = self.validate_and_set_amount(current_amount)
+        self.bids = self.validate_and_set_bids(bids)
+        self.payments = self.validate_and_set_payments(payments)
         self.images = self.validate_and_set_images(images)
         self.status_auction = self.validate_and_set_status_auction(STATUS_AUCTION_ENUM(status_auction))
         self.create_at = self.validate_and_set_create_at(create_at)
@@ -57,6 +61,8 @@ class Auction:
             "end_date": self.end_date,
             "start_price": self.start_price,
             "current_amount": self.current_amount,
+            "bids": [bid.to_dict() for bid in self.bids] if len(self.bids) > 0 else [],
+            "payments": [payment.to_dict() for payment in self.payments] if len(self.payments) > 0 else [],
             "images": self.images,
             "status_auction": self.status_auction.value,
             "create_at": self.create_at
@@ -146,3 +152,27 @@ class Auction:
         if type(create_at) != int:
             raise InvalidParameter("create_at", "deve ser um int")
         return create_at
+
+    @staticmethod
+    def validate_and_set_bids(bids: List[Optional[Bid]]) -> List[Optional[Bid]] or None:
+        if bids is None:
+            raise MissingParameter("bids")
+        if not isinstance(bids, list):
+            raise InvalidParameter("bids", "deve ser uma lista")
+        if len(bids) > 0:
+            for bid in bids:
+                if not isinstance(bid, Bid):
+                    raise InvalidParameter("bids", "deve ser uma lista de Bid")
+        return bids
+
+    @staticmethod
+    def validate_and_set_payments(payments: List[Optional[Payment]]) -> List[Optional[Payment]] or None:
+        if payments is None:
+            raise MissingParameter("payments")
+        if not isinstance(payments, list):
+            raise InvalidParameter("payments", "deve ser uma lista")
+        if len(payments) > 0:
+            for payment in payments:
+                if not isinstance(payment, Payment):
+                    raise InvalidParameter("payments", "deve ser uma lista de Payment")
+        return payments
