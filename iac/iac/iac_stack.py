@@ -37,21 +37,6 @@ class IACStack(Stack):
             "EMAIL_PORT": email_port,
         }
 
-        self.__bucket = s3.Bucket(
-            self, f"Apae_Leilao_Imt_Bucket",
-            bucket_name=bucket_name,
-            versioned=True,
-            removal_policy=RemovalPolicy.DESTROY,
-            access_control=s3.BucketAccessControl.PUBLIC_READ,
-        )
-        self.__bucket.add_to_resource_policy(
-            s3.PolicyStatement(
-                actions=["s3:GetObject"],
-                resources=[f"{self.__bucket.bucket_arn}/*"],
-                principals=["*"],
-            )
-        )
-
         self.__restapi = apigw.RestApi(
             self, f"Apae_Leilao_Restapi",
             rest_api_name=f"Apae_Leilao_RestApi",
