@@ -4,7 +4,7 @@ from aws_cdk import (
     aws_apigateway as apigw,
     Stack,
     aws_s3 as s3,
-    RemovalPolicy,
+    RemovalPolicy
 )
 
 from constructs import Construct
@@ -44,6 +44,13 @@ class IACStack(Stack):
             removal_policy=RemovalPolicy.DESTROY,
             access_control=s3.BucketAccessControl.PUBLIC_READ,
         )
+        self.__bucket.add_to_resource_policy(
+            s3.PolicyStatement(
+                actions=["s3:GetObject"],
+                resources=[f"{self.__bucket.bucket_arn}/*"],
+                principals=["*"],
+            )
+        )
 
         self.__restapi = apigw.RestApi(
             self, f"Apae_Leilao_Restapi",
@@ -72,8 +79,8 @@ class IACStack(Stack):
         self.lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,
                                            environment_variables=ENVIRONMENT_VARIABLES)
 
-        # for function in self.lambda_function.functions_need_user_table_permission:
-        #     self.dynamodb_stack.user_table.grant_read_write_data(function)
-        #
-        # for function in self.lambda_function.functions_need_auction_table_permission:
-        #     self.dynamodb_stack.auction_table.grant_read_write_data(function)
+        for function in self.lambda_function.functions_need_user_table_permission:
+            self.dynamodb_stack.user_table.grant_read_write_data(function)
+
+        for function in self.lambda_function.functions_need_auction_table_permission:
+            self.dynamodb_stack.auction_table.grant_read_write_data(function)
