@@ -107,16 +107,11 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
-        s3_permissions = iam.PolicyStatement(
-            effect=iam.Effect.ALLOW,
-            actions=[
-                "s3:PutObject",
-                "s3:DeleteObject",
-                "s3:GetObject",
-            ],
-            resources=[
-                f"arn:aws:s3:::{environment_variables['BUCKET_NAME']}/*"
-            ]
+        self.create_auction = self.create_lambda(
+            function_name="create_auction",
+            method="POST",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
         )
 
     @property
@@ -130,11 +125,13 @@ class LambdaStack(Construct):
             self.confirm_password_reset_code,
             self.get_token,
             self.update_user,
+            self.create_auction,
         )
 
     @property
     def functions_need_auction_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
+            self.create_auction,
         )
 
     @property
