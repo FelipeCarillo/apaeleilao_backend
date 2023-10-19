@@ -24,7 +24,7 @@ class LambdaStack(Construct):
         function to it.**
         """
 
-        check_if_admin = "admin" in function_name.split("admin")
+        check_if_admin = "admin" in function_name.split('_')
 
         if check_if_admin:
             function_name = function_name.replace("_admin", "")
