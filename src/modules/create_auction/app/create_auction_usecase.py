@@ -71,7 +71,13 @@ class CreateUserUseCase:
             raise DataAlreadyUsed('Já existe um leilão cadastrado para esse período.')
 
         if body.get('images'):
-            auction.images = ImageManipulation.upload_auction_image(auction.images)
+            for image in body.get('images'):
+                image_id = image.get('image_id')
+                image_body = image.get('image_body')
+                response = ImageManipulation().upload_auction_image(auction_id=auction.auction_id, image_id=image_id,
+                                                                    image_body=image_body)
+                image['image_body'] = response
 
+        self.__auction_interface.create_auction(auction.to_dict())
 
-        return {"token": token}
+        return {'auction_id': auction.auction_id}

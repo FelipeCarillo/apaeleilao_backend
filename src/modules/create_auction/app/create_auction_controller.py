@@ -19,9 +19,9 @@ class CreateUserController:
             if not request.get('body'):
                 raise MissingParameter('body')
 
-            create_user_usecase = self.__usecase(auth=request.get('auth'), body=request.get('body'))
+            usecase = self.__usecase(auth=request.get('auth'), body=request.get('body'))
 
-            return Created(create_user_usecase, message='Leilão criado com sucesso.')
+            return Created(usecase, message='Leilão criado com sucesso.')
 
         except DataAlreadyUsed as e:
             return ParameterError(message=e.message)
