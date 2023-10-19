@@ -16,9 +16,7 @@ class UserDynamodb(UserInterface):
     def create_user(self, user: Dict) -> Dict or None:
         try:
             self.__dynamodb.put_item(Item=user)
-            return {
-                'body': user
-            }
+            return user
         except Exception as e:
             raise e
 

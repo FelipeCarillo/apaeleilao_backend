@@ -1,4 +1,3 @@
-import os
 import uuid
 
 from typing import Dict
@@ -17,7 +16,10 @@ class CreateUserUseCase:
         self.__user_interface = user_interface
         self.__token = TokenAuthy()
 
-    def __call__(self, body: Dict) -> Dict:
+    def __call__(self, auth: Dict, body: Dict) -> Dict:
+
+        if not auth.get('Authorization'):
+            raise MissingParameter('Authorization')
 
         if not body.get('email'):
             raise MissingParameter('Email')
@@ -31,6 +33,17 @@ class CreateUserUseCase:
         if self.__user_interface.get_user_by_cpf(body['cpf']):
             raise DataAlreadyUsed('CPF')
 
+        decoded_token = self.__token.decode_token(auth.get('Authorization'))
+        if not decoded_token:
+            raise UserNotAuthenticated("Token de acesso inválido ou expirado.")
+        user_id = decoded_token.get('user_id')
+        user = self.__user_interface.get_user_by_id(user_id=user_id)
+        if not user:
+            raise UserNotAuthenticated()
+
+        if user.get('type_account') != TYPE_ACCOUNT_USER_ENUM.ADMIN.value:
+            raise UserNotAuthenticated(message='Você não tem permissão para criar um novo usuário.')
+
         user_id = str(uuid.uuid4())
         date_joined = TimeManipulation.get_current_time()
 
@@ -43,15 +56,11 @@ class CreateUserUseCase:
                     password=body.get('password'),
                     accepted_terms=body.get('accepted_terms'),
                     suspensions=[],
-                    status_account=STATUS_USER_ACCOUNT_ENUM.PENDING.value,
-                    type_account=TYPE_ACCOUNT_USER_ENUM.USER.value,
+                    status_account=STATUS_USER_ACCOUNT_ENUM.ACTIVE.value,
+                    type_account=TYPE_ACCOUNT_USER_ENUM.MODERATOR.value,
                     date_joined=date_joined
                     )
 
         user.password = hashpw(user.password.encode('utf-8'), gensalt()).decode('utf-8')
 
-        token = self.__token.generate_token(user_id=user_id, keep_login=True)
-
-        self.__user_interface.create_user(user.to_dict())
-
-        return {"token": token}
+        return self.__user_interface.create_user(user.to_dict())

@@ -9,15 +9,40 @@ from constructs import Construct
 
 class LambdaStack(Construct):
 
-    def create_lambda(self, function_name: str, method: str, restapi_resource: apigw.Resource,
-                      environment_variables: Dict[str, str]) -> _lambda.Function:
+    def create_lambda(self, function_name: str, method: str,
+                      restapi_resource: apigw.Resource, environment_variables: Dict[str, str]) -> _lambda.Function:
+        """
+        :param function_name:
+        :param method:
+        :param restapi_resource:
+        :param environment_variables:
+        :return:
+
+        **This function creates a lambda function and add it to the restapi_resource.**
+
+        **If the function name contains the word "admin" it will create a new resource called "admin" and add the
+        function to it.**
+        """
+
+        check_if_admin = "admin" in function_name.split("admin")
+
+        if check_if_admin:
+            function_name = function_name.replace("_admin", "")
+            restapi_resource = restapi_resource.add_resource("admin", default_cors_preflight_options=
+            {
+                "allow_origins": apigw.Cors.ALL_ORIGINS,
+                "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+                "allow_headers": ["*"]
+            })
+
+        code = f"../src/modules/{function_name}" if not check_if_admin else f"../src/modules/{function_name}_admin"
 
         function = _lambda.Function(
             self, (function_name + "_apae_leilao").title(),
             function_name=(function_name + "_apae_leilao").title(),
             environment=environment_variables,
             runtime=_lambda.Runtime.PYTHON_3_9,
-            code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
+            code=_lambda.Code.from_asset(code),
             handler=f"app.{function_name}_presenter.lambda_handler",
             layers=[self.shared_layer, self.jwt_layer, self.bcrypt_layer],
             timeout=Duration.seconds(15),
@@ -25,7 +50,8 @@ class LambdaStack(Construct):
         )
 
         restapi_resource.add_resource(function_name.replace("_", "-")).add_method(method,
-                                                                                  integration=apigw.LambdaIntegration(function))
+                                                                                  integration=apigw.LambdaIntegration(
+                                                                                      function))
 
         return function
 
@@ -114,6 +140,13 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
+        self.create_user_admin = self.create_lambda(
+            function_name="create_user_admin",
+            method="POST",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
@@ -126,6 +159,7 @@ class LambdaStack(Construct):
             self.get_token,
             self.update_user,
             self.create_auction,
+            self.create_user_admin,
         )
 
     @property
