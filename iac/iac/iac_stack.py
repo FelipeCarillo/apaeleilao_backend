@@ -61,6 +61,9 @@ class IACStack(Stack):
 
         self.dynamodb_stack = DynamoDBStack(self)
 
+        ENVIRONMENT_VARIABLES["USER_TABLE"] = self.dynamodb_stack.user_table.table_name
+        ENVIRONMENT_VARIABLES["AUCTION_TABLE"] = self.dynamodb_stack.auction_table.table_name
+
         self.lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,
                                            environment_variables=ENVIRONMENT_VARIABLES)
 

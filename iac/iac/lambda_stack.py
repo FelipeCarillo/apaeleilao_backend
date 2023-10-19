@@ -167,18 +167,3 @@ class LambdaStack(Construct):
         return (
             self.create_auction,
         )
-
-    @property
-    def functions_need_payment_table_permission(self) -> Tuple[_lambda.Function] or None:
-        return (
-        )
-
-    @property
-    def functions_need_bid_table_permission(self) -> Tuple[_lambda.Function] or None:
-        return (
-        )
-
-    @property
-    def functions_need_suspension_table_permission(self) -> Tuple[_lambda.Function] or None:
-        return (
-        )
