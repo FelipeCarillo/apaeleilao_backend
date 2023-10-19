@@ -27,7 +27,6 @@ class LambdaStack(Construct):
         check_if_admin = "admin" in function_name.split('_')
 
         if check_if_admin:
-            function_name = function_name.replace("_admin", "")
             restapi_resource = restapi_resource.add_resource("admin", default_cors_preflight_options=
             {
                 "allow_origins": apigw.Cors.ALL_ORIGINS,
@@ -43,7 +42,7 @@ class LambdaStack(Construct):
             environment=environment_variables,
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset(code),
-            handler=f"app.{function_name}_presenter.lambda_handler",
+            handler=f"app.{function_name.replace('_admin', '')}_presenter.lambda_handler",
             layers=[self.shared_layer, self.jwt_layer, self.bcrypt_layer],
             timeout=Duration.seconds(15),
             memory_size=512,
