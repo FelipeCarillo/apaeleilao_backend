@@ -36,10 +36,17 @@ Se você tiver alguma dúvida ou precisar de assistência, entre em contato com 
 
 Agradecemos sua contribuição e apoio à causa da Apae!
 
+## Equipe de Desenvolvimento
+
+- Felipe Carillo - [FelipeCarillo](https://github.com/FelipeCarillo)
+- Felipe Taewoo Moon - [MelipeFoon](https://github.com/MelipeFoon)
+- Edgar Kodjoglamian Messias - [edkod](https://github.com/edkod)
+
 ## Agradecimentos
 
-Gostaríamos de expressar nossa gratidão à seguinte fonte de inspiração que contribuiu para o sucesso deste projeto:
+Gostaríamos de expressar nossa gratidão à seguintes fontes de inspiração que contribuíram para o sucesso deste projeto:
 
 - [Dev. Community Mauá](https://github.com/Maua-Dev): Este projeto foi baseado no código-fonte do projeto [clean_mss_template](https://github.com/Maua-Dev/clean_mss_template).
+- [Institute Mauá of Technology](https://www.maua.br/)
 
 Agradecemos a todos os envolvidos, direta ou indiretamente, e à comunidade de código aberto por suas contribuições e apoio contínuo.
