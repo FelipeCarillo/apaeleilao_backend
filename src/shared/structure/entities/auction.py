@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from src.shared.errors.modules_errors import *
 from src.shared.structure.entities.bid import Bid
@@ -16,7 +16,7 @@ class Auction:
     current_amount: float
     bids: List[Optional[Bid]]
     payments: List[Optional[Payment]]
-    images: List[str]
+    images: List[Dict[str]]
     status_auction: STATUS_AUCTION_ENUM
     create_at: int
     AUCTION_ID_LENGTH = 36
@@ -34,7 +34,7 @@ class Auction:
                  current_amount: float = None,
                  bids: List[Optional[Bid]] = None,
                  payments: List[Optional[Payment]] = None,
-                 images: List[str] = None,
+                 images: List[Dict[str]] = None,
                  status_auction: STATUS_AUCTION_ENUM = None,
                  create_at: int = None,
                  ):
@@ -127,14 +127,22 @@ class Auction:
         return start_amount
 
     @staticmethod
-    def validate_and_set_images(images: List[str]) -> List[str] or List[None]:
+    def validate_and_set_images(images: List[Dict[str]]) -> List[Dict[str]] or List[None]:
         if images is None:
             return []
         if isinstance(images, list):
             raise InvalidParameter("images", "deve ser uma lista")
         for image in images:
-            if not isinstance(image, str):
-                raise InvalidParameter("images", "deve ser uma lista de str")
+            if not isinstance(image, dict):
+                raise InvalidParameter("images", "deve ser uma lista de dict")
+            if not image.get('image_id'):
+                raise MissingParameter("image_id")
+            if type(image.get('image_id')) != str:
+                raise InvalidParameter("image_id", "deve ser uma str")
+            if not image.get('image_body'):
+                raise MissingParameter("image_body")
+            if type(image.get('image_body')) != str:
+                raise InvalidParameter("image_body", "deve ser uma str")
         return images
 
     @staticmethod
