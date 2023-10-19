@@ -34,14 +34,12 @@ class LambdaStack(Construct):
                 "allow_headers": ["*"]
             })
 
-        code = f"../src/modules/{function_name}" if not check_if_admin else f"../src/modules/{function_name}_admin"
-
         function = _lambda.Function(
             self, (function_name + "_apae_leilao").title(),
             function_name=(function_name + "_apae_leilao").title(),
             environment=environment_variables,
             runtime=_lambda.Runtime.PYTHON_3_9,
-            code=_lambda.Code.from_asset(code),
+            code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
             handler=f"app.{function_name.replace('_admin', '')}_presenter.lambda_handler",
             layers=[self.shared_layer, self.jwt_layer, self.bcrypt_layer],
             timeout=Duration.seconds(15),
