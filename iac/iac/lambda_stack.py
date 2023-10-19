@@ -24,16 +24,6 @@ class LambdaStack(Construct):
         function to it.**
         """
 
-        check_if_admin = "admin" in function_name.split('_')
-
-        if check_if_admin:
-            restapi_resource = restapi_resource.add_resource("admin", default_cors_preflight_options=
-            {
-                "allow_origins": apigw.Cors.ALL_ORIGINS,
-                "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-                "allow_headers": ["*"]
-            })
-
         function = _lambda.Function(
             self, (function_name + "_apae_leilao").title(),
             function_name=(function_name + "_apae_leilao").title(),
