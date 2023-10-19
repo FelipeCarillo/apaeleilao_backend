@@ -8,6 +8,7 @@ from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
 
 class Auction:
     auction_id: str
+    created_by: str  # who created the auction user_id
     titte: str
     description: str
     start_date: int
@@ -26,6 +27,7 @@ class Auction:
     DESCRIPTION_MIN_LENGTH = 5
 
     def __init__(self, auction_id: str,
+                 created_by: str,
                  tittle: str,
                  description: str = None,
                  start_date: int = None,
@@ -40,6 +42,7 @@ class Auction:
                  ):
 
         self.auction_id = self.validate_and_set_auction_id(auction_id)
+        self.created_by = self.validate_and_set_user_id(created_by)
         self.tittle = self.validate_and_set_tittle(tittle)
         self.description = self.validate_and_set_description(description)
         self.start_date = self.validate_set_start_date(start_date)
@@ -55,6 +58,7 @@ class Auction:
     def to_dict(self):
         return {
             "auction_id": self.auction_id,
+            "created_by": self.created_by,
             "tittle": self.tittle,
             "description": self.description,
             "start_date": self.start_date,
@@ -74,9 +78,19 @@ class Auction:
             raise MissingParameter("auction_id")
         if type(auction_id) is not str:
             raise InvalidParameter("auction_id", "deve ser uma str")
-        if len(auction_id) != Auction.AUCTION_ID_LENGTH:
-            raise InvalidParameter("auction_id", "deve ter 36 caracteres")
+        if not auction_id.isnumeric():
+            raise InvalidParameter("auction_id", "deve ser um número")
         return auction_id
+
+    @staticmethod
+    def validate_and_set_user_id(user_id: str) -> str or None:
+        if user_id is None:
+            raise MissingParameter("user_id")
+        if type(user_id) is not str:
+            raise InvalidParameter("auction_id", "deve ser uma str")
+        if len(user_id) != Auction.AUCTION_ID_LENGTH:
+            raise InvalidParameter("auction_id", "deve ter 36 caracteres")
+        return user_id
 
     @staticmethod
     def validate_and_set_tittle(tittle: str) -> str or None:
