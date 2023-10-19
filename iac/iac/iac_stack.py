@@ -67,13 +67,13 @@ class IACStack(Stack):
             "allow_headers": ["*"]
         })
 
-        self.dynamodb_stack = DynamoDBStack(self)
+        # self.dynamodb_stack = DynamoDBStack(self)
 
         self.lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,
                                            environment_variables=ENVIRONMENT_VARIABLES)
 
-        for function in self.lambda_function.functions_need_user_table_permission:
-            self.dynamodb_stack.user_table.grant_read_write_data(function)
-
-        for function in self.lambda_function.functions_need_auction_table_permission:
-            self.dynamodb_stack.auction_table.grant_read_write_data(function)
+        # for function in self.lambda_function.functions_need_user_table_permission:
+        #     self.dynamodb_stack.user_table.grant_read_write_data(function)
+        #
+        # for function in self.lambda_function.functions_need_auction_table_permission:
+        #     self.dynamodb_stack.auction_table.grant_read_write_data(function)

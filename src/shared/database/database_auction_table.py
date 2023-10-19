@@ -4,6 +4,7 @@ from boto3.dynamodb.conditions import Attr, Key
 
 from src.shared.database.database import Database
 from src.shared.structure.entities.auction import Auction
+from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
 from src.shared.structure.interface.auction_interface import AuctionInterface
 
 
@@ -37,14 +38,28 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_auctions_menu(self) -> List[Dict] or None:
         try:
+            status_permitted = STATUS_AUCTION_ENUM.OPEN.value or STATUS_AUCTION_ENUM.PENDING.value
             query = self.__dynamodb.query(
                 IndexName='Status-CreateAt-Index',
-                KeyConditionExpression=Key('status_auction').eq('PENDING'),
+                KeyConditionExpression=Key('status_auction').eq(status_permitted),
                 ScanIndexForward=True,
                 Limit=6
             )
             response = query.get('Items', None)
             return response
+        except Exception as e:
+            raise e
+
+    def get_auction_between_dates(self, start_date: int, end_date: int) -> List[Dict] or None:
+        try:
+            status_to_search = STATUS_AUCTION_ENUM.OPEN.value or STATUS_AUCTION_ENUM.PENDING.value
+            query = self.__dynamodb.query(
+                IndexName='Status-CreateAt-Index',
+                KeyConditionExpression=Key('status_auction').eq(status_to_search) & Key('create_at').between(
+                    start_date, end_date),
+            )
+            response = query.get('Items', None)
+            return response if len(response) > 0 else None
         except Exception as e:
             raise e
 

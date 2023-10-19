@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from src.shared.errors.modules_errors import *
 from src.shared.structure.entities.bid import Bid
@@ -14,6 +14,8 @@ class Auction:
     end_date: int
     start_amount: float
     current_amount: float
+    bids: List[Optional[Bid]]
+    payments: List[Optional[Payment]]
     images: List[str]
     status_auction: STATUS_AUCTION_ENUM
     create_at: int
@@ -23,8 +25,8 @@ class Auction:
     DESCRIPTION_MAX_LENGTH = 350
     DESCRIPTION_MIN_LENGTH = 5
 
-    def __init__(self, auction_id: str = None,
-                 tittle: str = None,
+    def __init__(self, auction_id: str,
+                 tittle: str,
                  description: str = None,
                  start_date: int = None,
                  end_date: int = None,

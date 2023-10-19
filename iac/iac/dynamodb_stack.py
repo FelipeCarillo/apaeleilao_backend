@@ -11,6 +11,8 @@ from constructs import Construct
 def create_table(self,
                  name: str,
                  partition_key: str,
+                 sort_key: str = None,
+                 sort_key_type: dynamodb.AttributeType = None,
                  ) -> dynamodb.Table:
     table = dynamodb.Table(self,
                            name,
@@ -19,6 +21,10 @@ def create_table(self,
                                name=partition_key,
                                type=dynamodb.AttributeType.STRING
                            ),
+                           sort_key=dynamodb.Attribute(
+                               name=sort_key,
+                               type=dynamodb.AttributeType.STRING if not sort_key_type else sort_key_type
+                           ) if sort_key else None,
                            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
                            removal_policy=RemovalPolicy.DESTROY
                            )
@@ -57,13 +63,11 @@ class DynamoDBStack(Construct):
     def __init__(self, scope: Construct) -> None:
         super().__init__(scope, "ApaeLeilao_DynamoDB")
 
-        self.__user_table = create_table(self, "UserApaeLeilao", "user_id")
+        self.__user_table = create_table(self, "User_Apae_Leilao", "user_id", "create_at", dynamodb.AttributeType.NUMBER)
         create_global_secondary_index(self.__user_table, "EmailIndex", "email")
         create_global_secondary_index(self.__user_table, "CpfIndex", "cpf")
 
-        self.__auction_table = create_table(self, "AuctionApaeLeilao", "auction_id")
-        create_global_secondary_index(self.__auction_table, "Status-CreateAt-Index",
-                                      "status_auction", "create_at", dynamodb.AttributeType.NUMBER)
+        self.__auction_table = create_table(self, "Auction_Apae_Leilao", "auction_id", "create_at", dynamodb.AttributeType.NUMBER)
 
         self.__bid_table = create_table(self, "BidApaeLeilao", "bid_id")
         create_global_secondary_index(self.__bid_table, "AuctionIdIndex", "auction_id")
