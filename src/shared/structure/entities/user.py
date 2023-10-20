@@ -155,23 +155,19 @@ class UserAdmin(ABC):
     user_id: str
     access_key: str
     password: str
-    status_account: STATUS_USER_ACCOUNT_ENUM
     type_account: TYPE_ACCOUNT_USER_ENUM
-    date_joined: int
     PERMITTED_TYPE_ACCOUNT = [TYPE_ACCOUNT_USER_ENUM.ADMIN]
 
     def __init__(self, user_id: str = None,
                  access_key: str = None,
                  password: str = None,
                  status_account: str = None,
-                 type_account: str = None,
-                 date_joined: int = None):
+                 type_account: str = None):
         self.user_id = UserValidator.validate_and_set_user_id(user_id)
         self.access_key = UserValidator.validate_and_set_access_key(access_key)
         self.password = UserValidator.validate_and_set_password(password)
         self.status_account = UserValidator.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
         self.type_account = self.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
-        self.date_joined = UserValidator.validate_and_set_date_joined(date_joined)
 
     def to_dict(self):
         return {
@@ -180,7 +176,6 @@ class UserAdmin(ABC):
             'password': self.password,
             'status_account': self.status_account.value,
             'type_account': self.type_account.value,
-            'date_joined': self.date_joined,
         }
 
     @staticmethod

@@ -37,6 +37,7 @@ class UserDynamodb(UserInterface):
             item = item[0] if item else None
             if item:
                 if checkpw(password.encode('utf-8'), item['password'].encode('utf-8')):
+                    item['user_id'] = item.pop('_id').split('#')[-1]
                     return item
                 else:
                     return None
@@ -50,6 +51,8 @@ class UserDynamodb(UserInterface):
             key = {'_id': USER_TABLE_ENTITY.USER.value+"#"+user_id}
             query = self.__dynamodb.get_item(Key=key)
             item = query.get('Item', None)
+            if item:
+                item['user_id'] = item.pop('_id').split('#')[-1]
             return item
         except Exception as e:
             raise e
@@ -62,6 +65,9 @@ class UserDynamodb(UserInterface):
                 FilterExpression=Attr('_id').begins_with('USER#')
             )
             response = query.get('Items', None)
+            if response:
+                for item in response:
+                    item['user_id'] = item.pop('_id').split('#')[-1]
             return response
         except Exception as e:
             raise e
@@ -73,6 +79,8 @@ class UserDynamodb(UserInterface):
                 KeyConditionExpression=Key('email').eq(email),
             )
             response = query.get('Items', None)
+            if response:
+                response[0]['user_id'] = response[0].pop('_id').split('#')[-1]
             return response[0] if response else None
         except Exception as e:
             raise e
@@ -84,6 +92,8 @@ class UserDynamodb(UserInterface):
                 KeyConditionExpression=Key('cpf').eq(cpf),
             )
             response = query.get('Items', None)
+            if response:
+                response[0]['user_id'] = response[0].pop('_id').split('#')[-1]
             return response[0] if response else None
         except Exception as e:
             raise e
@@ -120,6 +130,8 @@ class UserDynamodb(UserInterface):
                 },
                 ReturnValues='ALL_NEW'
             )
+            if response:
+                response['Attributes']['user_id'] = response['Attributes'].pop('_id').split('#')[-1]
             return response['Attributes'] if response else None
         except Exception as e:
             raise e
