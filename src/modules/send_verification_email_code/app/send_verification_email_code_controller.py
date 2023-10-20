@@ -18,10 +18,12 @@ class SendVerificationEmailCodeController:
             if not request.get('auth'):
                 raise MissingParameter('auth')
 
-
             send_email_code_usecase = self.__usecase(auth=request.get('auth'))
 
-            return OK(body=send_email_code_usecase, message="Código enviado com sucesso.")
+            message = f"Código enviado com sucesso para o e-mail: {send_email_code_usecase.get('email')}."
+            send_email_code_usecase.pop('email')
+
+            return OK(body=send_email_code_usecase, message=message)
 
         except InvalidRequest as e:
             return BadRequest(message=e.message)
@@ -37,4 +39,3 @@ class SendVerificationEmailCodeController:
 
         except Exception as e:
             return InternalServerError(message=e.args[0])
-

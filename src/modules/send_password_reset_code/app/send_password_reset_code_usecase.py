@@ -109,6 +109,7 @@ class SendPasswordResetCodeUseCase:
         code_expires_at = int(TimeManipulation(code_expires_at).plus_hour(3))
 
         return {
+                'email': user.email,
                 'token': self.__token.generate_token(user_id=user.email, exp_time=code_expires_at),
                 'code_expires_at': code_expires_at
                 }

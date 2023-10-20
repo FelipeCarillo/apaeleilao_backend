@@ -22,7 +22,10 @@ class SendPasswordResetCodeController:
 
             send_email_code_usecase = self.__usecase(body=request.get('body'))
 
-            return OK(body=send_email_code_usecase, message="Código enviado com sucesso.")
+            message = f"Código enviado com sucesso para o e-mail: {send_email_code_usecase.get('email')}."
+            send_email_code_usecase.pop('email')
+
+            return OK(body=send_email_code_usecase, message=message)
 
         except InvalidRequest as e:
             return BadRequest(message=e.message)
