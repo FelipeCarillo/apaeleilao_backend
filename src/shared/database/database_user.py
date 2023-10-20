@@ -17,8 +17,9 @@ class UserDynamodb(UserInterface):
     def create_user(self, user: User) -> Dict or None:
         try:
             user = user.to_dict()
+            user['_id'] = USER_TABLE_ENTITY.USER.value+"#"+user.pop('user_id')
+
             self.__dynamodb.put_item(
-                Key={'_id': USER_TABLE_ENTITY.USER.value+"#"+user['user_id']},
                 Item=user
             )
             return user
