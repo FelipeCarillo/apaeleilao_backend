@@ -55,6 +55,6 @@ class CreateUserUseCase:
 
         token = self.__token.generate_token(user_id=user_id, keep_login=True)
 
-        self.__user_interface.create_user(user.to_dict())
+        self.__user_interface.create_user(user)
 
         return {"token": token}

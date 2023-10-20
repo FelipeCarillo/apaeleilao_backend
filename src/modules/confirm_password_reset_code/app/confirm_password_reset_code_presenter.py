@@ -1,7 +1,7 @@
 from .confirm_password_reset_code_usecase import ConfirmPasswordResetCodeUseCase
 from .confirm_password_reset_code_controller import ConfirmVerificationEmailCodeController
 
-from src.shared.database.database_user_table import UserDynamodb
+from src.shared.database.database_user import UserDynamodb
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 
 usecase = ConfirmPasswordResetCodeUseCase(UserDynamodb())

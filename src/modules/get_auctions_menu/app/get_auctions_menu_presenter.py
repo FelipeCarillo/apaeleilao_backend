@@ -2,7 +2,7 @@ from .get_auctions_menu_controller import GetAuctionsMenuController
 from .get_auctions_menu_usecase import GetAuctionsMenuUseCase
 
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
-from src.shared.database.database_auction_table import AuctionDynamodb
+from src.shared.database.database_auction import AuctionDynamodb
 
 usecase = GetAuctionsMenuUseCase(AuctionDynamodb())
 controller = GetAuctionsMenuController(usecase)

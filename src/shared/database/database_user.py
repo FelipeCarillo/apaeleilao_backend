@@ -5,6 +5,7 @@ from boto3.dynamodb.conditions import Key, Attr
 
 from src.shared.database.database import Database
 from src.shared.structure.entities.user import User
+from src.shared.structure.enums.table_entities import USER_TABLE_ENTITY
 from src.shared.structure.interface.user_interface import UserInterface
 
 
@@ -13,9 +14,13 @@ class UserDynamodb(UserInterface):
     def __init__(self):
         self.__dynamodb = Database().get_table_user()
 
-    def create_user(self, user: Dict) -> Dict or None:
+    def create_user(self, user: User) -> Dict or None:
         try:
-            self.__dynamodb.put_item(Item=user)
+            user = user.to_dict()
+            self.__dynamodb.put_item(
+                Key={'_id': USER_TABLE_ENTITY.USER.value+"#"+user['user_id']},
+                Item=user.to_dict()
+            )
             return user
         except Exception as e:
             raise e
@@ -41,18 +46,19 @@ class UserDynamodb(UserInterface):
 
     def get_user_by_id(self, user_id: str) -> Dict or None:
         try:
-            key = {'user_id': user_id}
+            key = {'_id': USER_TABLE_ENTITY.USER.value+"#"+user_id}
             query = self.__dynamodb.get_item(Key=key)
             item = query.get('Item', None)
             return item
         except Exception as e:
             raise e
 
-    def get_all_users(self, exclusive_start_key: str = None, limit: int = None) -> Dict or None:
+    def get_all_users(self, exclusive_start_key: str = None, limit: int = None, type_account: str = 'USER') -> Dict or None:
         try:
             query = self.__dynamodb.scan(
                 ExclusiveStartKey=exclusive_start_key,
-                Limit=limit
+                Limit=limit,
+                FilterExpression=Attr('_id').begins_with('USER#')
             )
             response = query.get('Items', None)
             return response
@@ -72,9 +78,9 @@ class UserDynamodb(UserInterface):
 
     def get_user_by_cpf(self, cpf) -> Dict or None:
         try:
-            query = self.__dynamodb.scan(
-                FilterExpression='cpf = :cpf',
-                ExpressionAttributeValues={':cpf': cpf}
+            query = self.__dynamodb.query(
+                IndexName='cpf-index',
+                KeyConditionExpression=Key('cpf').eq(cpf),
             )
             response = query.get('Items', None)
             return response[0] if response else None
@@ -85,7 +91,7 @@ class UserDynamodb(UserInterface):
         try:
             user = user
             response = self.__dynamodb.update_item(
-                Key={'user_id': user.user_id},
+                Key={'_id': USER_TABLE_ENTITY.USER.value+"#"+user.user_id},
                 UpdateExpression='SET first_name = :first_name,'
                                  'last_name = :last_name,'
                                  'cpf = :cpf,'

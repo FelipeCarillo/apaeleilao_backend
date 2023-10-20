@@ -2,7 +2,7 @@ from .get_user_usecase import GetUserUseCase
 from .get_user_controller import GetUserController
 
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
-from src.shared.database.database_user_table import UserDynamodb
+from src.shared.database.database_user import UserDynamodb
 
 usecase = GetUserUseCase(UserDynamodb())
 controller = GetUserController(usecase)

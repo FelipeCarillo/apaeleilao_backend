@@ -4,7 +4,7 @@ from .get_token_for_admin_usecase import GetTokenUseCase
 from .get_token_for_admin_controller import GetTokenController
 
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
-from src.shared.database.database_user_table import UserDynamodb
+from src.shared.database.database_user import UserDynamodb
 
 stage = os.environ.get("STAGE", "test")
 usecase = GetTokenUseCase(UserDynamodb())

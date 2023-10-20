@@ -1,8 +1,8 @@
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple
 from aws_cdk import (
     aws_lambda as _lambda,
     aws_apigateway as apigw,
-    Duration, aws_iam as iam,
+    Duration
 )
 from constructs import Construct
 
@@ -150,6 +150,7 @@ class LambdaStack(Construct):
             self.create_auction,
             self.create_user_by_admin,
             self.get_auction,
+            self.get_token_for_admin,
         )
 
     @property
