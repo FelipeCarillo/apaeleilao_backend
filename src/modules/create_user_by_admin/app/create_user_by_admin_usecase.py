@@ -62,4 +62,4 @@ class CreateUserUseCase:
 
         user.password = hashpw(user.password.encode('utf-8'), gensalt()).decode('utf-8')
 
-        return self.__user_interface.create_user(user.to_dict())
+        return self.__user_interface.create_user(user)

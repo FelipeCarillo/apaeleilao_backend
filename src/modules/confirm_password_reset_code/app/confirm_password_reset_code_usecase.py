@@ -41,25 +41,6 @@ class ConfirmPasswordResetCodeUseCase:
         if body.get('password_reset_code') != user.get('password_reset_code'):
             raise InvalidParameter(parameter='Código de redefinição', body='inválido')
 
-        user = User(
-            user_id=user.get('user_id'),
-            first_name=user.get('first_name'),
-            last_name=user.get('last_name'),
-            cpf=user.get('cpf'),
-            email=user.get('email'),
-            phone=user.get('phone'),
-            password=user.get('password'),
-            accepted_terms=user.get('accepted_terms'),
-            suspensions=user.get('suspensions'),
-            status_account=user.get('status_account'),
-            type_account=user.get('type_account'),
-            date_joined=int(user.get('date_joined')),
-            verification_email_code=user.get('verification_email_code'),
-            verification_email_code_expires_at=user.get('verification_email_code_expires_at'),
-            password_reset_code=None,
-            password_reset_code_expires_at=None
-        )
-
         return {
-            'token': self.__token.generate_token(user_id=user.user_id),
+            'token': self.__token.generate_token(user_id=user.get('user_id')),
         }

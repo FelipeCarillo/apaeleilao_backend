@@ -4,7 +4,7 @@ from bcrypt import checkpw
 from boto3.dynamodb.conditions import Key, Attr
 
 from src.shared.database.database import Database
-from src.shared.structure.entities.user import User
+from src.shared.structure.entities.user import User, UserModerator
 from src.shared.structure.enums.table_entities import USER_TABLE_ENTITY
 from src.shared.structure.interface.user_interface import UserInterface
 
@@ -14,7 +14,7 @@ class UserDynamodb(UserInterface):
     def __init__(self):
         self.__dynamodb = Database().get_table_user()
 
-    def create_user(self, user: User) -> Dict or None:
+    def create_user(self, user: User or UserModerator) -> Dict or None:
         try:
             user = user.to_dict()
             user['_id'] = USER_TABLE_ENTITY.USER.value+"#"+user.pop('user_id')
@@ -27,12 +27,17 @@ class UserDynamodb(UserInterface):
             raise e
 
     def authenticate(self,
+                     access_key: str = None,
                      email: str = None,
                      password: str = None,
                      ) -> Dict or None:
         try:
-            query = self.__dynamodb.query(IndexName='email-index',
-                                          KeyConditionExpression=Key('email').eq(email))
+            if access_key:
+                query = self.__dynamodb.query(IndexName='access_key-index',
+                                              KeyConditionExpression=Key('access_key').eq(access_key))
+            else:
+                query = self.__dynamodb.query(IndexName='email-index',
+                                              KeyConditionExpression=Key('email').eq(email))
             item = query.get('Items', None)
             item = item[0] if item else None
             if item:

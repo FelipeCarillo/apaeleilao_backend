@@ -44,7 +44,6 @@ class CreateUserUseCase:
                     phone=body.get('phone'),
                     password=body.get('password'),
                     accepted_terms=body.get('accepted_terms'),
-                    suspensions=[],
                     status_account=STATUS_USER_ACCOUNT_ENUM.PENDING.value,
                     type_account=TYPE_ACCOUNT_USER_ENUM.USER.value,
                     date_joined=date_joined

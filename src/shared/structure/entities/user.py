@@ -1,8 +1,6 @@
 import re
 from abc import ABC
-from typing import List, Optional
 
-from src.shared.structure.entities.suspension import Suspension
 from src.shared.errors.modules_errors import MissingParameter, InvalidParameter
 from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM, TYPE_ACCOUNT_USER_ENUM
 
@@ -16,9 +14,7 @@ class User(ABC):
     phone: str
     password: str
     accepted_terms: bool
-    suspensions: List[Optional[Suspension]]
     status_account: STATUS_USER_ACCOUNT_ENUM
-    suspensions: List[Optional[Suspension]]
     type_account: TYPE_ACCOUNT_USER_ENUM
     date_joined: int
     verification_code: str
@@ -34,7 +30,6 @@ class User(ABC):
                  phone: str = None,
                  password: str = None,
                  accepted_terms: bool = None,
-                 suspensions: List = None,
                  status_account: str = None,
                  type_account: str = None,
                  date_joined: int = None,
@@ -51,7 +46,6 @@ class User(ABC):
         self.phone = UserValidator.validate_and_set_phone(phone)
         self.password = UserValidator.validate_and_set_password(password)
         self.accepted_terms = UserValidator.validate_and_set_accepted_terms(accepted_terms)
-        self.suspensions = UserValidator.validate_and_set_suspendions(suspensions)
         self.status_account = UserValidator.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
         self.type_account = UserValidator.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
         self.date_joined = UserValidator.validate_and_set_date_joined(date_joined)
@@ -63,11 +57,6 @@ class User(ABC):
             password_reset_code_expires_at)
 
     def to_dict(self):
-        suspensions = []
-        for suspension in self.suspensions:
-            if suspension is not None:
-                suspensions.append(suspension.to_dict())
-
         return {
             'user_id': self.user_id,
             'first_name': self.first_name,
@@ -77,7 +66,6 @@ class User(ABC):
             'phone': self.phone,
             'password': self.password,
             'accepted_terms': self.accepted_terms,
-            'suspensions': suspensions,
             'status_account': self.status_account.value,
             'type_account': self.type_account.value,
             'date_joined': self.date_joined,
@@ -300,17 +288,6 @@ class UserValidator(ABC):
         if type(accepted_terms) != bool:
             raise InvalidParameter("accepted_terms", "deve ser bool")
         return accepted_terms
-
-    @staticmethod
-    def validate_and_set_suspendions(suspensions: List) -> List or None:
-        if suspensions is None:
-            suspensions = []
-        if isinstance(suspensions, list) is False:
-            raise InvalidParameter("suspensions", "deve ser list")
-        if any(type(suspension) != Suspension for suspension in suspensions):
-            raise InvalidParameter("suspensions", "deve ser List[Suspension]")
-
-        return suspensions
 
     @staticmethod
     def validate_and_set_date_joined(date_joined: int) -> int or None:

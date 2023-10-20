@@ -1,13 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Dict
 
-from src.shared.structure.entities.user import User
+from src.shared.structure.entities.user import User, UserModerator
 
 
 class UserInterface(ABC):
 
     @abstractmethod
     def authenticate(self,
+                     access_key: str = None,
                      email: str = None,
                      password: str = None,
                      ) -> Optional[Dict]:
@@ -30,7 +31,7 @@ class UserInterface(ABC):
         pass
 
     @abstractmethod
-    def create_user(self, user: User) -> Optional[Dict]:
+    def create_user(self, user: User or UserModerator) -> Optional[Dict]:
         pass
 
     @abstractmethod

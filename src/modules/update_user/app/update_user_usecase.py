@@ -48,7 +48,6 @@ class UpdateUserUseCase:
             password=hashpw(password.encode("utf-8"), gensalt()).decode("utf-8"),
             accepted_terms=user.get("accepted_terms"),
             status_account=user.get("status_account"),
-            suspensions=user.get("suspensions"),
             type_account=user.get("type_account"),
             date_joined=int(user.get("date_joined")),
             verification_email_code=int(user.get('verification_email_code'))

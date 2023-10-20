@@ -50,7 +50,6 @@ class SendVerificationEmailCodeUseCase:
                     phone=user['phone'],
                     password=user['password'],
                     accepted_terms=user['accepted_terms'],
-                    suspensions=user['suspensions'],
                     status_account=user['status_account'],
                     type_account=user['type_account'],
                     date_joined=int(user['date_joined']),
