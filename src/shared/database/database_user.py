@@ -19,7 +19,7 @@ class UserDynamodb(UserInterface):
             user = user.to_dict()
             self.__dynamodb.put_item(
                 Key={'_id': USER_TABLE_ENTITY.USER.value+"#"+user['user_id']},
-                Item=user.to_dict()
+                Item=user
             )
             return user
         except Exception as e:
@@ -89,7 +89,6 @@ class UserDynamodb(UserInterface):
 
     def update_user(self, user: User) -> Dict or None:
         try:
-            user = user
             response = self.__dynamodb.update_item(
                 Key={'_id': USER_TABLE_ENTITY.USER.value+"#"+user.user_id},
                 UpdateExpression='SET first_name = :first_name,'
