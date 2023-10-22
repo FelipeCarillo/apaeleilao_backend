@@ -1,8 +1,8 @@
-from typing import Dict
+from typing import Dict, Optional
 
 from src.shared.errors.modules_errors import *
-from src.shared.structure.entities.auction import Auction
 from src.shared.helper_functions.token_authy import TokenAuthy
+from src.shared.structure.entities.bid import Bid
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 from src.shared.structure.interface.auction_interface import AuctionInterface
@@ -14,7 +14,7 @@ class GetAuctionUseCase:
         self.__auction_interface = auction_interface
         self.__token = TokenAuthy()
 
-    def __call__(self, auth: Dict, body: Dict) -> Dict:
+    def __call__(self, auth: Dict, body: Dict) -> Optional[Dict]:
         if not auth.get('Authorization'):
             raise MissingParameter('Authorization')
 
@@ -30,40 +30,16 @@ class GetAuctionUseCase:
         if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) not in status_account_permitted:
             raise UserNotAuthenticated(message='Sua conta está suspensa.')
 
-        if not body.get('auction_id'):
-            raise MissingParameter('auction_id')
-        auction = self.__auction_interface.get_auction_by_id(auction_id=body.get('auction_id'))
-        if not auction:
-            raise DataNotFound('Leilão')
+        bids = self.__auction_interface.get_bids_by_auction(auction_id=body.get('auction_id'))
+        if not bids:
+            raise InvalidParameter(parameter='Leilão', body='não encontrado')
+        if len(bids) == 0:
+            return None
+        bids = [Bid(bid_id=bid.get('bid_id'),
+                    auction_id=bid.get('auction_id'),
+                    user_id=bid.get('user_id'),
+                    amount=bid.get('amount'),
+                    create_at=bid.get('create_at'))
+                for bid in bids]
 
-        if auction.get('status_auction') != STATUS_USER_ACCOUNT_ENUM:
-            raise DataNotFound('Leilão')
-
-        auction = Auction(
-            auction_id=auction.get('auction_id'),
-            created_by=auction.get('created_by'),
-            tittle=auction.get('tittle'),
-            description=auction.get('description'),
-            start_date=auction.get('start_date'),
-            end_date=auction.get('end_date'),
-            start_amount=auction.get('start_amount'),
-            current_amount=auction.get('current_amount'),
-            bids=auction.get('bids'),
-            payments=auction.get('payments'),
-            images=auction.get('images'),
-            status_auction=auction.get('status_auction'),
-            create_at=auction.get('create_at')
-        )
-        auction.check_time()
-        auction.check_current_amount()
-
-        if auction.current_amount != body.get('current_amount'):
-            self.__auction_interface.update_auction_information(auction=auction)
-        if auction.status_auction.value != body.get('status_auction'):
-            self.__auction_interface.update_auction_bids(auction=auction)
-
-        auction_dict = auction.to_dict()
-        auction_dict.pop('bids')
-        auction_dict.pop('payments')
-
-        return auction_dict
+        return [bid.to_dict() for bid in bids]

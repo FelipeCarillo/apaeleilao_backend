@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 
 from src.shared.structure.entities.auction import Auction
 
@@ -7,6 +7,10 @@ from src.shared.structure.entities.auction import Auction
 class AuctionInterface(ABC):
     @abstractmethod
     def create_auction(self, auction: Auction) -> Dict or None:
+        pass
+
+    @abstractmethod
+    def get_bids_by_auction(self, auction_id: str) -> List[Dict]:
         pass
 
     @abstractmethod

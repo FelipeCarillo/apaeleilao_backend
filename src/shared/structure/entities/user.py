@@ -16,7 +16,7 @@ class User(ABC):
     accepted_terms: bool
     status_account: STATUS_USER_ACCOUNT_ENUM
     type_account: TYPE_ACCOUNT_USER_ENUM
-    date_joined: int
+    create_at: int
     verification_code: str
     verification_code_expires_at: int
     password_reset_code: str
@@ -32,7 +32,7 @@ class User(ABC):
                  accepted_terms: bool = None,
                  status_account: str = None,
                  type_account: str = None,
-                 date_joined: int = None,
+                 create_at: int = None,
                  verification_email_code: str = None,
                  verification_email_code_expires_at: int = None,
                  password_reset_code: str = None,
@@ -48,7 +48,7 @@ class User(ABC):
         self.accepted_terms = UserValidator.validate_and_set_accepted_terms(accepted_terms)
         self.status_account = UserValidator.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
         self.type_account = UserValidator.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
-        self.date_joined = UserValidator.validate_and_set_date_joined(date_joined)
+        self.create_at = UserValidator.validate_and_set_create_at(create_at)
         self.verification_email_code = UserValidator.validate_and_set_verification_email_code(verification_email_code)
         self.verification_email_code_expires_at = UserValidator.validate_and_set_verification_email_code_expires_at(
             verification_email_code_expires_at)
@@ -68,7 +68,7 @@ class User(ABC):
             'accepted_terms': self.accepted_terms,
             'status_account': self.status_account.value,
             'type_account': self.type_account.value,
-            'date_joined': self.date_joined,
+            'create_at': self.create_at,
             'verification_email_code': self.verification_email_code,
             'verification_email_code_expires_at': self.verification_email_code_expires_at,
             'password_reset_code': self.password_reset_code,
@@ -101,7 +101,7 @@ class UserModerator(ABC):
                  accepted_terms: bool = None,
                  status_account: str = None,
                  type_account: str = None,
-                 date_joined: int = None):
+                 create_at: int = None):
         self.user_id = UserValidator.validate_and_set_user_id(user_id)
         self.access_key = UserValidator.validate_and_set_access_key(access_key)
         self.first_name = UserValidator.validate_and_set_first_name(first_name)
@@ -111,7 +111,7 @@ class UserModerator(ABC):
         self.accepted_terms = UserValidator.validate_and_set_accepted_terms(accepted_terms)
         self.status_account = UserValidator.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
         self.type_account = self.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
-        self.date_joined = UserValidator.validate_and_set_date_joined(date_joined)
+        self.create_at = UserValidator.validate_and_set_create_at(create_at)
 
     def to_dict(self):
         return {
@@ -124,7 +124,7 @@ class UserModerator(ABC):
             'accepted_terms': self.accepted_terms,
             'status_account': self.status_account.value,
             'type_account': self.type_account.value,
-            'date_joined': self.date_joined,
+            'create_at': self.create_at,
         }
 
     @staticmethod
@@ -290,12 +290,12 @@ class UserValidator(ABC):
         return accepted_terms
 
     @staticmethod
-    def validate_and_set_date_joined(date_joined: int) -> int or None:
-        if date_joined is None:
+    def validate_and_set_create_at(create_at: int) -> int or None:
+        if create_at is None:
             return None
-        if type(date_joined) != int:
-            raise InvalidParameter("date_joined", "deve ser int")
-        return date_joined
+        if type(create_at) != int:
+            raise InvalidParameter("create_at", "deve ser int")
+        return create_at
 
     @staticmethod
     def validate_and_set_status_account(status_account: STATUS_USER_ACCOUNT_ENUM):

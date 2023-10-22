@@ -39,7 +39,7 @@ class SendPasswordResetCodeUseCase:
                     accepted_terms=user['accepted_terms'],
                     status_account=user['status_account'],
                     type_account=user['type_account'],
-                    date_joined=int(user['date_joined']),
+                    create_at=int(user['create_at']),
                     verification_email_code=user['verification_email_code'],
                     verification_email_code_expires_at=user['verification_email_code_expires_at'],
                     password_reset_code=str(code),
@@ -109,7 +109,6 @@ class SendPasswordResetCodeUseCase:
         code_expires_at = int(TimeManipulation(code_expires_at).plus_hour(3))
 
         return {
-                'email': user.email,
                 'token': self.__token.generate_token(user_id=user.email, exp_time=code_expires_at),
                 'code_expires_at': code_expires_at
                 }

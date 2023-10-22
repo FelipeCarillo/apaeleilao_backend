@@ -48,22 +48,13 @@ class GetAuctionUseCase:
             end_date=auction.get('end_date'),
             start_amount=auction.get('start_amount'),
             current_amount=auction.get('current_amount'),
-            bids=auction.get('bids'),
-            payments=auction.get('payments'),
             images=auction.get('images'),
             status_auction=auction.get('status_auction'),
             create_at=auction.get('create_at')
         )
         auction.check_time()
-        auction.check_current_amount()
 
-        if auction.current_amount != body.get('current_amount'):
-            self.__auction_interface.update_auction_information(auction=auction)
         if auction.status_auction.value != body.get('status_auction'):
             self.__auction_interface.update_auction_bids(auction=auction)
 
-        auction_dict = auction.to_dict()
-        auction_dict.pop('bids')
-        auction_dict.pop('payments')
-
-        return auction_dict
+        return auction.to_dict()

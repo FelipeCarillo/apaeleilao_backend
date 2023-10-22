@@ -10,14 +10,16 @@ class Suspension(ABC):
     date_reactivation: int
     reason: str
     status: STATUS_SUSPENSION_ENUM
+    create_at: int
 
     def __init__(self, suspension_id: str = None, date_suspension: int = None, date_reactivation: int = None,
-                 reason: str = None, status: STATUS_SUSPENSION_ENUM = None):
+                 reason: str = None, status: STATUS_SUSPENSION_ENUM = None, create_at: int = None):
         self.suspension_id = self.validade_and_set_suspension_id(suspension_id)
         self.date_suspension = self.validate_and_set_date_suspencion(date_suspension)
         self.date_reactivation = self.validate_and_set_date_reactivation(date_reactivation)
         self.reason = self.validate_and_set_reason(reason)
         self.status = self.validate_and_set_status(STATUS_SUSPENSION_ENUM(status))
+        self.create_at = self.validate_and_set_create_at(create_at)
 
     def to_dict(self):
         return {
@@ -25,6 +27,7 @@ class Suspension(ABC):
             'date_suspension': self.date_suspencion,
             'date_reactivation': self.date_reactivation,
             'reason': self.reason,
+            'create_at': self.create_at,
             'status': self.status.value
         }
 
@@ -67,3 +70,11 @@ class Suspension(ABC):
         if not isinstance(status, STATUS_SUSPENSION_ENUM):
             raise InvalidParameter('status must be a STATUS_SUSPENSION_ENUM')
         return status
+
+    @staticmethod
+    def validate_and_set_create_at(create_at: int) -> int:
+        if not create_at:
+            raise InvalidParameter('create_at', 'is required')
+        if not isinstance(create_at, int):
+            raise InvalidParameter('create_at', 'must be a int')
+        return create_at

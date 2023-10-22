@@ -7,21 +7,24 @@ from src.shared.errors.modules_errors import InvalidParameter
 class Bid(ABC):
     bid_id: str
     user_id: str
+    auction_id: str
     amount: Decimal
-    date_bid: int
+    create_at: int
 
-    def __int__(self, bid_id: str, user_id: str, amount: str, date_bid: int):
+    def __int__(self, bid_id: str, user_id: str, auction_id: str, amount: str, create_at: int):
         self.bid_id = self.validated_and_set_bid_id(bid_id)
         self.user_id = self.validated_and_set_user_id(user_id)
+        self.auction_id = self.validated_and_set_auction_id(auction_id)
         self.amount = self.validated_and_set_amount(amount)
-        self.date_bid = self.validated_and_set_date_bid(date_bid)
+        self.create_at = self.validated_and_set_create_at(create_at)
 
     def to_dict(self):
         return {
             'bid_id': self.bid_id,
             'user_id': self.user_id,
+            'auction_id': self.auction_id,
             'amount': float(self.amount),
-            'date_bid': self.date_bid
+            'create_at': self.create_at
         }
 
     @staticmethod
@@ -41,6 +44,14 @@ class Bid(ABC):
         return user_id
 
     @staticmethod
+    def validated_and_set_auction_id(auction_id: str) -> str:
+        if not auction_id:
+            raise InvalidParameter('auction_id', 'é obrigatório')
+        if not isinstance(auction_id, str):
+            raise InvalidParameter('auction_id', 'deve ser str')
+        return auction_id
+
+    @staticmethod
     def validated_and_set_amount(amount: str) -> Decimal:
         if not amount:
             raise InvalidParameter('amount', 'is required')
@@ -52,9 +63,9 @@ class Bid(ABC):
         return Decimal(amount)
 
     @staticmethod
-    def validated_and_set_date_bid(date_bid: int) -> int:
-        if not date_bid:
-            raise InvalidParameter('date_bid', 'é obrigatório')
-        if not isinstance(date_bid, int):
-            raise InvalidParameter('date_bid', 'deve ser int')
-        return date_bid
+    def validated_and_set_create_at(create_at: int) -> int:
+        if not create_at:
+            raise InvalidParameter('create_at ', 'é obrigatório')
+        if not isinstance(create_at, int):
+            raise InvalidParameter('create_at', 'deve ser int')
+        return create_at

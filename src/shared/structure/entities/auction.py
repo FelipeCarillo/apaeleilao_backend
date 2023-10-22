@@ -15,10 +15,8 @@ class Auction:
     description: str
     start_date: int
     end_date: int
-    start_amount: Decimal
-    current_amount: Decimal
-    bids: List[Optional[Bid]]
-    payments: List[Optional[Payment]]
+    start_amount: float
+    current_amount: float
     images: List[Dict[str]]
     status_auction: STATUS_AUCTION_ENUM
     create_at: int
@@ -34,10 +32,8 @@ class Auction:
                  description: str = None,
                  start_date: int = None,
                  end_date: int = None,
-                 start_amount: str = None,
-                 current_amount: str = None,
-                 bids: List[Optional[Bid]] = None,
-                 payments: List[Optional[Payment]] = None,
+                 start_amount: float = None,
+                 current_amount: float = None,
                  images: List[Dict[str]] = None,
                  status_auction: STATUS_AUCTION_ENUM = None,
                  create_at: int = None,
@@ -49,10 +45,8 @@ class Auction:
         self.description = self.validate_and_set_description(description)
         self.start_date = self.validate_set_start_date(start_date)
         self.end_date = self.validate_set_end_date(end_date)
-        self.start_price = self.validate_and_set_amount(start_amount)
+        self.start_amount = self.validate_and_set_amount(start_amount)
         self.current_amount = self.validate_and_set_amount(current_amount)
-        self.bids = self.validate_and_set_bids(bids)
-        self.payments = self.validate_and_set_payments(payments)
         self.images = self.validate_and_set_images(images)
         self.status_auction = self.validate_and_set_status_auction(STATUS_AUCTION_ENUM(status_auction))
         self.create_at = self.validate_and_set_create_at(create_at)
@@ -65,10 +59,8 @@ class Auction:
             "description": self.description,
             "start_date": self.start_date,
             "end_date": self.end_date,
-            "start_price": float(self.start_price),
-            "current_amount": float(self.current_amount),
-            "bids": [bid.to_dict() for bid in self.bids] if len(self.bids) > 0 else [],
-            "payments": [payment.to_dict() for payment in self.payments] if len(self.payments) > 0 else [],
+            "start_amount": self.start_amount,
+            "current_amount": self.current_amount,
             "images": self.images,
             "status_auction": self.status_auction.value,
             "create_at": self.create_at
@@ -85,14 +77,6 @@ class Auction:
         if self.status_auction == STATUS_AUCTION_ENUM.PENDING:
             if self.start_date <= time:
                 self.status_auction = STATUS_AUCTION_ENUM.OPEN
-
-    def check_current_amount(self):
-        """
-        Check the current amount of the auction
-        """
-        if self.status_auction == STATUS_AUCTION_ENUM.OPEN:
-            if len(self.bids) > 0:
-                self.current_amount = max(self.bids, key=lambda bid: bid.amount).amount
 
     @staticmethod
     def validate_and_set_auction_id(auction_id: str) -> str or None:
@@ -155,18 +139,16 @@ class Auction:
         return end_date
 
     @staticmethod
-    def validate_and_set_amount(start_amount: str) -> Decimal:
-        if start_amount is None:
-            raise MissingParameter("start_amount")
-        if type(start_amount) != str:
-            raise InvalidParameter("start_amount", "deve ser um str")
-        start_amount = start_amount.replace(',', '.')
-        if len(start_amount.split('.')) > 2:
-            raise InvalidParameter("start_amount", "deve ser um número com 2 digitos pós a virgula")
-        return Decimal(start_amount)
+    def validate_and_set_amount(amount: float) -> float:
+        if amount is None:
+            raise MissingParameter("amount")
+        if type(amount) != str:
+            raise InvalidParameter("amount", "deve ser um número")
+        amount = round(amount, 2)
+        return amount
 
     @staticmethod
-    def validate_and_set_images(images: List[Dict[str]]) -> List[Dict[str]] or List[None]:
+    def   validate_and_set_images(images: List[Dict[str]]) -> List[Dict[str]] or List[None]:
         if images is None:
             return []
         if isinstance(images, list):

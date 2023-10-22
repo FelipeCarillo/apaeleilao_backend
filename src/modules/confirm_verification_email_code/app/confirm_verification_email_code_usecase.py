@@ -55,7 +55,7 @@ class ConfirmVerificationEmailCodeUseCase:
             accepted_terms=user.get('accepted_terms'),
             status_account=status_account,
             type_account=user.get('type_account'),
-            date_joined=int(user.get('date_joined')),
+            create_at=int(user.get('create_at')),
             verification_email_code=None if body.get('verification_email_code') else user.get(
                 'verification_email_code'),
             verification_email_code_expires_at=None if body.get('verification_email_code') else user.get(
@@ -65,4 +65,6 @@ class ConfirmVerificationEmailCodeUseCase:
                 'password_reset_code_expires_at')
         )
 
-        return self.__user_interface.update_user(user)
+        self.__user_interface.update_user(user)
+
+        return None

@@ -47,7 +47,7 @@ class CreateUserUseCase:
         user_id = str(uuid.uuid4())
         while self.__user_interface.get_user_by_id(user_id):
             user_id = str(uuid.uuid4())
-        date_joined = TimeManipulation.get_current_time()
+        create_at = TimeManipulation.get_current_time()
 
         user = UserModerator(user_id=user_id,
                              first_name=body.get('first_name'),
@@ -57,7 +57,7 @@ class CreateUserUseCase:
                              accepted_terms=body.get('accepted_terms'),
                              status_account=STATUS_USER_ACCOUNT_ENUM.ACTIVE.value,
                              type_account=TYPE_ACCOUNT_USER_ENUM.MODERATOR.value,
-                             date_joined=date_joined
+                             create_at=create_at
                              )
 
         user.password = hashpw(user.password.encode('utf-8'), gensalt()).decode('utf-8')

@@ -44,10 +44,10 @@ class CreateUserUseCase:
         if not body.get('start_amount'):
             raise MissingParameter('Lance inicial')
         if body.get('start_amount') < 0:
-            raise InvalidParameter('Lance inicial não pode ser menor que zero.')
+            raise InvalidParameter('Lance inicial', 'não pode ser menor que zero.')
 
         if body.get('start_date') > body.get('end_date'):
-            raise InvalidParameter('Data de início não pode ser maior que a data de encerramento.')
+            raise InvalidParameter('Data de início', 'não pode ser maior que a data de encerramento.')
 
         last_auction_id = self.__auction_interface.get_last_auction_id()
         auction_id = last_auction_id + 1 if last_auction_id else 1
@@ -61,8 +61,6 @@ class CreateUserUseCase:
             end_date=body.get('end_date'),
             start_amount=body.get('start_amount'),
             current_amount=body.get('start_amount'),
-            bids=[],
-            payments=[],
             images=body.get('images'),
             status_auction=STATUS_USER_ACCOUNT_ENUM.PENDING.value,
             create_at=TimeManipulation.get_current_time()
@@ -72,13 +70,14 @@ class CreateUserUseCase:
             raise DataAlreadyUsed('Já existe um leilão cadastrado para esse período.')
 
         if body.get('images'):
+            ImageManipulation().create_auction_folder(auction_id=auction.auction_id)
             for image in body.get('images'):
-                image_id = image.get('image_id')
+                image_id = image.get('image_id').split(".")
                 image_body = image.get('image_body')
-                response = ImageManipulation().upload_auction_image(auction_id=auction.auction_id, image_id=image_id,
-                                                                    image_body=image_body)
+                response = ImageManipulation().upload_auction_image(image_id=image_id[0], image_body=image_body,
+                                                                    content_type=image_id[-1])
                 image['image_body'] = response
 
-        self.__auction_interface.create_auction(auction.to_dict())
+        self.__auction_interface.create_auction(auction)
 
         return {'auction_id': auction.auction_id}
