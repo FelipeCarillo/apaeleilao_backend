@@ -150,7 +150,9 @@ class Auction:
     @staticmethod
     def validate_and_set_images(images: List[Dict[str]]) -> List[Dict[str]] or List[None]:
         if images is None:
-            return []
+            raise MissingParameter("images")
+        if len(images) > 0:
+            return None
         if isinstance(images, list):
             raise InvalidParameter("images", "deve ser uma lista")
         for image in images:

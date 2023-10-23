@@ -72,7 +72,7 @@ class CreateUserUseCase:
         if self.__auction_interface.get_auction_between_dates(auction.start_date, auction.end_date):
             raise DataAlreadyUsed('Já existe um leilão cadastrado para esse período.')
 
-        if body.get('images'):
+        if auction.images:
             ImageManipulation().create_auction_folder(auction_id=auction.auction_id)
             for image in body.get('images'):
                 image_id = image.get('image_id').split(".")
