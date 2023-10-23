@@ -31,9 +31,6 @@ class CreateUserUseCase:
         if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) not in AUTHORIZED_TYPE_ACCOUNT:
             raise UserNotAuthenticated()
 
-        if not body.get('user_id'):
-            raise MissingParameter('user_id')
-
         if not body.get('auction_id'):
             raise MissingParameter('auction_id')
 
@@ -48,7 +45,7 @@ class CreateUserUseCase:
 
         bid = Bid(
             bid_id=str(bid_id),
-            user_id=body.get('user_id'),
+            user_id=user.get('user_id'),
             auction_id=body.get('auction_id'),
             amount=body.get('amount'),
             create_at=TimeManipulation().get_current_time()

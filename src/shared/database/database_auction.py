@@ -71,8 +71,8 @@ class AuctionDynamodb(AuctionInterface):
     def get_auction_by_id(self, auction_id: str) -> Dict or None:
         try:
             key = Key('_id').eq('AUCTION#' + auction_id) & Key('create_at').gte(0)
-            query = self.__dynamodb.get_item(Key=key)
-            response = query.get('Item', None)
+            query = self.__dynamodb.query(KeyConditionExpression=key).get('Items', None)
+            response = query[0] if query else None
             if response:
                 response['auction_id'] = response.pop('_id').replace('AUCTION#', '')
                 response['start_amount'] = round(float(response['start_amount']), 2)

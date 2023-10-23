@@ -46,6 +46,9 @@ class CreateUserUseCase:
         if body.get('start_amount') < 0:
             raise InvalidParameter('Lance inicial', 'não pode ser menor que zero.')
 
+        if body.get('start_date') < TimeManipulation.get_current_time():
+            raise InvalidParameter('Data de início', 'não pode ser menor que a data atual.')
+
         if body.get('start_date') > body.get('end_date'):
             raise InvalidParameter('Data de início', 'não pode ser maior que a data de encerramento.')
 
