@@ -11,7 +11,7 @@ from src.shared.helper_functions.time_manipulation import TimeManipulation
 class Auction:
     auction_id: str
     created_by: str  # who created the auction user_id
-    titte: str
+    title: str
     description: str
     start_date: int
     end_date: int
