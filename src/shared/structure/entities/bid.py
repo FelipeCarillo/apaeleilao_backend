@@ -8,10 +8,10 @@ class Bid(ABC):
     bid_id: str
     user_id: str
     auction_id: str
-    amount: Decimal
+    amount: float
     create_at: int
 
-    def __int__(self, bid_id: str, user_id: str, auction_id: str, amount: str, create_at: int):
+    def __int__(self, bid_id: str, user_id: str, auction_id: str, amount: float, create_at: int):
         self.bid_id = self.validated_and_set_bid_id(bid_id)
         self.user_id = self.validated_and_set_user_id(user_id)
         self.auction_id = self.validated_and_set_auction_id(auction_id)
@@ -52,15 +52,13 @@ class Bid(ABC):
         return auction_id
 
     @staticmethod
-    def validated_and_set_amount(amount: str) -> Decimal:
+    def validated_and_set_amount(amount: float) -> float:
         if not amount:
             raise InvalidParameter('amount', 'is required')
-        if not isinstance(amount, str):
-            raise InvalidParameter('amount', 'must be a str')
-        amount = amount.replace(',', '.')
-        if len(amount.split('.')[-1]) > 2:
-            raise InvalidParameter('amount', 'must have 2 decimal places')
-        return Decimal(amount)
+        if not isinstance(amount, float):
+            raise InvalidParameter('amount', 'must be a float')
+        amount = round(amount, 2)
+        return amount
 
     @staticmethod
     def validated_and_set_create_at(create_at: int) -> int:

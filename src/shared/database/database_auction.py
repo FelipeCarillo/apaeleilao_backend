@@ -56,6 +56,24 @@ class AuctionDynamodb(AuctionInterface):
         except Exception as e:
             raise e
 
+    def get_all_auctions_menu(self) -> List[Dict] or None:
+        try:
+            query = self.__dynamodb.query(
+                KeyConditionExpression=Key('_id').begins_with('AUCTION#'),
+                FilterExpression=Attr('status_auction').eq(STATUS_AUCTION_ENUM.OPEN.value) | Attr('status_auction').eq(STATUS_AUCTION_ENUM.PENDING.value),
+                limit=6,
+                ScanIndexForward=True
+            )
+            response = query.get('Items', None)
+            if response:
+                for auction in response:
+                    auction['auction_id'] = auction.pop('_id').replace('AUCTION#', '')
+                    auction['start_amount'] = round(float(auction['start_amount']), 2)
+                    auction['current_amount'] = round(float(auction['current_amount']), 2)
+            return response
+        except Exception as e:
+            raise e
+
     def get_auction_between_dates(self, start_date: int, end_date: int) -> List[Dict] or None:
         try:
             status_to_search = STATUS_AUCTION_ENUM.OPEN.value or STATUS_AUCTION_ENUM.PENDING.value

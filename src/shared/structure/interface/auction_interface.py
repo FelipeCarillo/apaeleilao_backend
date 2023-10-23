@@ -8,14 +8,23 @@ from src.shared.structure.entities.auction import Auction
 class AuctionInterface(ABC):
     @abstractmethod
     def create_auction(self, auction: Auction) -> Dict or None:
+        """
+        Create a new auction
+        """
         pass
 
     @abstractmethod
     def create_bid(self, bid: Bid) -> Dict or None:
+        """
+        Create a new bid
+        """
         pass
 
     @abstractmethod
     def get_auction_by_id(self, auction_id: str) -> Optional[Dict]:
+        """
+        Get a auction by id
+        """
         pass
 
     @abstractmethod
@@ -28,10 +37,9 @@ class AuctionInterface(ABC):
 
     @abstractmethod
     def get_all_auctions_menu(self) -> Optional[Dict]:
-        pass
-
-    @abstractmethod
-    def get_auction_by_id(self, auction_id: str) -> Optional[Dict]:
+        """
+        Get all auctions for menu
+        """
         pass
 
     @abstractmethod

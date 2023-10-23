@@ -35,11 +35,12 @@ class GetAuctionUseCase:
             raise InvalidParameter(parameter='Leilão', body='não encontrado')
         if len(bids) == 0:
             return None
-        bids = [Bid(bid_id=bid.get('bid_id'),
-                    auction_id=bid.get('auction_id'),
-                    user_id=bid.get('user_id'),
-                    amount=bid.get('amount'),
-                    create_at=bid.get('create_at'))
-                for bid in bids]
+        bids = [Bid(
+            bid_id=bid.get('bid_id'),
+            auction_id=bid.get('auction_id'),
+            user_id=bid.get('user_id'),
+            amount=bid.get('amount'),
+            created_at=bid.get('created_at')
+        ) for bid in bids]
 
         return [bid.to_dict() for bid in bids]

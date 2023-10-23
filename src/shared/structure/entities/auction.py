@@ -142,13 +142,13 @@ class Auction:
     def validate_and_set_amount(amount: float) -> float:
         if amount is None:
             raise MissingParameter("amount")
-        if type(amount) != str:
+        if type(amount) != float:
             raise InvalidParameter("amount", "deve ser um número")
         amount = round(amount, 2)
         return amount
 
     @staticmethod
-    def   validate_and_set_images(images: List[Dict[str]]) -> List[Dict[str]] or List[None]:
+    def validate_and_set_images(images: List[Dict[str]]) -> List[Dict[str]] or List[None]:
         if images is None:
             return []
         if isinstance(images, list):
