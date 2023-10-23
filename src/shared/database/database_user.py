@@ -53,9 +53,7 @@ class UserDynamodb(UserInterface):
 
     def get_user_by_id(self, user_id: str) -> Dict or None:
         try:
-            query = self.__dynamodb.query(KeyConditionExpression=Key('_id').eq(USER_TABLE_ENTITY.USER.value+"#"+user_id),
-                                          FilterExpression=Key('create_at').gte(0)
-                                          ).get('Items', None)
+            query = self.__dynamodb.query(KeyConditionExpression=Key('_id').eq(USER_TABLE_ENTITY.USER.value+"#"+user_id)).get('Items', None)
             item = query[0] if query else None
             if item:
                 item['user_id'] = item.pop('_id').split('#')[-1]

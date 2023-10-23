@@ -70,9 +70,7 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_auction_by_id(self, auction_id: str) -> Dict or None:
         try:
-            query = self.__dynamodb.query(KeyConditionExpression=Key('_id').eq('AUCTION#' + auction_id),
-                                          FilterExpression=Key('create_at').gte(0)
-                                          ).get('Items', None)
+            query = self.__dynamodb.query(KeyConditionExpression=Key('_id').eq('AUCTION#' + auction_id)).get('Items', None)
             response = query[0] if query else None
             if response:
                 response['auction_id'] = response.pop('_id').replace('AUCTION#', '')
@@ -153,7 +151,7 @@ class AuctionDynamodb(AuctionInterface):
             query = self.__dynamodb.query(
                 IndexName='sort_amount-index',
                 KeyConditionExpression=Key('_id').begins_with('BID#'),
-                FilterExpression=Key('auction_id').eq(auction_id),
+                FilterExpression=Attr('auction_id').eq(auction_id),
                 Limit=limit,
                 ScanIndexForward=False,
                 ExclusiveStartKey={'_id': 'BID#' + exclusive_start_key} if exclusive_start_key else None
