@@ -56,13 +56,10 @@ class ConfirmVerificationEmailCodeUseCase:
             status_account=status_account,
             type_account=user.get('type_account'),
             create_at=int(user.get('create_at')),
-            verification_email_code=None if body.get('verification_email_code') else user.get(
-                'verification_email_code'),
-            verification_email_code_expires_at=None if body.get('verification_email_code') else user.get(
-                'verification_email_code_expires_at'),
-            password_reset_code=None if body.get('password_reset_code') else user.get('password_reset_code'),
-            password_reset_code_expires_at=None if body.get('password_reset_code') else user.get(
-                'password_reset_code_expires_at')
+            verification_email_code=None,
+            verification_email_code_expires_at=None,
+            password_reset_code=user.get('password_reset_code'),
+            password_reset_code_expires_at=user.get('password_reset_code_expires_at')
         )
 
         self.__user_interface.update_user(user)
