@@ -17,7 +17,7 @@ class UserDynamodb(UserInterface):
     def create_user(self, user: User or UserModerator) -> Dict or None:
         try:
             user = user.to_dict()
-            user['_id'] = USER_TABLE_ENTITY.USER.value+"#"+user.pop('user_id')
+            user['_id'] = USER_TABLE_ENTITY.USER.value + "#" + user.pop('user_id')
 
             self.__dynamodb.put_item(
                 Item=user
@@ -53,7 +53,8 @@ class UserDynamodb(UserInterface):
 
     def get_user_by_id(self, user_id: str) -> Dict or None:
         try:
-            query = self.__dynamodb.query(KeyConditionExpression=Key('_id').eq(USER_TABLE_ENTITY.USER.value+"#"+user_id)).get('Items', None)
+            query = self.__dynamodb.query(
+                KeyConditionExpression=Key('_id').eq(USER_TABLE_ENTITY.USER.value + "#" + user_id)).get('Items', None)
             item = query[0] if query else None
             if item:
                 item['user_id'] = item.pop('_id').split('#')[-1]
@@ -61,7 +62,8 @@ class UserDynamodb(UserInterface):
         except Exception as e:
             raise e
 
-    def get_all_users(self, exclusive_start_key: str = None, limit: int = None, type_account: str = 'USER') -> Dict or None:
+    def get_all_users(self, exclusive_start_key: str = None, limit: int = None,
+                      type_account: str = 'USER') -> Dict or None:
         try:
             query = self.__dynamodb.scan(
                 ExclusiveStartKey=exclusive_start_key,
@@ -105,7 +107,9 @@ class UserDynamodb(UserInterface):
     def update_user(self, user: User) -> Dict or None:
         try:
             response = self.__dynamodb.update_item(
-                Key={'_id': USER_TABLE_ENTITY.USER.value+"#"+user.user_id},
+                Key={'_id': USER_TABLE_ENTITY.USER.value + "#" + user.user_id,
+                     'create_at': user.create_at
+                     },
                 UpdateExpression='SET first_name = :first_name,'
                                  'last_name = :last_name,'
                                  'cpf = :cpf,'
