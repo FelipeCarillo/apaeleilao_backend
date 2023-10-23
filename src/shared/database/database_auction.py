@@ -119,6 +119,19 @@ class AuctionDynamodb(AuctionInterface):
         except Exception as e:
             raise e
 
+    def update_auction_current_amount(self, auction_id: str = None, current_amount: float = None) -> Dict or None:
+        try:
+            response = self.__dynamodb.update_item(
+                Key={'_id': 'AUCTION#' + auction_id},
+                UpdateExpression='SET current_amount = :current_amount',
+                ExpressionAttributeValues={
+                    ':current_amount': Decimal(str(current_amount))
+                },
+                ReturnValues='UPDATED_NEW'
+            )
+        except Exception as e:
+            raise e
+
     def get_last_bid_id(self) -> Optional[int]:
         try:
             query = self.__dynamodb.query(

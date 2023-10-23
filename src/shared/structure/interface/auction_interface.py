@@ -43,6 +43,13 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
+    def update_auction_current_amount(self, auction_id: str = None, current_amount: float = None) -> Optional[Dict]:
+        """
+        Update the current amount of the auction
+        """
+        pass
+
+    @abstractmethod
     def update_auction_bids(self, auction: Auction) -> Optional[Dict]:
         """
         Update the bids of the auction
