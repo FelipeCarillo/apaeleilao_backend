@@ -54,7 +54,11 @@ class GetAuctionUseCase:
         )
         auction.check_time()
 
+        bid = self.__auction_interface.get_bids_by_auction(auction_id=auction.auction_id, limit=1)
+        amount = bid[0].get('amount') if bid else auction.start_amount
+        auction.current_amount = amount if amount > auction.current_amount else auction.current_amount
+
         if auction.status_auction.value != body.get('status_auction'):
-            self.__auction_interface.update_auction_bids(auction=auction)
+            self.__auction_interface.update_auction(auction=auction)
 
         return auction.to_dict()

@@ -52,9 +52,4 @@ class CreateUserUseCase:
         )
         self.__auction_interface.create_bid(bid=bid)
 
-        bids = self.__auction_interface.get_bids_by_auction(auction_id=body.get('auction_id'), limit=1)
-        if bids:
-            auction = {"auction_id": body.get('auction_id'), "current_amount": bids[0].get('amount')}
-            self.__auction_interface.update_auction_information(auction_dict=auction)
-
         return None

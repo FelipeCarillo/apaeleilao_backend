@@ -43,7 +43,7 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
-    def update_auction_information(self, auction: Auction = None, auction_dict: Dict = None) -> Optional[Dict]:
+    def update_auction(self, auction: Auction = None, auction_dict: Dict = None) -> Optional[Dict]:
         """
         Update the basics information of the auction
         Don't update the bids, payments and created_by

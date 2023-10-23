@@ -112,7 +112,7 @@ class AuctionDynamodb(AuctionInterface):
         except Exception as e:
             raise e
 
-    def update_auction_information(self, auction: Auction = None, auction_dict: Dict = None) -> Dict or None:
+    def update_auction(self, auction: Auction = None, auction_dict: Dict = None) -> Dict or None:
         try:
             if auction:
                 auction_dict = auction.to_dict()
