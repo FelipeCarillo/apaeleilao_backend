@@ -19,7 +19,7 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
-    def get_bids_by_auction(self, auction_id: str, exclusive_start_key: Optional[str], amount: Optional[int]) -> List[Dict]:
+    def get_bids_by_auction(self, auction_id: str, exclusive_start_key: Optional[str] = None, limit: Optional[int] = None) -> List[Dict]:
         pass
 
     @abstractmethod
