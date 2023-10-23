@@ -66,7 +66,8 @@ class DynamoDBStack(Construct):
         create_global_secondary_index(self.__user_table, "access_key-index", "access_key")
 
         self.__auction_table = create_table(self, "Auction_Apae_Leilao", "_id", "create_at", dynamodb.AttributeType.NUMBER)
-        create_global_secondary_index(self.__auction_table, "auction_id-index", "auction_id", "amount", dynamodb.AttributeType.NUMBER)
+        create_global_secondary_index(self.__auction_table, "sort_amount-index", "_id", "amount", dynamodb.AttributeType.NUMBER)
+
 
     @property
     def user_table(self) -> dynamodb.Table:

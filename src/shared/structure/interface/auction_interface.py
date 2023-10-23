@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Dict, List
 
+from src.shared.structure.entities.bid import Bid
 from src.shared.structure.entities.auction import Auction
 
 
@@ -10,7 +11,15 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
-    def get_bids_by_auction(self, auction_id: str) -> List[Dict]:
+    def create_bid(self, bid: Bid) -> Dict or None:
+        pass
+
+    @abstractmethod
+    def get_auction_by_id(self, auction_id: str) -> Optional[Dict]:
+        pass
+
+    @abstractmethod
+    def get_bids_by_auction(self, auction_id: str, exclusive_start_key: Optional[str], amount: Optional[int]) -> List[Dict]:
         pass
 
     @abstractmethod
@@ -26,7 +35,7 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
-    def update_auction_information(self, auction: Auction) -> Optional[Dict]:
+    def update_auction_information(self, auction: Auction = None, auction_dict: Dict = None) -> Optional[Dict]:
         """
         Update the basics information of the auction
         Don't update the bids, payments and created_by
@@ -53,4 +62,8 @@ class AuctionInterface(ABC):
 
     @abstractmethod
     def get_last_auction_id(self) -> Optional[int]:
+        pass
+
+    @abstractmethod
+    def get_last_bid_id(self) -> Optional[int]:
         pass

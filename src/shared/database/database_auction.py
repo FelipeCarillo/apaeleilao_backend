@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import Dict, List
+from typing import Dict, List, Optional
 from boto3.dynamodb.conditions import Key, Attr
 
 from src.shared.database.database import Database
@@ -93,25 +93,73 @@ class AuctionDynamodb(AuctionInterface):
         except Exception as e:
             raise e
 
-    def update_auction_information(self, auction: Auction) -> Dict or None:
+    def update_auction_information(self, auction: Auction = None, auction_dict: Dict = None) -> Dict or None:
         try:
+            if auction:
+                auction_dict = auction.to_dict()
             response = self.__dynamodb.update_item(
-                Key={'auction_id': auction.auction_id},
+                Key={'_id': 'AUCTION#' + auction_dict.get('auction_id')},
                 UpdateExpression='SET tittle = :tittle, description = :description, start_date = :start_date, '
-                                 'end_date = :end_date, start_amount = :start_amount, current_amount = '
-                                 ':current_amount, images = :images, status_auction = :status_auction',
+                                 'end_date = :end_date, start_amount = :start_amount, current_amount = :current_amount,'
+                                 'images = :images, status_auction = :status_auction',
                 ExpressionAttributeValues={
-                    ':tittle': auction.tittle,
-                    ':description': auction.description,
-                    ':start_date': auction.start_date,
-                    ':end_date': auction.end_date,
-                    ':start_amount': auction.start_amount,
-                    ':current_amount': auction.current_amount,
-                    ':images': auction.images,
-                    ':status_auction': auction.status_auction.value
+                    ':tittle': auction_dict.get('tittle'),
+                    ':description': auction_dict.get('description'),
+                    ':start_date': auction_dict.get('start_date'),
+                    ':end_date': auction_dict.get('end_date'),
+                    ':start_amount': Decimal(str(auction_dict.get('start_amount'))),
+                    ':current_amount': Decimal(str(auction_dict.get('current_amount'))),
+                    ':images': auction_dict.get('images'),
+                    ':status_auction': auction_dict.get('status_auction').value
                 },
                 ReturnValues='UPDATED_NEW'
             )
-            return response['Attributes']
         except Exception as e:
             raise e
+
+    def get_auction_by_id(self, auction_id: str) -> Dict or None:
+        try:
+            query = self.__dynamodb.get_item(Key={'_id': 'AUCTION#' + auction_id})
+            response = query.get('Item', None)
+            if response:
+                response['auction_id'] = response.pop('_id').replace('AUCTION#', '')
+                response['start_amount'] = round(float(response['start_amount']), 2)
+                response['current_amount'] = round(float(response['current_amount']), 2)
+            return response
+        except Exception as e:
+            raise e
+
+
+    def get_last_bid_id(self) -> Optional[int]:
+        try:
+            query = self.__dynamodb.query(
+                KeyConditionExpression=Key('_id').begins_with('BID#'),
+                ScanIndexForward=False,
+                Limit=1
+            )
+            response = query.get('Items', None)
+            if response:
+                return int(response[0]['_id'].replace('BID#', ''))
+            return None
+        except Exception as e:
+            raise e
+
+    def get_bids_by_auction(self, auction_id: str, exclusive_start_key: Optional[str] = None, limit: Optional[int] = None) -> List[Dict]:
+        try:
+            query = self.__dynamodb.query(
+                IndexName='sort_amount-index',
+                KeyConditionExpression=Key('_id').begins_with('BID#') & Key('auction_id').eq(auction_id),
+                Limit=limit,
+                ScanIndexForward=False,
+                ExclusiveStartKey={'_id': 'BID#' + exclusive_start_key} if exclusive_start_key else None
+            )
+            response = query.get('Items', None)
+            if len(response) > 0:
+                for bid in response:
+                    bid['bid_id'] = bid.pop('_id').replace('BID#', '')
+                    bid['amount'] = round(float(bid['amount']), 2)
+            return response if len(response) > 0 else None
+        except Exception as e:
+            raise e
+
+

@@ -39,8 +39,8 @@ class User(ABC):
                  password_reset_code_expires_at: int = None):
 
         self.user_id = UserValidator.validate_and_set_user_id(user_id)
-        self.first_name = UserValidator.validate_and_set_first_name(first_name)
-        self.last_name = UserValidator.validate_and_set_last_name(last_name)
+        self.first_name = UserValidator.validate_and_set_name(first_name)
+        self.last_name = UserValidator.validate_and_set_name(last_name)
         self.cpf = UserValidator.validate_and_set_cpf(cpf)
         self.email = UserValidator.validate_and_set_email(email)
         self.phone = UserValidator.validate_and_set_phone(phone)
@@ -104,8 +104,8 @@ class UserModerator(ABC):
                  create_at: int = None):
         self.user_id = UserValidator.validate_and_set_user_id(user_id)
         self.access_key = UserValidator.validate_and_set_access_key(access_key)
-        self.first_name = UserValidator.validate_and_set_first_name(first_name)
-        self.last_name = UserValidator.validate_and_set_last_name(last_name)
+        self.first_name = UserValidator.validate_and_set_name(first_name)
+        self.last_name = UserValidator.validate_and_set_name(last_name)
         self.cpf = UserValidator.validate_and_set_cpf(cpf)
         self.password = UserValidator.validate_and_set_password(password)
         self.accepted_terms = UserValidator.validate_and_set_accepted_terms(accepted_terms)
@@ -205,27 +205,18 @@ class UserValidator(ABC):
         return access_key
 
     @staticmethod
-    def validate_and_set_first_name(first_name: str) -> str or None:
-        if first_name is None:
+    def validate_and_set_name(name: str) -> str or None:
+        if name is None:
             raise MissingParameter("Nome")
-        if UserValidator.NAME_MIN_LENGTH < len(first_name) >= UserValidator.NAME_MAX_LENGTH:
+        if re.fullmatch(r"[A-Za-zÀ-ÖØ-öø-ÿ ]+", name) is None:
+            raise InvalidParameter("Nome", "inválido")
+        if UserValidator.NAME_MIN_LENGTH < len(name) >= UserValidator.NAME_MAX_LENGTH:
             raise InvalidParameter(
                 "first_name",
                 f"deve ter no mínimo {UserValidator.NAME_MIN_LENGTH} caracteres e no máximo {UserValidator.NAME_MAX_LENGTH}")
-        if type(first_name) != str:
+        if not isinstance(name, str):
             raise InvalidParameter("first_name", "deve ser str")
-        return first_name
-
-    @staticmethod
-    def validate_and_set_last_name(last_name: str) -> str or None:
-        if last_name is None:
-            raise MissingParameter("Sobrenome")
-        if type(last_name) != str:
-            raise InvalidParameter("last_name", "deve ser str")
-        if UserValidator.NAME_MIN_LENGTH < len(last_name) >= UserValidator.NAME_MAX_LENGTH:
-            raise InvalidParameter("last_name",
-                                   f"deve ter no mínimo {UserValidator.NAME_MIN_LENGTH} caracteres e no máximo {UserValidator.NAME_MAX_LENGTH}")
-        return last_name
+        return name
 
     @staticmethod
     def validate_and_set_cpf(cpf: str) -> str or None:
@@ -259,9 +250,9 @@ class UserValidator(ABC):
     def validate_and_set_email(email: str) -> str or None:
         if email is None:
             raise MissingParameter("Email")
-        if re.fullmatch(r"[A-Za-z0-9_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", email) is None:
+        if re.fullmatch(r"[A-Za-z0-9.]+@[A-Za-z0-9.]+\.[A-Za-z]{2,}", email) is None:
             raise InvalidParameter("Email", "inválido")
-        if type(email) != str:
+        if not isinstance(email, str):
             raise InvalidParameter("Email", "deve ser str")
         return email
 
