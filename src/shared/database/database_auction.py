@@ -60,8 +60,8 @@ class AuctionDynamodb(AuctionInterface):
         try:
             status_to_search = STATUS_AUCTION_ENUM.OPEN.value or STATUS_AUCTION_ENUM.PENDING.value
             query = self.__dynamodb.query(
-                KeyConditionExpression=Key('_id').begins_with('AUCTION#') & Attr('status_auction').eq(status_to_search)
-                                       & Attr('start_date').between(start_date, end_date)
+                KeyConditionExpression=Key('_id').begins_with('AUCTION#'),
+                FilterExpression=Attr('status_auction').eq(status_to_search) & Attr('start_date').between(start_date, end_date)
             )
             response = query.get('Items', None)
             return response if len(response) > 0 else None
@@ -70,8 +70,9 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_auction_by_id(self, auction_id: str) -> Dict or None:
         try:
-            key = Key('_id').eq('AUCTION#' + auction_id) & Key('create_at').gte(0)
-            query = self.__dynamodb.query(KeyConditionExpression=key).get('Items', None)
+            query = self.__dynamodb.query(KeyConditionExpression=Key('_id').eq('AUCTION#' + auction_id),
+                                          FilterExpression=Key('create_at').gte(0)
+                                          ).get('Items', None)
             response = query[0] if query else None
             if response:
                 response['auction_id'] = response.pop('_id').replace('AUCTION#', '')
@@ -151,7 +152,8 @@ class AuctionDynamodb(AuctionInterface):
         try:
             query = self.__dynamodb.query(
                 IndexName='sort_amount-index',
-                KeyConditionExpression=Key('_id').begins_with('BID#') & Key('auction_id').eq(auction_id),
+                KeyConditionExpression=Key('_id').begins_with('BID#'),
+                FilterExpression=Key('auction_id').eq(auction_id),
                 Limit=limit,
                 ScanIndexForward=False,
                 ExclusiveStartKey={'_id': 'BID#' + exclusive_start_key} if exclusive_start_key else None
