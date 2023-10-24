@@ -42,7 +42,7 @@ class GetAuctionUseCase:
         auction = Auction(
             auction_id=auction.get('auction_id'),
             created_by=auction.get('created_by'),
-            tittle=auction.get('tittle'),
+            title=auction.get('title'),
             description=auction.get('description'),
             start_date=auction.get('start_date'),
             end_date=auction.get('end_date'),
