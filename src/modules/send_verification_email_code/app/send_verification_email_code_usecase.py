@@ -10,7 +10,7 @@ from src.shared.structure.entities.user import User
 from src.shared.helper_functions.email_function import Email
 from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.interface.user_interface import UserInterface
-from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
+from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM, TYPE_ACCOUNT_USER_ENUM
 from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated, InvalidParameter
 
@@ -38,6 +38,9 @@ class SendVerificationEmailCodeUseCase:
         status_account_permitted = [STATUS_USER_ACCOUNT_ENUM.PENDING]
         if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) not in status_account_permitted:
             raise UserNotAuthenticated(message='Conta de usuário já validada.')
+
+        if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) != TYPE_ACCOUNT_USER_ENUM.USER:
+            raise UserNotAuthenticated(message='Você não tem permissão para validar uma conta de usuário.')
 
         code = random.randint(10000, 99999)
         code_expires_at = TimeManipulation().plus_minute(1.5)
