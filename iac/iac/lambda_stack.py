@@ -143,12 +143,12 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
-        # self.get_all_auctions = self.create_lambda(
-        #     function_name="get_all_auctions",
-        #     method="GET",
-        #     restapi_resource=restapi_resource,
-        #     environment_variables=environment_variables,
-        # )
+        self.get_all_auctions_menu = self.create_lambda(
+            function_name="get_all_auctions_menu",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
 
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
@@ -166,7 +166,7 @@ class LambdaStack(Construct):
             self.get_auction,
             self.create_bid,
             self.get_bids_by_auction,
-            # self.get_all_auctions,
+            self.get_all_auctions_menu,
         )
 
     @property
@@ -176,5 +176,5 @@ class LambdaStack(Construct):
             self.get_auction,
             self.create_bid,
             self.get_bids_by_auction,
-            # self.get_all_auctions,
+            self.get_all_auctions_menu,
         )
