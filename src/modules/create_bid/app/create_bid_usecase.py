@@ -3,7 +3,7 @@ from typing import Dict
 from src.shared.structure.entities.bid import Bid
 from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.interface.user_interface import UserInterface
-from src.shared.structure.enums.user_enum import TYPE_ACCOUNT_USER_ENUM
+from src.shared.structure.enums.user_enum import TYPE_ACCOUNT_USER_ENUM, STATUS_USER_ACCOUNT_ENUM
 from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.structure.interface.auction_interface import AuctionInterface
 from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated, DataNotFound
@@ -29,6 +29,10 @@ class CreateUserUseCase:
             raise UserNotAuthenticated()
         AUTHORIZED_TYPE_ACCOUNT = [TYPE_ACCOUNT_USER_ENUM.USER]
         if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) not in AUTHORIZED_TYPE_ACCOUNT:
+            raise UserNotAuthenticated()
+
+        AUTHORIZED_STATUS_ACCOUNT = [STATUS_USER_ACCOUNT_ENUM.ACTIVE]
+        if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) not in AUTHORIZED_STATUS_ACCOUNT:
             raise UserNotAuthenticated()
 
         if not body.get('auction_id'):

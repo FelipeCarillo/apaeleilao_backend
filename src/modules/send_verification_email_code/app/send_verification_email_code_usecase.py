@@ -104,7 +104,7 @@ class SendVerificationEmailCodeUseCase:
                                 <td style="text-align: center; padding: 20px;">
                                     <div class="TextsBox" style="color: #949393; word-wrap: break-word;">
                                         <h2>Atenciosamente,</h2>
-                                        <h2><b>APAE São Caetano do Sul - IMT</b></h2>
+                                        <h2><b>IMT</b></h2>
                                     </div>
                                 </td>
                             </tr>
