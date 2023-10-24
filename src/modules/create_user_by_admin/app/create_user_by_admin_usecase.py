@@ -1,7 +1,9 @@
 import uuid
-
+import string
+import random
 from typing import Dict
 from bcrypt import hashpw, gensalt
+
 
 from src.shared.structure.entities.user import UserModerator
 from src.shared.helper_functions.token_authy import TokenAuthy
@@ -27,11 +29,10 @@ class CreateUserUseCase:
         if not body.get('cpf'):
             raise MissingParameter('CPF')
 
-        if self.__user_interface.get_user_by_email(body['email']):
-            raise DataAlreadyUsed('Email')
-
-        if self.__user_interface.get_user_by_cpf(body['cpf']):
-            raise DataAlreadyUsed('CPF')
+        user = self.__user_interface.get_user_by_cpf(body['cpf'])
+        if user:
+            if user.get('type_account') == TYPE_ACCOUNT_USER_ENUM.MODERATOR.value:
+                raise DataAlreadyUsed('CPF')
 
         decoded_token = self.__token.decode_token(auth.get('Authorization'))
         if not decoded_token:
@@ -48,13 +49,14 @@ class CreateUserUseCase:
         while self.__user_interface.get_user_by_id(user_id):
             user_id = str(uuid.uuid4())
         create_at = TimeManipulation.get_current_time()
+        access_key = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
 
         user = UserModerator(user_id=user_id,
+                             access_key=access_key,
                              first_name=body.get('first_name'),
                              last_name=body.get('last_name'),
                              cpf=body.get('cpf'),
                              password=body.get('password'),
-                             accepted_terms=body.get('accepted_terms'),
                              status_account=STATUS_USER_ACCOUNT_ENUM.ACTIVE.value,
                              type_account=TYPE_ACCOUNT_USER_ENUM.MODERATOR.value,
                              create_at=create_at

@@ -58,7 +58,7 @@ class CreateUserUseCase:
         auction = Auction(
             auction_id=str(auction_id),
             created_by=user['user_id'],
-            tittle=body.get('tittle'),
+            title=body.get('title'),
             description=body.get('description'),
             start_date=body.get('start_date'),
             end_date=body.get('end_date'),

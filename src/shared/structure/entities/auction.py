@@ -11,7 +11,7 @@ from src.shared.helper_functions.time_manipulation import TimeManipulation
 class Auction:
     auction_id: str
     created_by: str  # who created the auction user_id
-    titte: str
+    title: str
     description: str
     start_date: int
     end_date: int
@@ -20,15 +20,15 @@ class Auction:
     images: List[Dict[str]]
     status_auction: STATUS_AUCTION_ENUM
     create_at: int
-    AUCTION_ID_LENGTH = 36
+    USER_ID_LENGTH = 36
     TITTLE_MAX_LENGTH = 100
     TITTLE_MIN_LENGTH = 3
     DESCRIPTION_MAX_LENGTH = 350
-    DESCRIPTION_MIN_LENGTH = 5
+    DESCRIPTION_MIN_LENGTH = 3
 
     def __init__(self, auction_id: str,
                  created_by: str,
-                 tittle: str,
+                 title: str,
                  description: str = None,
                  start_date: int = None,
                  end_date: int = None,
@@ -41,7 +41,7 @@ class Auction:
 
         self.auction_id = self.validate_and_set_auction_id(auction_id)
         self.created_by = self.validate_and_set_user_id(created_by)
-        self.tittle = self.validate_and_set_tittle(tittle)
+        self.title = self.validate_and_set_title(title)
         self.description = self.validate_and_set_description(description)
         self.start_date = self.validate_set_start_date(start_date)
         self.end_date = self.validate_set_end_date(end_date)
@@ -55,7 +55,7 @@ class Auction:
         return {
             "auction_id": self.auction_id,
             "created_by": self.created_by,
-            "tittle": self.tittle,
+            "title": self.title,
             "description": self.description,
             "start_date": self.start_date,
             "end_date": self.end_date,
@@ -94,21 +94,21 @@ class Auction:
             raise MissingParameter("user_id")
         if type(user_id) is not str:
             raise InvalidParameter("auction_id", "deve ser uma str")
-        if len(user_id) != Auction.AUCTION_ID_LENGTH:
+        if len(user_id) != Auction.USER_ID_LENGTH:
             raise InvalidParameter("auction_id", "deve ter 36 caracteres")
         return user_id
 
     @staticmethod
-    def validate_and_set_tittle(tittle: str) -> str or None:
-        if tittle is None:
-            raise MissingParameter("tittle")
-        if Auction.TITTLE_MIN_LENGTH > len(tittle) or len(tittle) > Auction.TITTLE_MAX_LENGTH:
+    def validate_and_set_title(title: str) -> str or None:
+        if title is None:
+            raise MissingParameter("title")
+        if Auction.TITTLE_MIN_LENGTH > len(title) or len(title) > Auction.TITTLE_MAX_LENGTH:
             raise InvalidParameter(
-                "tittle",
+                "title",
                 f"deve ter no mínimo {Auction.TITTLE_MIN_LENGTH} caracteres e no máximo {Auction.TITTLE_MAX_LENGTH}")
-        if type(tittle) != str:
-            raise InvalidParameter("tittle", "deve ser uma str")
-        return tittle
+        if isinstance(title, str) is False:
+            raise InvalidParameter("title", "deve ser uma str")
+        return title
 
     @staticmethod
     def validate_and_set_description(description: str) -> str or None:

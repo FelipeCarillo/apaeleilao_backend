@@ -1,12 +1,9 @@
-import os
-
 from .get_token_usecase import GetTokenUseCase
 from .get_token_controller import GetTokenController
 
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 from src.shared.database.database_user import UserDynamodb
 
-stage = os.environ.get("STAGE", "test")
 usecase = GetTokenUseCase(UserDynamodb())
 controller = GetTokenController(usecase)
 

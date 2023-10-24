@@ -41,6 +41,9 @@ class ConfirmPasswordResetCodeUseCase:
         if body.get('password_reset_code') != user.get('password_reset_code'):
             raise InvalidParameter(parameter='Código de redefinição', body='inválido')
 
+        expire_at = current_time + 1800
+
         return {
-            'token': self.__token.generate_token(user_id=user.get('user_id')),
+            'token': self.__token.generate_token(user_id=user.get('user_id'), exp_time=expire_at),
+            'expire_at': expire_at
         }

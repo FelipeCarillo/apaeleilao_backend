@@ -51,7 +51,7 @@ class CreateUserUseCase:
 
         user.password = hashpw(user.password.encode('utf-8'), gensalt()).decode('utf-8')
 
-        token = self.__token.generate_token(user_id=user_id, keep_login=True)
+        token = self.__token.generate_token(user_id=user_id)
 
         self.__user_interface.create_user(user)
 

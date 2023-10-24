@@ -83,7 +83,6 @@ class UserModerator(ABC):
     last_name: str
     cpf: str
     password: str
-    accepted_terms: bool
     status_account: STATUS_USER_ACCOUNT_ENUM
     type_account: TYPE_ACCOUNT_USER_ENUM
     date_joined: int
@@ -98,7 +97,6 @@ class UserModerator(ABC):
                  last_name: str = None,
                  cpf: str = None,
                  password: str = None,
-                 accepted_terms: bool = None,
                  status_account: str = None,
                  type_account: str = None,
                  create_at: int = None):
@@ -108,7 +106,6 @@ class UserModerator(ABC):
         self.last_name = UserValidator.validate_and_set_name(last_name)
         self.cpf = UserValidator.validate_and_set_cpf(cpf)
         self.password = UserValidator.validate_and_set_password(password)
-        self.accepted_terms = UserValidator.validate_and_set_accepted_terms(accepted_terms)
         self.status_account = UserValidator.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
         self.type_account = self.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
         self.create_at = UserValidator.validate_and_set_create_at(create_at)
@@ -121,7 +118,6 @@ class UserModerator(ABC):
             'last_name': self.last_name,
             'cpf': self.cpf,
             'password': self.password,
-            'accepted_terms': self.accepted_terms,
             'status_account': self.status_account.value,
             'type_account': self.type_account.value,
             'create_at': self.create_at,
