@@ -50,18 +50,22 @@ class CreateUserUseCase:
             user_id = str(uuid.uuid4())
         create_at = TimeManipulation.get_current_time()
         access_key = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        password = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits +
+                                          string.punctuation, k=20))
 
         user = UserModerator(user_id=user_id,
                              access_key=access_key,
                              first_name=body.get('first_name'),
                              last_name=body.get('last_name'),
                              cpf=body.get('cpf'),
-                             password=body.get('password'),
+                             password=password,
                              status_account=STATUS_USER_ACCOUNT_ENUM.ACTIVE.value,
                              type_account=TYPE_ACCOUNT_USER_ENUM.MODERATOR.value,
                              create_at=create_at
                              )
 
         user.password = hashpw(user.password.encode('utf-8'), gensalt()).decode('utf-8')
+        self.__user_interface.create_user(user)
+        user.password = password
 
-        return self.__user_interface.create_user(user)
+        return user.to_dict()
