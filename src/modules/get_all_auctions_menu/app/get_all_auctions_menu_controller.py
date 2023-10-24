@@ -1,18 +1,18 @@
-from get_auctions_menu_usecase import GetAuctionsMenuUseCase
+from get_all_auctions_menu_usecase import GetAllAuctionsMenuUseCase
 
 from src.shared.https_codes.https_code import *
 from src.shared.errors.modules_errors import *
 
 
-class GetAuctionsMenuController:
-    def __init__(self, usecase: GetAuctionsMenuUseCase):
+class GetAllAuctionsMenuController:
+    def __init__(self, usecase: GetAllAuctionsMenuUseCase):
         self.__usecase = usecase
 
     def __call__(self):
         try:
-            get_auction_menu_usecase = self.__usecase()
+            usecase = self.__usecase()
 
-            return OK(body=get_auction_menu_usecase, message="Leilão encontrado com sucesso.")
+            return OK(body=usecase, message="Leilões encontrados com sucesso.")
 
         except DataNotFound as e:
             return NotFound(message=e.message)
