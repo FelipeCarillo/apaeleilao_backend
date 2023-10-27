@@ -1,9 +1,7 @@
 import os
-import random
 import datetime
 from typing import Dict
 
-from src.shared.structure.entities.user import User
 from src.shared.helper_functions.email_function import Email
 from src.shared.errors.modules_errors import MissingParameter
 from src.shared.helper_functions.token_authy import TokenAuthy
@@ -11,7 +9,7 @@ from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.helper_functions.time_manipulation import TimeManipulation
 
 
-class SendPasswordResetCodeUseCase:
+class SendResetPasswordLinkUseCase:
     TIME_EXPIRE = 15  # minutes
 
     def __init__(self, user_interface: UserInterface):

@@ -80,16 +80,9 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
-        self.send_password_reset_code = self.create_lambda(
-            function_name="send_password_reset_code",
+        self.send_reset_password_link = self.create_lambda(
+            function_name="send_reset_password_link",
             method="GET",
-            restapi_resource=restapi_resource,
-            environment_variables=environment_variables,
-        )
-
-        self.confirm_password_reset_code = self.create_lambda(
-            function_name="confirm_password_reset_code",
-            method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )

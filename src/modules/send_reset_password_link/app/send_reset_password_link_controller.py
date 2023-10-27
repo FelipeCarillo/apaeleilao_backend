@@ -1,6 +1,6 @@
 from typing import Dict
 
-from .send_password_reset_code_usecase import SendPasswordResetCodeUseCase
+from .send_reset_password_link_usecase import SendResetPasswordLinkUseCase
 
 from src.shared.https_codes.https_code import OK, BadRequest, InternalServerError, Unauthorized, ParameterError, \
     NotFound
@@ -8,8 +8,8 @@ from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, I
     DataNotFound
 
 
-class SendPasswordResetCodeController:
-    def __init__(self, usecase: SendPasswordResetCodeUseCase):
+class SendResetPasswordLinkController:
+    def __init__(self, usecase: SendResetPasswordLinkUseCase):
         self.__usecase = usecase
 
     def __call__(self, request: Dict):
