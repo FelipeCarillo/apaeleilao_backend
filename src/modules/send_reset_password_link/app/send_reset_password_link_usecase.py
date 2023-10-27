@@ -31,7 +31,7 @@ class SendResetPasswordLinkUseCase:
             "%d/%m/%Y %H:%M:%S")
 
         token = self.__token.generate_token(user_id=user.get('user_id'), exp_time=code_expires_at)
-        url = f"https://{self.__domain}/reset-password?token={token}"
+        url = f"https://{self.__domain}/redefinirSenha?token={token}"
 
         email_format = f"""
         <html lang="pt-br" charset="UTF-8">
