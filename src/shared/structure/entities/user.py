@@ -19,8 +19,6 @@ class User(ABC):
     create_at: int
     verification_code: str
     verification_code_expires_at: int
-    password_reset_code: str
-    password_reset_code_expires_at: int
 
     def __init__(self, user_id: str = None,
                  first_name: str = None,
@@ -35,8 +33,7 @@ class User(ABC):
                  create_at: int = None,
                  verification_email_code: str = None,
                  verification_email_code_expires_at: int = None,
-                 password_reset_code: str = None,
-                 password_reset_code_expires_at: int = None):
+                 ):
 
         self.user_id = UserValidator.validate_and_set_user_id(user_id)
         self.first_name = UserValidator.validate_and_set_name(first_name)
@@ -52,9 +49,6 @@ class User(ABC):
         self.verification_email_code = UserValidator.validate_and_set_verification_email_code(verification_email_code)
         self.verification_email_code_expires_at = UserValidator.validate_and_set_verification_email_code_expires_at(
             verification_email_code_expires_at)
-        self.password_reset_code = UserValidator.validate_and_set_password_reset_code(password_reset_code)
-        self.password_reset_code_expires_at = UserValidator.validate_and_set_password_reset_code_expires_at(
-            password_reset_code_expires_at)
 
     def to_dict(self):
         return {
@@ -71,8 +65,6 @@ class User(ABC):
             'create_at': self.create_at,
             'verification_email_code': self.verification_email_code,
             'verification_email_code_expires_at': self.verification_email_code_expires_at,
-            'password_reset_code': self.password_reset_code,
-            'password_reset_code_expires_at': self.password_reset_code_expires_at,
         }
 
 
@@ -315,19 +307,3 @@ class UserValidator(ABC):
         if type(verification_email_code_expires_at) != int:
             raise InvalidParameter("verification_code_expires_at", "deve ser int")
         return verification_email_code_expires_at
-
-    @staticmethod
-    def validate_and_set_password_reset_code(password_reset_code: str) -> str or None:
-        if password_reset_code is None:
-            return None
-        if type(password_reset_code) != str:
-            raise InvalidParameter("password_reset_code", "deve ser str")
-        return password_reset_code
-
-    @staticmethod
-    def validate_and_set_password_reset_code_expires_at(password_reset_code_expires_at: int) -> int or None:
-        if password_reset_code_expires_at is None:
-            return None
-        if type(password_reset_code_expires_at) != int:
-            raise InvalidParameter("password_reset_code_expires_at", "deve ser int")
-        return password_reset_code_expires_at

@@ -64,8 +64,6 @@ class ConfirmVerificationEmailCodeUseCase:
             create_at=int(user.get('create_at')),
             verification_email_code=None,
             verification_email_code_expires_at=None,
-            password_reset_code=user.get('password_reset_code'),
-            password_reset_code_expires_at=user.get('password_reset_code_expires_at')
         )
 
         self.__user_interface.update_user(user)

@@ -119,9 +119,7 @@ class UserDynamodb(UserInterface):
                                  'status_account = :status_account,'
                                  'type_account = :type_account,'
                                  'verification_email_code = :verification_email_code, '
-                                 'verification_email_code_expires_at = :verification_email_code_expires_at, '
-                                 'password_reset_code = :password_reset_code, '
-                                 'password_reset_code_expires_at = :password_reset_code_expires_at',
+                                 'verification_email_code_expires_at = :verification_email_code_expires_at, ',
                 ExpressionAttributeValues={
                     ':first_name': user.first_name,
                     ':last_name': user.last_name,
@@ -133,8 +131,6 @@ class UserDynamodb(UserInterface):
                     ':type_account': user.type_account.value,
                     ':verification_email_code': user.verification_email_code,
                     ':verification_email_code_expires_at': user.verification_email_code_expires_at,
-                    ':password_reset_code': user.password_reset_code,
-                    ':password_reset_code_expires_at': user.password_reset_code_expires_at
                 },
                 ReturnValues='ALL_NEW'
             )

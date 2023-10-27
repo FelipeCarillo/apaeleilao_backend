@@ -54,9 +54,6 @@ class UpdateUserUseCase:
             if user.get('verification_email_code') else None,
             verification_email_code_expires_at=int(user.get('verification_email_code_expires_at'))
             if user.get('verification_email_code_expires_at') else None,
-            password_reset_code=int(user.get('password_reset_code')) if user.get('password_reset_code') else None,
-            password_reset_code_expires_at=int(user.get('password_reset_code_expires_at'))
-            if user.get('password_reset_code_expires_at') else None
         )
 
         return self.__user_interface.update_user(user)

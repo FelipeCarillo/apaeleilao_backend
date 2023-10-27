@@ -80,4 +80,6 @@ jobs:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
           EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+          DOMAIN: ${{ vars.DOMAIN }}
+          DEV_DOMAIN: ${{ secrets.DEV_DOMAIN }}
 

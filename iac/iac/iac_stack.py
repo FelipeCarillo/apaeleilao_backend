@@ -25,6 +25,8 @@ class IACStack(Stack):
         email_password = os.environ.get("EMAIL_PASSWORD", "")
         email_host = os.environ.get("EMAIL_HOST", "")
         email_port = os.environ.get("EMAIL_PORT", "")
+        domain = os.environ.get("DOMAIN", "")
+        dev_domain = os.environ.get("DEV_DOMAIN", "")
 
         ENVIRONMENT_VARIABLES = {
             "STAGE": stage,
@@ -35,6 +37,7 @@ class IACStack(Stack):
             "EMAIL_PASSWORD": email_password,
             "EMAIL_HOST": email_host,
             "EMAIL_PORT": email_port,
+            "DOMAIN": domain if stage == "prod" else dev_domain,
         }
 
         self.__restapi = apigw.RestApi(
@@ -48,7 +51,7 @@ class IACStack(Stack):
                 "allow_headers": ["*"]
             },
             deploy_options=apigw.StageOptions(
-                stage_name=stage,
+                stage_name='prod',
             ),
         )
 
