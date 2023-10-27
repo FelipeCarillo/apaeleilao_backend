@@ -20,6 +20,10 @@ Este repositório contém o código-fonte do backend do site de Leilão da Apae,
 
 - Python: A linguagem de programação Python é usada para escrever o código das funções Lambda e para automatizar o provisionamento de recursos por meio do AWS CDK.
 
+- Diagrama de Infraestrutura de nosso Produto em Nuvem AWS:
+
+![image](https://github.com/FelipeCarillo/apaeleilao_mss/assets/63021830/3177a46c-ada9-481c-b5e5-92daf1f40db7)
+
 ## Estrutura do Projeto
 
 O projeto é organizado em diretórios que correspondem a diferentes componentes e recursos. Aqui está uma visão geral da estrutura do projeto:
