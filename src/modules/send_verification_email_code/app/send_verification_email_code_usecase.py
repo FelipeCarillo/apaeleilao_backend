@@ -93,7 +93,7 @@ class SendVerificationEmailCodeUseCase:
                                         <h2 style="color: #949393;">Obrigado, {user.first_name}<p>Aqui está o seu código de validação do email:</p>
                                         </h2>
                                         <h4 style="color: #000000; font-size: 26px; letter-spacing: 10px;">{user.verification_email_code}</h4>
-                                        <h4 style="color: #000000;">Codigo válido até: {datetime_expire}</h4>
+                                        <h4 style="color: #000000;">Código válido até: {datetime_expire}</h4>
                                     </div>
                                 </td>
                             </tr>
