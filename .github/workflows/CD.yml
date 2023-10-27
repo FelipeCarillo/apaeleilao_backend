@@ -8,33 +8,76 @@ on:
       - prod
 
 jobs:
-  DeploytoAWS:
+  Deploy_to_AWS:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Setting AWS Credentials
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Get Stack and Bucket name
         run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set default.region ${{ vars.AWS_REGION }}
-          aws configure set default.output json
+          echo "Defining stack and bucket name"
+          echo "STACK_NAME=ApaeLeilaoStack" >> $GITHUB_ENV
+          echo "BUCKET_NAME=apae-leilao-imt-bucket" >> $GITHUB_ENV
 
       - name: Install CDK dependencies
-        working-directory: ./
         run: |
+          echo "Installing CDK dependencies"
           npm install -g aws-cdk
           cd iac
           pip install -r requirements.txt
 
-      - name: CDK Deploy
-        working-directory: ./iac
+      - name: Install SRC dependencies
         run: |
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }}
-          cdk synth
+          echo "Installing SRC dependencies"
+          cd iac
+          rm -rf bcrypt_layer 
+          rm -rf jwt_layer
+          mkdir bcrypt_layer
+          mkdir jwt_layer
+          cd bcrypt_layer
+          pip install bcrypt==3.2.2 -t python
+          cd ..
+          cd jwt_layer
+          pip install pyjwt -t python
+
+      - name: AWS Credentials
+        run: |
+          echo "Configuring AWS Credentials"
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws configure set default.region ${{ vars.AWS_REGION }}
+            aws configure set default.output json
+
+      - name: CDK Bootstrap
+        run: |
+          echo "CDK Bootstrap"
+          cd iac
+          cdk bootstrap
+
+      - name: CDK Deploy
+        run: |
+          echo "CDK Deploy"
+          cd iac
           cdk deploy --require-approval never
         env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ vars.AWS_REGION }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          STAGE: ${{ github.ref_name }}
+          STACK_NAME: ${{ env.STACK_NAME }}
+          BUCKET_NAME: ${{ env.BUCKET_NAME }}
+          ENCRYPTED_KEY: ${{ secrets.ENCRYPTED_KEY }}
+          JWT_ALGORITHM: ${{ secrets.JWT_ALGORITHM }}
+          EMAIL_SENDER: ${{ vars.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
 
