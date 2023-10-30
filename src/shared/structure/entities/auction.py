@@ -18,7 +18,7 @@ class Auction:
     current_amount: float
     images: List[Optional[Dict]]
     status_auction: STATUS_AUCTION_ENUM
-    create_at: int
+    created_at: int
     USER_ID_LENGTH = 36
     TITTLE_MAX_LENGTH = 100
     TITTLE_MIN_LENGTH = 3
@@ -35,7 +35,7 @@ class Auction:
                  current_amount: float = None,
                  images: List[Optional[Dict]] = None,
                  status_auction: STATUS_AUCTION_ENUM = None,
-                 create_at: int = None,
+                 created_at: int = None,
                  ):
 
         self.auction_id = self.validate_and_set_auction_id(auction_id)
@@ -48,7 +48,7 @@ class Auction:
         self.current_amount = self.validate_and_set_amount(current_amount)
         self.images = self.validate_and_set_images(images)
         self.status_auction = self.validate_and_set_status_auction(STATUS_AUCTION_ENUM(status_auction))
-        self.create_at = self.validate_and_set_create_at(create_at)
+        self.create_at = self.validate_and_set_created_at(created_at)
         self.check_time()
 
     def to_dict(self):
@@ -177,12 +177,12 @@ class Auction:
         return status_auction
 
     @staticmethod
-    def validate_and_set_create_at(create_at: int) -> int or None:
-        if create_at is None:
+    def validate_and_set_created_at(created_at: int) -> int or None:
+        if created_at is None:
             raise MissingParameter("create_at")
-        if type(create_at) != int:
+        if isinstance(created_at, int) is False:
             raise InvalidParameter("create_at", "deve ser um int")
-        return create_at
+        return created_at
 
     @staticmethod
     def validate_and_set_bids(bids: List[Optional[Bid]]) -> List[Optional[Bid]] or None:

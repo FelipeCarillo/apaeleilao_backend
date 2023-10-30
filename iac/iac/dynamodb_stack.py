@@ -1,5 +1,3 @@
-from typing import List
-
 from aws_cdk import (
     aws_dynamodb as dynamodb,
     RemovalPolicy,
@@ -60,15 +58,17 @@ class DynamoDBStack(Construct):
     def __init__(self, scope: Construct) -> None:
         super().__init__(scope, "ApaeLeilao_DynamoDB")
 
-        self.__user_table = create_table(self, "User_Apae_Leilao", "_id", "create_at", dynamodb.AttributeType.NUMBER)
-        create_global_secondary_index(self.__user_table, "email-index", "email")
-        create_global_secondary_index(self.__user_table, "cpf-index", "cpf")
-        create_global_secondary_index(self.__user_table, "access_key-index", "access_key")
+        self.__user_table = create_table(self, "User_Apae_Leilao", "entity", "created_at",
+                                         dynamodb.AttributeType.NUMBER)
+        # create_global_secondary_index(self.__user_table, "user_id-index", "user_id")
+        # create_global_secondary_index(self.__user_table, "email-index", "email")
+        # create_global_secondary_index(self.__user_table, "cpf-index", "cpf")
+        # create_global_secondary_index(self.__user_table, "access_key-index", "access_key")
 
-        self.__auction_table = create_table(self, "Auction_Apae_Leilao", "_id", "create_at", dynamodb.AttributeType.NUMBER)
-        create_global_secondary_index(self.__auction_table, "sort_start_date-index", "_id", "start_date", dynamodb.AttributeType.NUMBER)
-        create_global_secondary_index(self.__auction_table, "sort_amount-index", "_id", "amount", dynamodb.AttributeType.NUMBER)
-
+        self.__auction_table = create_table(self, "Auction_Apae_Leilao", "entity", "created_at",
+                                            dynamodb.AttributeType.NUMBER)
+        create_global_secondary_index(self.__auction_table, "sort_amount-index", "auction_id", "amount",
+                                      dynamodb.AttributeType.NUMBER)
 
     @property
     def user_table(self) -> dynamodb.Table:
