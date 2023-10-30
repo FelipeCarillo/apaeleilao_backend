@@ -62,7 +62,7 @@ class AuctionDynamodb(AuctionInterface):
             query = self.__dynamodb.query(
                 KeyConditionExpression=Key('_id').begins_with('AUCTION#'),
                 FilterExpression=Attr('status_auction').eq(STATUS_AUCTION_ENUM.OPEN.value) | Attr('status_auction').eq(STATUS_AUCTION_ENUM.PENDING.value),
-                limit=6,
+                Limit=6,
                 ScanIndexForward=True
             )
             response = query.get('Items')
