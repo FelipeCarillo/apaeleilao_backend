@@ -32,11 +32,9 @@ class GetAuctionUseCase:
 
         if not body.get('auction_id'):
             raise MissingParameter('auction_id')
+
         auction = self.__auction_interface.get_auction_by_id(auction_id=body.get('auction_id'))
         if not auction:
-            raise DataNotFound('Leilão')
-
-        if auction.get('status_auction') != STATUS_USER_ACCOUNT_ENUM:
             raise DataNotFound('Leilão')
 
         auction = Auction(
