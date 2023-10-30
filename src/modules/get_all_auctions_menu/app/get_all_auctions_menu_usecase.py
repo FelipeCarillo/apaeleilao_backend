@@ -13,7 +13,7 @@ class GetAllAuctionsMenuUseCase:
         auctions = self.__auction_interface.get_all_auctions_menu()
 
         if not auctions:
-            return None
+            return {auctions: []}
 
         auctions = [Auction(
             auction_id=auction["auction_id"],
