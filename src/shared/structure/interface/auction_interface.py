@@ -58,20 +58,6 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
-    def update_auction_bids(self, auction: Auction) -> Optional[Dict]:
-        """
-        Update the bids of the auction
-        """
-        pass
-
-    @abstractmethod
-    def update_auction_payments(self, auction: Auction) -> Optional[Dict]:
-        """
-        Update the payments of the auction
-        """
-        pass
-
-    @abstractmethod
     def get_auction_between_dates(self, start_date: int, end_date: int) -> Optional[Dict]:
         pass
 

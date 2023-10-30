@@ -4,6 +4,7 @@ from boto3.dynamodb.conditions import Key, Attr
 
 from src.shared.database.database import Database
 from src.shared.structure.entities.auction import Auction
+from src.shared.structure.entities.bid import Bid
 from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
 from src.shared.structure.interface.auction_interface import AuctionInterface
 
@@ -183,3 +184,6 @@ class AuctionDynamodb(AuctionInterface):
             return response if len(response) > 0 else None
         except Exception as e:
             raise e
+
+    def create_bid(self, bid: Bid) -> Dict or None:
+        pass
