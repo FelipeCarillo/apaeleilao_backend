@@ -1,7 +1,7 @@
 from .get_all_auctions_menu_controller import GetAllAuctionsMenuController
 from .get_all_auctions_menu_usecase import GetAllAuctionsMenuUseCase
 
-from src.shared.https_codes.https_code import HttpResponse, HttpRequest
+from src.shared.https_codes.https_code import HttpResponse
 from src.shared.database.database_auction import AuctionDynamodb
 
 usecase = GetAllAuctionsMenuUseCase(AuctionDynamodb())

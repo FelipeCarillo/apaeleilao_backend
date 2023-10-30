@@ -1,4 +1,3 @@
-from decimal import Decimal
 from typing import List, Optional, Dict
 
 from src.shared.errors.modules_errors import *
@@ -50,6 +49,7 @@ class Auction:
         self.images = self.validate_and_set_images(images)
         self.status_auction = self.validate_and_set_status_auction(STATUS_AUCTION_ENUM(status_auction))
         self.create_at = self.validate_and_set_create_at(create_at)
+        self.check_time()
 
     def to_dict(self):
         return {
