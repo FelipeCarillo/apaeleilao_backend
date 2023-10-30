@@ -10,8 +10,8 @@ class GetAllAuctionsMenuUseCase:
         self.__auction_interface = auction_interface
 
     def __call__(self) -> Optional[Dict]:
-        auctions = self.__auction_interface.get_all_auctions_menu()
 
+        auctions = self.__auction_interface.get_all_auctions_menu()
         if not auctions:
             return {"auctions": []}
 

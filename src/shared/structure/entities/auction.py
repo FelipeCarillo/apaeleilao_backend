@@ -79,7 +79,7 @@ class Auction:
                 self.status_auction = STATUS_AUCTION_ENUM.OPEN
 
     @staticmethod
-    def validate_and_set_auction_id(auction_id: str) -> str or None:
+    def validate_and_set_auction_id(auction_id: str) -> str:
         if auction_id is None:
             raise MissingParameter("auction_id")
         if type(auction_id) is not str:
@@ -89,7 +89,7 @@ class Auction:
         return auction_id
 
     @staticmethod
-    def validate_and_set_user_id(user_id: str) -> str or None:
+    def validate_and_set_user_id(user_id: str) -> str:
         if user_id is None:
             raise MissingParameter("user_id")
         if type(user_id) is not str:
@@ -99,7 +99,7 @@ class Auction:
         return user_id
 
     @staticmethod
-    def validate_and_set_title(title: str) -> str or None:
+    def validate_and_set_title(title: str) -> str:
         if title is None:
             raise MissingParameter("title")
         if Auction.TITTLE_MIN_LENGTH > len(title) or len(title) > Auction.TITTLE_MAX_LENGTH:
@@ -148,11 +148,11 @@ class Auction:
         return amount
 
     @staticmethod
-    def validate_and_set_images(images: List[Dict[str]]) -> List[Dict[str]] or List[None]:
+    def validate_and_set_images(images: List[Optional[Dict]]) -> List[Optional[Dict]]:
         if images is None:
             raise MissingParameter("images")
         if len(images) > 0:
-            return None
+            return []
         if isinstance(images, list):
             raise InvalidParameter("images", "deve ser uma lista")
         for image in images:
@@ -172,7 +172,7 @@ class Auction:
     def validate_and_set_status_auction(status_auction: STATUS_AUCTION_ENUM) -> STATUS_AUCTION_ENUM or None:
         if status_auction is None:
             raise MissingParameter("status_auction")
-        if type(status_auction) != STATUS_AUCTION_ENUM:
+        if isinstance(status_auction, STATUS_AUCTION_ENUM) is False:
             raise InvalidParameter("status_auction", "deve ser um STATUS_AUCTION_ENUM")
         return status_auction
 
@@ -197,7 +197,7 @@ class Auction:
         return bids
 
     @staticmethod
-    def validate_and_set_payments(payments: List[Optional[Payment]]) -> List[Optional[Payment]] or None:
+    def validate_and_set_payments(payments: List[Optional[Payment]]) -> List[Optional[Payment]]:
         if payments is None:
             raise MissingParameter("payments")
         if not isinstance(payments, list):

@@ -36,7 +36,7 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
-    def get_all_auctions_menu(self) -> Optional[Dict]:
+    def get_all_auctions_menu(self) -> Optional[List[Dict]]:
         """
         Get all auctions for menu
         """

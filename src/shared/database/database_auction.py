@@ -56,7 +56,7 @@ class AuctionDynamodb(AuctionInterface):
         except Exception as e:
             raise e
 
-    def get_all_auctions_menu(self) -> List[Dict] or None:
+    def get_all_auctions_menu(self) -> Optional[List[Dict]]:
         try:
             query = self.__dynamodb.query(
                 KeyConditionExpression=Key('_id').begins_with('AUCTION#'),
@@ -64,13 +64,13 @@ class AuctionDynamodb(AuctionInterface):
                 limit=6,
                 ScanIndexForward=True
             )
-            response = query.get('Items', None)
-            if response:
+            response = query.get('Items')
+            if len(response) > 0:
                 for auction in response:
                     auction['auction_id'] = auction.pop('_id').replace('AUCTION#', '')
                     auction['start_amount'] = round(float(auction['start_amount']), 2)
                     auction['current_amount'] = round(float(auction['current_amount']), 2)
-            return response
+            return response if len(response) > 0 else None
         except Exception as e:
             raise e
 
