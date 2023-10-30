@@ -59,11 +59,13 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_all_auctions_menu(self) -> Optional[List[Dict]]:
         try:
-            query = self.__dynamodb.query(
-                KeyConditionExpression=Key('_id').begins_with('AUCTION#'),
-                FilterExpression=Attr('status_auction').eq(STATUS_AUCTION_ENUM.OPEN.value) | Attr('status_auction').eq(STATUS_AUCTION_ENUM.PENDING.value),
+            query = self.__dynamodb.scan(
+                IndexName='sort_start_date-index',
+                FilterExpression=Key('_id').begins_with('AUCTION#') &
+                                 (Attr('status_auction').eq(STATUS_AUCTION_ENUM.OPEN.value) |
+                                  Attr('status_auction').eq(STATUS_AUCTION_ENUM.PENDING.value)),
                 Limit=6,
-                ScanIndexForward=True
+                ScanIndexForward=False
             )
             response = query.get('Items')
             if len(response) > 0:
@@ -80,7 +82,8 @@ class AuctionDynamodb(AuctionInterface):
             status_to_search = STATUS_AUCTION_ENUM.OPEN.value or STATUS_AUCTION_ENUM.PENDING.value
             query = self.__dynamodb.query(
                 KeyConditionExpression=Key('_id').begins_with('AUCTION#'),
-                FilterExpression=Attr('status_auction').eq(status_to_search) & Attr('start_date').between(start_date, end_date)
+                FilterExpression=Attr('status_auction').eq(status_to_search) & Attr('start_date').between(start_date,
+                                                                                                          end_date)
             )
             response = query.get('Items', None)
             return response if len(response) > 0 else None
@@ -89,7 +92,8 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_auction_by_id(self, auction_id: str) -> Dict or None:
         try:
-            query = self.__dynamodb.query(KeyConditionExpression=Key('_id').eq('AUCTION#' + auction_id)).get('Items', None)
+            query = self.__dynamodb.query(KeyConditionExpression=Key('_id').eq('AUCTION#' + auction_id)).get('Items',
+                                                                                                             None)
             response = query[0] if query else None
             if response:
                 response['auction_id'] = response.pop('_id').replace('AUCTION#', '')
