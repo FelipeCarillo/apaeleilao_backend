@@ -16,7 +16,7 @@ class Auction:
     end_date: int
     start_amount: float
     current_amount: float
-    images: List[Dict[str]]
+    images: List[Optional[Dict]]
     status_auction: STATUS_AUCTION_ENUM
     create_at: int
     USER_ID_LENGTH = 36
@@ -33,7 +33,7 @@ class Auction:
                  end_date: int = None,
                  start_amount: float = None,
                  current_amount: float = None,
-                 images: List[Dict[str]] = None,
+                 images: List[Optional[Dict]] = None,
                  status_auction: STATUS_AUCTION_ENUM = None,
                  create_at: int = None,
                  ):
