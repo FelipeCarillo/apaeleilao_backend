@@ -13,7 +13,7 @@ class GetAllAuctionsMenuUseCase:
         auctions = self.__auction_interface.get_all_auctions_menu()
 
         if not auctions:
-            return {auctions: []}
+            return {"auctions": []}
 
         auctions = [Auction(
             auction_id=auction["auction_id"],
@@ -29,4 +29,4 @@ class GetAllAuctionsMenuUseCase:
             create_at=int(auction.get("created_at"))
         ) for auction in auctions]
 
-        return {auctions: [auction.to_dict() for auction in auctions]}
+        return {"auctions": [auction.to_dict() for auction in auctions]}
