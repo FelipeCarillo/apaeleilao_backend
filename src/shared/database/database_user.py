@@ -65,7 +65,7 @@ class UserDynamodb(UserInterface):
         try:
             query = self.__dynamodb.query(
                 KeyConditionExpression=Key('PK').eq(user_id) & Key('SK').eq(USER_TABLE_ENTITY.USER.value),
-            )
+            ).get('Items', None)
 
             item = query[0] if query else None
             if item:
