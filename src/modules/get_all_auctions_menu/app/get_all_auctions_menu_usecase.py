@@ -26,7 +26,7 @@ class GetAllAuctionsMenuUseCase:
             current_amount=float(auction.get("current_amount")),
             images=auction.get("images"),
             status_auction=STATUS_AUCTION_ENUM(auction.get("status_auction")),
-            create_at=int(auction.get("created_at"))
+            created_at=int(auction.get("created_at"))
         ) for auction in auctions]
 
         return {"auctions": [auction.to_dict() for auction in auctions]}

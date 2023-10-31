@@ -16,7 +16,7 @@ class User(ABC):
     accepted_terms: bool
     status_account: STATUS_USER_ACCOUNT_ENUM
     type_account: TYPE_ACCOUNT_USER_ENUM
-    create_at: int
+    created_at: int
     verification_code: str
     verification_code_expires_at: int
 
@@ -30,7 +30,7 @@ class User(ABC):
                  accepted_terms: bool = None,
                  status_account: str = None,
                  type_account: str = None,
-                 create_at: int = None,
+                 created_at: int = None,
                  verification_email_code: str = None,
                  verification_email_code_expires_at: int = None,
                  ):
@@ -45,7 +45,7 @@ class User(ABC):
         self.accepted_terms = UserValidator.validate_and_set_accepted_terms(accepted_terms)
         self.status_account = UserValidator.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
         self.type_account = UserValidator.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
-        self.create_at = UserValidator.validate_and_set_create_at(create_at)
+        self.created_at = UserValidator.validate_and_set_created_at(created_at)
         self.verification_email_code = UserValidator.validate_and_set_verification_email_code(verification_email_code)
         self.verification_email_code_expires_at = UserValidator.validate_and_set_verification_email_code_expires_at(
             verification_email_code_expires_at)
@@ -62,7 +62,7 @@ class User(ABC):
             'accepted_terms': self.accepted_terms,
             'status_account': self.status_account.value,
             'type_account': self.type_account.value,
-            'create_at': self.create_at,
+            'created_at': self.created_at,
             'verification_email_code': self.verification_email_code,
             'verification_email_code_expires_at': self.verification_email_code_expires_at,
         }
@@ -78,6 +78,7 @@ class UserModerator(ABC):
     status_account: STATUS_USER_ACCOUNT_ENUM
     type_account: TYPE_ACCOUNT_USER_ENUM
     date_joined: int
+    created_at: int
     USER_ID_LENGTH = 36
     NAME_MIN_LENGTH = 3
     NAME_MAX_LENGTH = 200
@@ -91,7 +92,7 @@ class UserModerator(ABC):
                  password: str = None,
                  status_account: str = None,
                  type_account: str = None,
-                 create_at: int = None):
+                 created_at: int = None):
         self.user_id = UserValidator.validate_and_set_user_id(user_id)
         self.access_key = UserValidator.validate_and_set_access_key(access_key)
         self.first_name = UserValidator.validate_and_set_name(first_name)
@@ -100,7 +101,7 @@ class UserModerator(ABC):
         self.password = UserValidator.validate_and_set_password(password)
         self.status_account = UserValidator.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
         self.type_account = self.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
-        self.create_at = UserValidator.validate_and_set_create_at(create_at)
+        self.created_at = UserValidator.validate_and_set_created_at(created_at)
 
     def to_dict(self):
         return {
@@ -112,7 +113,7 @@ class UserModerator(ABC):
             'password': self.password,
             'status_account': self.status_account.value,
             'type_account': self.type_account.value,
-            'create_at': self.create_at,
+            'created_at': self.created_at,
         }
 
     @staticmethod
@@ -267,12 +268,12 @@ class UserValidator(ABC):
         return accepted_terms
 
     @staticmethod
-    def validate_and_set_create_at(create_at: int) -> int or None:
-        if create_at is None:
+    def validate_and_set_created_at(created_at: int) -> int or None:
+        if created_at is None:
             return None
-        if type(create_at) != int:
+        if isinstance(created_at, int) is False:
             raise InvalidParameter("create_at", "deve ser int")
-        return create_at
+        return created_at
 
     @staticmethod
     def validate_and_set_status_account(status_account: STATUS_USER_ACCOUNT_ENUM):

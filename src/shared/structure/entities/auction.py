@@ -48,7 +48,7 @@ class Auction:
         self.current_amount = self.validate_and_set_amount(current_amount)
         self.images = self.validate_and_set_images(images)
         self.status_auction = self.validate_and_set_status_auction(STATUS_AUCTION_ENUM(status_auction))
-        self.create_at = self.validate_and_set_created_at(created_at)
+        self.created_at = self.validate_and_set_created_at(created_at)
         self.check_time()
 
     def to_dict(self):
@@ -63,7 +63,7 @@ class Auction:
             "current_amount": self.current_amount,
             "images": self.images,
             "status_auction": self.status_auction.value,
-            "create_at": self.create_at
+            "created_at": self.created_at
         }
 
     def check_time(self):

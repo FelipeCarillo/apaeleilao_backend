@@ -6,6 +6,7 @@ from src.shared.database.database import Database
 from src.shared.structure.entities.auction import Auction
 from src.shared.structure.entities.bid import Bid
 from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
+from src.shared.structure.enums.table_entities import AUCTION_TABLE_ENTITY
 from src.shared.structure.interface.auction_interface import AuctionInterface
 
 
@@ -16,61 +17,69 @@ class AuctionDynamodb(AuctionInterface):
     def create_auction(self, auction: Auction) -> Dict or None:
         try:
             auction = auction.to_dict()
-            auction['_id'] = "AUCTION#" + auction.pop("auction_id")
+            auction['PK'] = auction.pop('auction_id')
+            auction['SK'] = AUCTION_TABLE_ENTITY.AUCTION.value
             auction['start_amount'] = Decimal(str(auction['start_amount']))
             auction['current_amount'] = Decimal(str(auction['current_amount']))
             self.__dynamodb.put_item(Item=auction)
+
+            auction['auction_id'] = auction.pop('PK')
+            auction.pop('SK')
             return auction
         except Exception as e:
             raise e
 
     def get_all_auctions(self, exclusive_start_key: str = None, amount: int = 6, scan_forward: bool = False,
                          status_to_search: STATUS_AUCTION_ENUM = None) -> List[Dict] or None:
-        try:
-            exclusive_start_key = "AUCTION#" + exclusive_start_key if exclusive_start_key else None
-            get_auction_expression = Key('_id').begins_with('AUCTION#')
-            get_status_auction_expression = Attr('status_auction').eq(
-                status_to_search.value) if status_to_search else None
-            if get_status_auction_expression:
-                get_auction_expression = get_auction_expression & get_status_auction_expression
+        pass
 
-            if not exclusive_start_key:
-                query = self.__dynamodb.query(
-                    KeyConditionExpression=get_auction_expression,
-                    Limit=amount,
-                    ScanIndexForward=scan_forward
-                )
-            else:
-                query = self.__dynamodb.query(
-                    KeyConditionExpression=get_auction_expression,
-                    Limit=amount,
-                    ScanIndexForward=scan_forward,
-                    ExclusiveStartKey={'_id': exclusive_start_key}
-                )
-            response = query.get('Items', None)
-            if response:
-                for auction in response:
-                    auction['auction_id'] = auction.pop('_id').replace('AUCTION#', '')
-                    auction['start_amount'] = round(float(auction['start_amount']), 2)
-                    auction['current_amount'] = round(float(auction['current_amount']), 2)
-            return response
-        except Exception as e:
-            raise e
+    #     try:
+    #         exclusive_start_key = "AUCTION#" + exclusive_start_key if exclusive_start_key else None
+    #         get_auction_expression = Key('_id').begins_with('AUCTION#')
+    #         get_status_auction_expression = Attr('status_auction').eq(
+    #             status_to_search.value) if status_to_search else None
+    #         if get_status_auction_expression:
+    #             get_auction_expression = get_auction_expression & get_status_auction_expression
+    #
+    #         if not exclusive_start_key:
+    #             query = self.__dynamodb.query(
+    #                 KeyConditionExpression=get_auction_expression,
+    #                 Limit=amount,
+    #                 ScanIndexForward=scan_forward
+    #             )
+    #         else:
+    #             query = self.__dynamodb.query(
+    #                 KeyConditionExpression=get_auction_expression,
+    #                 Limit=amount,
+    #                 ScanIndexForward=scan_forward,
+    #                 ExclusiveStartKey={'_id': exclusive_start_key}
+    #             )
+    #         response = query.get('Items', None)
+    #         if response:
+    #             for auction in response:
+    #                 auction['auction_id'] = auction.pop('_id').replace('AUCTION#', '')
+    #                 auction['start_amount'] = round(float(auction['start_amount']), 2)
+    #                 auction['current_amount'] = round(float(auction['current_amount']), 2)
+    #         return response
+    #     except Exception as e:
+    #         raise e
 
     def get_all_auctions_menu(self) -> Optional[List[Dict]]:
         try:
-            query = self.__dynamodb.scan(
-                IndexName='sort_start_date-index',
-                FilterExpression=Key('_id').begins_with('AUCTION#') &
-                                 (Attr('status_auction').eq(STATUS_AUCTION_ENUM.OPEN.value) |
-                                  Attr('status_auction').eq(STATUS_AUCTION_ENUM.PENDING.value)),
+            permission_to_search = STATUS_AUCTION_ENUM.OPEN.value or STATUS_AUCTION_ENUM.PENDING.value
+            query = self.__dynamodb.query(
+                IndexName="SK_created_at-index",
+                KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
+                FilterExpression=Attr('status_auction').eq(permission_to_search),
+                ScanIndexForward=False,
                 Limit=6,
-                ScanIndexForward=False
             )
-            response = query.get('Items')
-            if len(response) > 0:
+
+            response = query.get('Items', None)
+            if response:
                 for auction in response:
-                    auction['auction_id'] = auction.pop('_id').replace('AUCTION#', '')
+                    auction.pop('SK')
+                    auction['auction_id'] = auction.pop('PK')
                     auction['start_amount'] = round(float(auction['start_amount']), 2)
                     auction['current_amount'] = round(float(auction['current_amount']), 2)
             return response if len(response) > 0 else None
@@ -79,24 +88,36 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_auction_between_dates(self, start_date: int, end_date: int) -> List[Dict] or None:
         try:
-            status_to_search = STATUS_AUCTION_ENUM.OPEN.value or STATUS_AUCTION_ENUM.PENDING.value
+            permission_to_search = STATUS_AUCTION_ENUM.OPEN.value or STATUS_AUCTION_ENUM.PENDING.value
             query = self.__dynamodb.query(
-                KeyConditionExpression=Key('_id').begins_with('AUCTION#'),
-                FilterExpression=Attr('status_auction').eq(status_to_search) & Attr('start_date').between(start_date,
-                                                                                                          end_date)
+                IndexName="SK_created_at-index",
+                KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
+                FilterExpression=Attr('status_auction').eq(permission_to_search) &
+                                 Attr('start_date').between(start_date, end_date),
+                ScanIndexForward=False,
             )
+
             response = query.get('Items', None)
+            if response:
+                for auction in response:
+                    auction.pop('SK')
+                    auction['auction_id'] = auction.pop('PK')
+                    auction['start_amount'] = round(float(auction['start_amount']), 2)
+                    auction['current_amount'] = round(float(auction['current_amount']), 2)
             return response if len(response) > 0 else None
         except Exception as e:
             raise e
 
     def get_auction_by_id(self, auction_id: str) -> Dict or None:
         try:
-            query = self.__dynamodb.query(KeyConditionExpression=Key('_id').eq('AUCTION#' + auction_id)).get('Items',
-                                                                                                             None)
+            query = self.__dynamodb.query(
+                KeyConditionExpression=Key('PK').eq(auction_id) &
+                                       Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
+            )
             response = query[0] if query else None
             if response:
-                response['auction_id'] = response.pop('_id').replace('AUCTION#', '')
+                response.pop('SK')
+                response['auction_id'] = response.pop('PK')
                 response['start_amount'] = round(float(response['start_amount']), 2)
                 response['current_amount'] = round(float(response['current_amount']), 2)
             return response
@@ -105,14 +126,13 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_last_auction_id(self) -> int or None:
         try:
-            query = self.__dynamodb.query(
-                KeyConditionExpression=Key('_id').begins_with('AUCTION#'),
-                ScanIndexForward=False,
+            query = self.__dynamodb.scan(
+                FilterExpression=Attr('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
                 Limit=1
             )
             response = query.get('Items', None)
             if response:
-                return int(response[0]['_id'].replace('AUCTION#', ''))
+                return int(response[0]['PK'])
             return None
         except Exception as e:
             raise e
@@ -122,8 +142,8 @@ class AuctionDynamodb(AuctionInterface):
             if auction:
                 auction_dict = auction.to_dict()
             response = self.__dynamodb.update_item(
-                Key={'_id': 'AUCTION#' + auction_dict.get('auction_id'),
-                     'create_at': auction_dict.get('create_at')},
+                Key={'PK': auction_dict.get('auction_id'),
+                     'SK': AUCTION_TABLE_ENTITY.AUCTION.value},
                 UpdateExpression='SET tittle = :tittle, description = :description, start_date = :start_date, '
                                  'end_date = :end_date, start_amount = :start_amount, current_amount = :current_amount,'
                                  'images = :images, status_auction = :status_auction',
@@ -139,13 +159,20 @@ class AuctionDynamodb(AuctionInterface):
                 },
                 ReturnValues='UPDATED_NEW'
             )
+
+            response['Attributes'].pop('SK')
+            response['Attributes']['auction_id'] = response['Attributes'].pop('PK')
+            response['Attributes']['start_amount'] = round(float(response['Attributes']['start_amount']), 2)
+            response['Attributes']['current_amount'] = round(float(response['Attributes']['current_amount']), 2)
+            return response['Attributes']
         except Exception as e:
             raise e
 
     def update_auction_current_amount(self, auction_id: str = None, current_amount: float = None) -> Dict or None:
         try:
             response = self.__dynamodb.update_item(
-                Key={'_id': 'AUCTION#' + auction_id},
+                Key={'PK': auction_id,
+                     'SK': AUCTION_TABLE_ENTITY.AUCTION.value},
                 UpdateExpression='SET current_amount = :current_amount',
                 ExpressionAttributeValues={
                     ':current_amount': Decimal(str(current_amount))
@@ -157,14 +184,13 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_last_bid_id(self) -> Optional[int]:
         try:
-            query = self.__dynamodb.query(
-                KeyConditionExpression=Key('_id').begins_with('BID#'),
-                ScanIndexForward=False,
+            query = self.__dynamodb.scan(
+                FilterExpression=Attr('SK').begins_with(AUCTION_TABLE_ENTITY.BID.value),
                 Limit=1
             )
             response = query.get('Items', None)
             if response:
-                return int(response[0]['_id'].replace('BID#', ''))
+                return int(response[0]['SK'].split('#')[1])
             return None
         except Exception as e:
             raise e
@@ -172,20 +198,29 @@ class AuctionDynamodb(AuctionInterface):
     def get_bids_by_auction(self, auction_id: str, exclusive_start_key: Optional[str] = None,
                             limit: Optional[int] = None) -> List[Dict]:
         try:
-            query = self.__dynamodb.query(
-                IndexName='sort_amount-index',
-                KeyConditionExpression=Key('_id').begins_with('BID#'),
-                FilterExpression=Attr('auction_id').eq(auction_id),
-                Limit=limit,
-                ScanIndexForward=False,
-                ExclusiveStartKey={'_id': 'BID#' + exclusive_start_key} if exclusive_start_key else None
-            )
+            if exclusive_start_key:
+                exclusive_start_key = "BID#" + exclusive_start_key
+                query = self.__dynamodb.query(
+                    KeyConditionExpression=Key('PK').eq(auction_id) &
+                                           Key('SK').begins_with(AUCTION_TABLE_ENTITY.BID.value),
+                    ScanIndexForward=False,
+                    Limit=limit,
+                    ExclusiveStartKey={'PK': auction_id, 'SK': exclusive_start_key}
+                )
+            else:
+                query = self.__dynamodb.query(
+                    KeyConditionExpression=Key('PK').eq(auction_id) &
+                                           Key('SK').begins_with(AUCTION_TABLE_ENTITY.BID.value),
+                    ScanIndexForward=False,
+                    Limit=limit,
+                )
             response = query.get('Items', None)
-            if len(response) > 0:
+            if response:
                 for bid in response:
-                    bid['bid_id'] = bid.pop('_id').replace('BID#', '')
+                    bid['bid_id'] = bid.pop('SK').split('#')[1]
+                    bid['auction_id'] = bid.pop('PK')
                     bid['amount'] = round(float(bid['amount']), 2)
-            return response if len(response) > 0 else None
+            return response
         except Exception as e:
             raise e
 

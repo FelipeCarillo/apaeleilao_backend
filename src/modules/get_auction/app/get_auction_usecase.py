@@ -48,7 +48,7 @@ class GetAuctionUseCase:
             current_amount=auction.get('current_amount'),
             images=auction.get('images'),
             status_auction=auction.get('status_auction'),
-            create_at=auction.get('create_at')
+            created_at=auction.get('created_at')
         )
         auction.check_time()
 

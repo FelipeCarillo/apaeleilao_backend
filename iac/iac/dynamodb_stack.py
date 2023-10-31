@@ -24,7 +24,9 @@ def create_table(self,
                                type=dynamodb.AttributeType.STRING if not sort_key_type else sort_key_type
                            ) if sort_key else None,
                            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
-                           removal_policy=RemovalPolicy.DESTROY
+                           removal_policy=RemovalPolicy.DESTROY,
+                           write_capacity=10,
+                           read_capacity=10
                            )
 
     CfnOutput(self, f"{name}_Table",
@@ -58,17 +60,23 @@ class DynamoDBStack(Construct):
     def __init__(self, scope: Construct) -> None:
         super().__init__(scope, "ApaeLeilao_DynamoDB")
 
-        self.__user_table = create_table(self, "User_Apae_Leilao", "entity", "created_at",
-                                         dynamodb.AttributeType.NUMBER)
-        # create_global_secondary_index(self.__user_table, "user_id-index", "user_id")
-        # create_global_secondary_index(self.__user_table, "email-index", "email")
-        # create_global_secondary_index(self.__user_table, "cpf-index", "cpf")
-        # create_global_secondary_index(self.__user_table, "access_key-index", "access_key")
+        self.__user_table = create_table(self, "User_Apae_Leilao", "PK", "SK",
+                                         dynamodb.AttributeType.STRING)
+        create_global_secondary_index(self.__user_table, "SK_type_account-index", "SK",
+                                      "type_account", dynamodb.AttributeType.STRING)
+        create_global_secondary_index(self.__user_table, "user_id-index", "user_id")
+        create_global_secondary_index(self.__user_table, "email-index", "email")
+        create_global_secondary_index(self.__user_table, "cpf-index", "cpf")
+        create_global_secondary_index(self.__user_table, "access_key-index", "access_key")
 
-        self.__auction_table = create_table(self, "Auction_Apae_Leilao", "entity", "created_at",
-                                            dynamodb.AttributeType.NUMBER)
-        create_global_secondary_index(self.__auction_table, "sort_amount-index", "auction_id", "amount",
-                                      dynamodb.AttributeType.NUMBER)
+        self.__auction_table = create_table(self, "Auction_Apae_Leilao", "PK", "SK",
+                                            dynamodb.AttributeType.STRING)
+        create_global_secondary_index(self.__auction_table, "SK_created_at-index", "SK",
+                                      "created_at", dynamodb.AttributeType.NUMBER)
+        # create_global_secondary_index(self.__auction_table, "auction_start_date-index", "_id", "start_date",
+        #                               dynamodb.AttributeType.NUMBER)
+        # create_global_secondary_index(self.__auction_table, "sort_amount-index", "_id", "amount",
+        #                               dynamodb.AttributeType.NUMBER)
 
     @property
     def user_table(self) -> dynamodb.Table:

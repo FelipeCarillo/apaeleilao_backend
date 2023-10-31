@@ -55,11 +55,9 @@ class SendVerificationEmailCodeUseCase:
                     accepted_terms=user['accepted_terms'],
                     status_account=user['status_account'],
                     type_account=user['type_account'],
-                    create_at=int(user['create_at']),
+                    created_at=int(user['created_at']),
                     verification_email_code=str(code),
                     verification_email_code_expires_at=code_expires_at,
-                    password_reset_code=user['password_reset_code'],
-                    password_reset_code_expires_at=user['password_reset_code_expires_at']
                     )
 
         datetime_expire = datetime.datetime.fromtimestamp(code_expires_at).strftime(

@@ -41,7 +41,8 @@ class CreateUserUseCase:
         if not body.get('amount'):
             raise MissingParameter('amount')
 
-        if self.__auction_interface.get_auction_by_id(auction_id=body.get('auction_id')):
+        auction = self.__auction_interface.get_auction_by_id(auction_id=body.get('auction_id'))
+        if not auction:
             raise DataNotFound('Leilão')
 
         last_bid_id = self.__auction_interface.get_last_bid_id()
@@ -50,9 +51,9 @@ class CreateUserUseCase:
         bid = Bid(
             bid_id=str(bid_id),
             user_id=user.get('user_id'),
-            auction_id=body.get('auction_id'),
+            auction_id=auction.get('auction_id'),
             amount=body.get('amount'),
-            create_at=TimeManipulation().get_current_time()
+            created_at=TimeManipulation.get_current_time()
         )
         self.__auction_interface.create_bid(bid=bid)
 

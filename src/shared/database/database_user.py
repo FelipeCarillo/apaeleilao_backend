@@ -17,11 +17,16 @@ class UserDynamodb(UserInterface):
     def create_user(self, user: User or UserModerator) -> Dict or None:
         try:
             user = user.to_dict()
-            user['_id'] = USER_TABLE_ENTITY.USER.value + "#" + user.pop('user_id')
+            user['PK'] = user.pop('user_id')
+            user['SK'] = USER_TABLE_ENTITY.USER.value
 
             self.__dynamodb.put_item(
                 Item=user
             )
+
+            user['user_id'] = user.pop('PK')
+            user.pop('SK')
+
             return user
         except Exception as e:
             raise e
@@ -33,16 +38,21 @@ class UserDynamodb(UserInterface):
                      ) -> Dict or None:
         try:
             if access_key:
-                query = self.__dynamodb.query(IndexName='access_key-index',
-                                              KeyConditionExpression=Key('access_key').eq(access_key))
+                query = self.__dynamodb.query(
+                    IndexName='access_key-index',
+                    KeyConditionExpression=Key('access_key').eq(access_key),
+                )
             else:
-                query = self.__dynamodb.query(IndexName='email-index',
-                                              KeyConditionExpression=Key('email').eq(email))
+                query = self.__dynamodb.query(
+                    IndexName='email-index',
+                    KeyConditionExpression=Key('email').eq(email),
+                )
             item = query.get('Items', None)
             item = item[0] if item else None
             if item:
                 if checkpw(password.encode('utf-8'), item['password'].encode('utf-8')):
-                    item['user_id'] = item.pop('_id').split('#')[-1]
+                    item['user_id'] = item.pop('PK')
+                    item.pop('SK')
                     return item
                 else:
                     return None
@@ -54,10 +64,13 @@ class UserDynamodb(UserInterface):
     def get_user_by_id(self, user_id: str) -> Dict or None:
         try:
             query = self.__dynamodb.query(
-                KeyConditionExpression=Key('_id').eq(USER_TABLE_ENTITY.USER.value + "#" + user_id)).get('Items', None)
+                KeyConditionExpression=Key('PK').eq(user_id) & Key('SK').eq(USER_TABLE_ENTITY.USER.value),
+            )
+
             item = query[0] if query else None
             if item:
-                item['user_id'] = item.pop('_id').split('#')[-1]
+                item['user_id'] = item.pop('PK')
+                item.pop('SK')
             return item
         except Exception as e:
             raise e
@@ -65,15 +78,24 @@ class UserDynamodb(UserInterface):
     def get_all_users(self, exclusive_start_key: str = None, limit: int = None,
                       type_account: str = 'USER') -> Dict or None:
         try:
-            query = self.__dynamodb.scan(
-                ExclusiveStartKey=exclusive_start_key,
-                Limit=limit,
-                FilterExpression=Attr('_id').begins_with('USER#')
-            )
+            if not exclusive_start_key:
+                query = self.__dynamodb.query(
+                    IndexName='SK_type_account-index',
+                    KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) & Key('type_account').eq(type_account),
+                    Limit=limit
+                )
+            else:
+                query = self.__dynamodb.query(
+                    IndexName='SK_type_account-index',
+                    KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) & Key('type_account').eq(type_account),
+                    ExclusiveStartKey=exclusive_start_key,
+                    Limit=limit
+                )
             response = query.get('Items', None)
             if response:
                 for item in response:
-                    item['user_id'] = item.pop('_id').split('#')[-1]
+                    item['user_id'] = item.pop('PK')
+                    item.pop('SK')
             return response
         except Exception as e:
             raise e
@@ -86,7 +108,8 @@ class UserDynamodb(UserInterface):
             )
             response = query.get('Items', None)
             if response:
-                response[0]['user_id'] = response[0].pop('_id').split('#')[-1]
+                response[0]['user_id'] = response[0].pop('PK')
+                response[0].pop('SK')
             return response[0] if response else None
         except Exception as e:
             raise e
@@ -99,7 +122,22 @@ class UserDynamodb(UserInterface):
             )
             response = query.get('Items', None)
             if response:
-                response[0]['user_id'] = response[0].pop('_id').split('#')[-1]
+                response[0]['user_id'] = response[0].pop('PK')
+                response[0].pop('SK')
+            return response[0] if response else None
+        except Exception as e:
+            raise e
+
+    def get_user_by_access_key(self, access_key) -> Dict or None:
+        try:
+            query = self.__dynamodb.query(
+                IndexName='access_key-index',
+                KeyConditionExpression=Key('access_key').eq(access_key),
+            )
+            response = query.get('Items', None)
+            if response:
+                response[0]['user_id'] = response[0].pop('PK')
+                response[0].pop('SK')
             return response[0] if response else None
         except Exception as e:
             raise e
@@ -107,9 +145,10 @@ class UserDynamodb(UserInterface):
     def update_user(self, user: User) -> Dict or None:
         try:
             response = self.__dynamodb.update_item(
-                Key={'_id': USER_TABLE_ENTITY.USER.value + "#" + user.user_id,
-                     'create_at': user.create_at
-                     },
+                Key={
+                    'PK': user.user_id,
+                    'SK': USER_TABLE_ENTITY.USER.value
+                },
                 UpdateExpression='SET first_name = :first_name,'
                                  'last_name = :last_name,'
                                  'cpf = :cpf,'
@@ -135,7 +174,25 @@ class UserDynamodb(UserInterface):
                 ReturnValues='ALL_NEW'
             )
             if response:
-                response['Attributes']['user_id'] = response['Attributes'].pop('_id').split('#')[-1]
+                response['Attributes']['user_id'] = response['Attributes'].pop('PK')
+                response['Attributes'].pop('SK')
             return response['Attributes'] if response else None
+        except Exception as e:
+            raise e
+
+    def create_suspension(self, suspension) -> Dict or None:
+        try:
+            suspension = suspension.to_dict()
+            suspension['PK'] = suspension.pop('user_id')
+            suspension['SK'] = USER_TABLE_ENTITY.SUSPENSION.value + "#" + suspension.pop('suspension_id')
+
+            self.__dynamodb.put_item(
+                Item=suspension
+            )
+
+            suspension['user_id'] = suspension.pop('PK')
+            suspension['suspension_id'] = suspension.pop('SK').split('#')[1]
+
+            return suspension
         except Exception as e:
             raise e

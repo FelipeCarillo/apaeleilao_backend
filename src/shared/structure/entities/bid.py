@@ -9,14 +9,14 @@ class Bid(ABC):
     user_id: str
     auction_id: str
     amount: float
-    create_at: int
+    created_at: int
 
-    def __int__(self, bid_id: str, user_id: str, auction_id: str, amount: float, create_at: int):
+    def __int__(self, bid_id: str, user_id: str, auction_id: str, amount: float, created_at: int):
         self.bid_id = self.validated_and_set_bid_id(bid_id)
         self.user_id = self.validated_and_set_user_id(user_id)
         self.auction_id = self.validated_and_set_auction_id(auction_id)
         self.amount = self.validated_and_set_amount(amount)
-        self.create_at = self.validated_and_set_create_at(create_at)
+        self.created_at = self.validated_and_set_created_at(created_at)
 
     def to_dict(self):
         return {
@@ -24,7 +24,7 @@ class Bid(ABC):
             'user_id': self.user_id,
             'auction_id': self.auction_id,
             'amount': float(self.amount),
-            'create_at': self.create_at
+            'create_at': self.created_at
         }
 
     @staticmethod
@@ -61,9 +61,9 @@ class Bid(ABC):
         return amount
 
     @staticmethod
-    def validated_and_set_create_at(create_at: int) -> int:
-        if not create_at:
-            raise InvalidParameter('create_at ', 'é obrigatório')
-        if not isinstance(create_at, int):
-            raise InvalidParameter('create_at', 'deve ser int')
-        return create_at
+    def validated_and_set_created_at(created_at: int) -> int:
+        if not created_at:
+            raise InvalidParameter('created_at ', 'é obrigatório')
+        if not isinstance(created_at, int):
+            raise InvalidParameter('created_at', 'deve ser int')
+        return created_at
