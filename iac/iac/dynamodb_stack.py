@@ -25,8 +25,6 @@ def create_table(self,
                            ) if sort_key else None,
                            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
                            removal_policy=RemovalPolicy.DESTROY,
-                           write_capacity=10,
-                           read_capacity=10
                            )
 
     CfnOutput(self, f"{name}_Table",
