@@ -157,6 +157,7 @@ class UserDynamodb(UserInterface):
                                  'accepted_terms = :accepted_terms,'
                                  'status_account = :status_account,'
                                  'type_account = :type_account,'
+                                 'created_at = :created_at,'
                                  'verification_email_code = :verification_email_code, '
                                  'verification_email_code_expires_at = :verification_email_code_expires_at, ',
                 ExpressionAttributeValues={
@@ -168,10 +169,11 @@ class UserDynamodb(UserInterface):
                     ':accepted_terms': user.accepted_terms,
                     ':status_account': user.status_account.value,
                     ':type_account': user.type_account.value,
+                    ':created_at': user.created_at,
                     ':verification_email_code': user.verification_email_code,
                     ':verification_email_code_expires_at': user.verification_email_code_expires_at,
                 },
-                ReturnValues='ALL_NEW'
+                ReturnValues='UPDATED_NEW'
             )
             if response:
                 response['Attributes']['user_id'] = response['Attributes'].pop('PK')
