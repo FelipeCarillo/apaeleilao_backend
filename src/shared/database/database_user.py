@@ -158,8 +158,8 @@ class UserDynamodb(UserInterface):
                                  'status_account = :status_account,'
                                  'type_account = :type_account,'
                                  'created_at = :created_at,'
-                                 'verification_email_code = :verification_email_code, '
-                                 'verification_email_code_expires_at = :verification_email_code_expires_at, ',
+                                 'verification_email_code = :verification_email_code,'
+                                 'verification_email_code_expires_at = :verification_email_code_expires_at',
                 ExpressionAttributeValues={
                     ':first_name': user.first_name,
                     ':last_name': user.last_name,
