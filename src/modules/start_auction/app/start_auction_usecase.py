@@ -33,14 +33,23 @@ class StartAuctionUseCase:
 
         if body.get("send_before"):
             email_body = f"""
+            <h1>Leilão<span style="font-weight: bold;">{auction.title} LOTE[{auction.auction_id}]</span> Iniciará em 10 minutos!</h1><p>O leilão está prestes a começar.</p>
+            <p>Para mais informações acesse o site.</p>
             """
-            self.__email.send_email(to_email,
-                                    "Leilão iniciará em 10 minutos",
-                                    email_body)
+            self.__email.set_email_template(f"Leilão {auction.title} Iniciará em 10 minutos!", 
+                                            email_body)
+
+            self.__email.send_email(to=to_email,
+                                    subject="Leilão iniciará em 10 minutos")
         
         else:
             email_body = f"""
+            <h1>Leilão<span style="font-weight: bold;">{auction.title} LOTE[{auction.auction_id}]</span> Começou!</h1><p>O leilão está aberto.</p>
+            <p>Para mais informações acesse o site.</p>
             """
-            self.__email.send_email(to_email,
-                                    "Leilão começou!",
-                                    email_body)
+            self.__email.set_email_template(f"Leilão {auction.title} Começou!", 
+                                            email_body)
+            
+            self.__email.send_email(to=to_email,
+                                    subject="Leilão começou!")
+
