@@ -1,7 +1,6 @@
 from typing import Dict, Tuple
 from aws_cdk import (
     aws_lambda as _lambda,
-    aws_apigateway as apigw,
     Duration
 )
 from constructs import Construct
@@ -22,13 +21,6 @@ class LambdaEventsStack(Construct):
             layers=[self.shared_layer, self.jwt_layer, self.bcrypt_layer],
             timeout=Duration.seconds(15),
             memory_size=512,
-        )
-
-        function.add_permission(
-            StatementId=f"EventsInvokeLambdaPermission_{function.function_name.title()}",
-            FunctionName=function.function_name,
-            Action="lambda:InvokeFunction",
-            Principal="events.amazonaws.com",
         )
 
         return function
@@ -68,25 +60,27 @@ class LambdaEventsStack(Construct):
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
-            self.end_auction,
+            self.start_auction,
+            # self.end_auction,
         )
 
     @property
     def functions_need_auction_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
-            self.end_auction,
+            self.start_auction,
+            # self.end_auction,
         )
 
     @property
     def functions_need_events_permission(self) -> Tuple[_lambda.Function] or None:
         return (
-            # self.start_auction,
-            self.end_auction,
+            self.start_auction,
+            # self.end_auction,
         )
 
     @property
     def functions_need_return_arn(self) -> Tuple[_lambda.Function] or None:
         return (
-            # self.start_auction,
-            self.end_auction,
+            self.start_auction,
+            # self.end_auction,
         )

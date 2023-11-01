@@ -18,7 +18,7 @@ class CreateUserUseCase:
         self.__token = TokenAuthy()
         self.__trigger = EventsTrigger()
 
-    def __call__(self, auth: Dict, body: Dict) -> Dict:
+    def __call__(self, auth: Dict, body: Dict) -> None:
 
         if not auth.get('Authorization'):
             raise MissingParameter('Authorization')
@@ -85,13 +85,29 @@ class CreateUserUseCase:
 
         self.__auction_interface.create_auction(auction)
 
-        end_auction_payload = {
-            "body": {
-                "auction_id": auction.auction_id,
+        payload_0 = {
+            'body': {
+                'auction_id': auction.auction_id,
+                'send_before': True
             }
         }
 
-        self.__trigger.set_trigger(rule_name=f'END_AUCTION#{auction_id}', lambda_function='end_auction',
-                                   date=auction.end_date, payload=end_auction_payload)
+        payload_1 = {
+            'body': {
+                'auction_id': auction.auction_id,
+                'send_before': False
+            }
+        }
 
-        return {'auction_id': auction.auction_id}
+        notification_date = TimeManipulation(time_now=auction.start_date).plus_minute(-10)
+
+        self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_0",
+                                      lambda_function=f"Start_Auction",
+                                      payload=payload_0,
+                                      date=auction.start_date)
+        self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_1",
+                                      lambda_function="Start_Auction",
+                                      payload=payload_1,
+                                      date=notification_date)
+
+        return None
