@@ -30,7 +30,7 @@ class GetAuctionUseCase:
         if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) not in status_account_permitted:
             raise UserNotAuthenticated(message='Sua conta está suspensa.')
 
-        bids = self.__auction_interface.get_bids_by_auction(auction_id=body.get('auction_id'), limit=10)
+        bids = self.__auction_interface.get_all_bids_by_auction_id(auction_id=body.get('auction_id'))
         if not bids:
             raise InvalidParameter(parameter='Leilão', body='não encontrado')
         if len(bids) == 0:

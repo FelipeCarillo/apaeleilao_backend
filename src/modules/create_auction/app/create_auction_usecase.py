@@ -2,6 +2,7 @@ from typing import Dict
 
 from src.shared.structure.entities.auction import Auction
 from src.shared.helper_functions.token_authy import TokenAuthy
+from src.shared.helper_functions.events_trigger import EventsTrigger
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.helper_functions.image_manipulation import ImageManipulation
@@ -15,6 +16,7 @@ class CreateUserUseCase:
         self.__user_interface = user_interface
         self.__auction_interface = auction_interface
         self.__token = TokenAuthy()
+        self.__trigger = EventsTrigger()
 
     def __call__(self, auth: Dict, body: Dict) -> Dict:
 
@@ -82,5 +84,14 @@ class CreateUserUseCase:
                 image['image_body'] = response
 
         self.__auction_interface.create_auction(auction)
+
+        end_auction_payload = {
+            "body": {
+                "auction_id": auction.auction_id,
+            }
+        }
+
+        self.__trigger.set_trigger(rule_name=f'END_AUCTION#{auction_id}', lambda_function='end_auction',
+                                   date=auction.end_date, payload=end_auction_payload)
 
         return {'auction_id': auction.auction_id}

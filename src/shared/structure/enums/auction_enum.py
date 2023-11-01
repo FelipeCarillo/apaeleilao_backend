@@ -6,11 +6,13 @@ class STATUS_AUCTION_ENUM(Enum):
     PENDING: The auction is waiting to start
     OPEN: The auction is open
     CLOSED: The auction is closed
+    AVAILABLE: The auction is available to reopen
     """
 
     PENDING = 'PENDING'
     OPEN = 'OPEN'
     CLOSED = 'CLOSED'
+    AVAILABLE = 'AVAILABLE'
 
 
 class STATUS_AUCTION_PAYMENT_ENUM(Enum):

@@ -2,16 +2,18 @@ from typing import Dict, Tuple
 from aws_cdk import (
     aws_lambda as _lambda,
     aws_apigateway as apigw,
-    Duration
+    Duration, aws_events
 )
 from constructs import Construct
 
 
 class LambdaStack(Construct):
 
-    def create_lambda(self, function_name: str, method: str,
-                      restapi_resource: apigw.Resource, environment_variables: Dict[str, str]) -> _lambda.Function:
-
+    def create_lambda(self, function_name: str,
+                      environment_variables: Dict[str, str],
+                      method: str = None,
+                      restapi_resource: apigw.Resource = None,
+                      ) -> _lambda.Function:
         function = _lambda.Function(
             self, (function_name + "_apae_leilao").title(),
             function_name=(function_name + "_apae_leilao").title(),
@@ -24,9 +26,10 @@ class LambdaStack(Construct):
             memory_size=512,
         )
 
-        restapi_resource.add_resource(function_name.replace("_", "-")).add_method(method,
-                                                                                  integration=apigw.LambdaIntegration(
-                                                                                      function))
+        if restapi_resource:
+            restapi_resource.add_resource(function_name.replace("_", "-")).add_method(method,
+                                                                                      integration=apigw.LambdaIntegration(
+                                                                                          function))
 
         return function
 
