@@ -8,6 +8,8 @@ from aws_cdk import (
 )
 
 from constructs import Construct
+
+from .lambda_events_stack import LambdaEventsStack
 from .lambda_stack import LambdaStack
 from .dynamodb_stack import DynamoDBStack
 
@@ -67,14 +69,20 @@ class IACStack(Stack):
         ENVIRONMENT_VARIABLES["USER_TABLE"] = self.dynamodb_stack.user_table.table_name
         ENVIRONMENT_VARIABLES["AUCTION_TABLE"] = self.dynamodb_stack.auction_table.table_name
 
+        self.lambda_events_function = LambdaEventsStack(self, environment_variables=ENVIRONMENT_VARIABLES)
+
+        for function in self.lambda_events_function.functions_need_return_arn:
+            ENVIRONMENT_VARIABLES[function.function_name.replace("_Apae_Leilao", "")] = function.function_arn
+
+        self.add_lambda_database_permissions(self.lambda_events_function)
+
         self.lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,
                                            environment_variables=ENVIRONMENT_VARIABLES)
 
-        for function in self.lambda_function.functions_need_user_table_permission:
-            self.dynamodb_stack.user_table.grant_read_write_data(function)
+        self.add_lambda_database_permissions(self.lambda_events_function)
 
-        for function in self.lambda_function.functions_need_auction_table_permission:
-            self.dynamodb_stack.auction_table.grant_read_write_data(function)
-
-        for function in self.lambda_function.functions_need_return_arn:
-            ENVIRONMENT_VARIABLES[function.function_name.replace("_Apae_Leilao", "").upper()] = function.function_arn
+    def add_lambda_database_permissions(self, lambda_stack):
+        [self.dynamodb_stack.user_table.grant_read_write_data(lambda_function) for lambda_function in
+         lambda_stack.functions_need_user_table_permission]
+        [self.dynamodb_stack.auction_table.grant_read_write_data(lambda_function) for lambda_function in
+         lambda_stack.functions_need_auction_table_permission]

@@ -23,7 +23,12 @@ class EventsTrigger:
                 {
                     'Id': '1',
                     'Arn': os.environ.get(lambda_function.upper()),
-                    'Input': json.dumps(payload) if payload else None
+                    'InputTransformer': {
+                        'InputPathsMap': {
+                            'body': '$.body',
+                        },
+                        'InputTemplate': json.dumps(payload) if payload else json.dumps({"body": {}}),
+                    },
                 },
             ]
         )

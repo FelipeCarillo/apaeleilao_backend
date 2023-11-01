@@ -52,10 +52,12 @@ class EndAuctionUseCase:
             self.__auction_interface.update_auction(auction)
             bids_sorted = sorted(bids, key=lambda k: k['amount'], reverse=True)
 
-            winner_email = bids_sorted[0].get('email')
+            winner = bids_sorted[0]
+            winner_email = winner.get('email')
             to_emails = list(set([item.get('email') for item in bids_sorted][1:]))
+            to_emails.remove(winner_email)
 
-            email_body= f"""
+            email_body = f"""
             <h1>Leilão<span style="font-weight: bold;">{auction.title} LOTE[{auction.auction_id}]</span> Finalizado!</h1>
             <p>Parabéns você ganhou o leilão!</p>
             <p>Para mais informações acesse o site.</p>
@@ -63,20 +65,10 @@ class EndAuctionUseCase:
             self.__email.set_email_template(f"Leilão {auction.title} Finalizado", email_body)
             self.__email.send_email(to=winner_email, subject='Você Ganhou o Leilão')
 
-            email_body= f"""
+            email_body = f"""
             <h1>Leilão<span style="font-weight: bold;">LOTE[{auction.auction_id}]</span> Finalizado!</h1>
             <p>Infelizmente você não ganhou o leilão.</p>
             <p>Para mais informações acesse o site.</p>
             """
             self.__email.set_email_template(f"Leilão {auction.title} Finalizado", email_body)
             self.__email.send_email(to=to_emails, subject='Leilão encerrado')
-
-
-
-
-
-
-
-
-
-
