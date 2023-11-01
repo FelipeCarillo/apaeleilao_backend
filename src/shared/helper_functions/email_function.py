@@ -1,5 +1,6 @@
 import os
 import smtplib
+from typing import Sequence
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -19,7 +20,7 @@ class Email:
     def __disconnect(self):
         self.__server.quit()
 
-    def send_email(self, to: str, subject: str, body: str):
+    def send_email(self, to: str | Sequence[str], subject: str, body: str):
         try:
             message = MIMEMultipart()
             message['From'] = self.__email

@@ -75,3 +75,6 @@ class IACStack(Stack):
 
         for function in self.lambda_function.functions_need_auction_table_permission:
             self.dynamodb_stack.auction_table.grant_read_write_data(function)
+
+        for function in self.lambda_function.functions_need_return_arn:
+            ENVIRONMENT_VARIABLES[function.function_name.replace("_Apae_Leilao", "").upper()] = function.function_arn

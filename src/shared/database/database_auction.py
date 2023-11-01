@@ -195,25 +195,11 @@ class AuctionDynamodb(AuctionInterface):
         except Exception as e:
             raise e
 
-    def get_bids_by_auction(self, auction_id: str, exclusive_start_key: Optional[str] = None,
-                            limit: Optional[int] = None) -> List[Dict]:
+    def get_all_bids_by_auction_id(self, auction_id: str) -> List[Dict]:
         try:
-            if exclusive_start_key:
-                exclusive_start_key = "BID#" + exclusive_start_key
-                query = self.__dynamodb.query(
-                    KeyConditionExpression=Key('PK').eq(auction_id) &
-                                           Key('SK').begins_with(AUCTION_TABLE_ENTITY.BID.value),
-                    ScanIndexForward=False,
-                    Limit=limit,
-                    ExclusiveStartKey={'PK': auction_id, 'SK': exclusive_start_key}
-                )
-            else:
-                query = self.__dynamodb.query(
-                    KeyConditionExpression=Key('PK').eq(auction_id) &
-                                           Key('SK').begins_with(AUCTION_TABLE_ENTITY.BID.value),
-                    ScanIndexForward=False,
-                    Limit=limit,
-                )
+            query = self.__dynamodb.query(
+                KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').begins_with(AUCTION_TABLE_ENTITY.BID.value),
+            )
             response = query.get('Items', None)
             if response:
                 for bid in response:

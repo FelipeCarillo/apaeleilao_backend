@@ -34,7 +34,7 @@ class Auction:
                  start_amount: float = None,
                  current_amount: float = None,
                  images: List[Optional[Dict]] = None,
-                 status_auction: STATUS_AUCTION_ENUM = None,
+                 status_auction: str = None,
                  created_at: int = None,
                  ):
 
@@ -49,7 +49,6 @@ class Auction:
         self.images = self.validate_and_set_images(images)
         self.status_auction = self.validate_and_set_status_auction(STATUS_AUCTION_ENUM(status_auction))
         self.created_at = self.validate_and_set_created_at(created_at)
-        self.check_time()
 
     def to_dict(self):
         return {

@@ -52,7 +52,7 @@ class GetAuctionUseCase:
         )
         auction.check_time()
 
-        bid = self.__auction_interface.get_bids_by_auction(auction_id=auction.auction_id, limit=1)
+        bid = self.__auction_interface.get_all_bids_by_auction_id(auction_id=auction.auction_id)
         amount = bid[0].get('amount') if bid else auction.start_amount
         auction.current_amount = amount if amount > auction.current_amount else auction.current_amount
 
