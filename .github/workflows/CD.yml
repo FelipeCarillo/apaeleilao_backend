@@ -81,4 +81,3 @@ jobs:
           EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
           DOMAIN: ${{ vars.DOMAIN }}
           DEV_DOMAIN: ${{ secrets.DEV_DOMAIN }}
-

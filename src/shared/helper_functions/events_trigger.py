@@ -27,7 +27,9 @@ class EventsTrigger:
                 FunctionName=lambda_function + '_Apae_Leilao',
                 Principal='events.amazonaws.com',
                 StatementId=f'{rule_name}',
-                SourceArn=f"arn:aws:events:{os.environ.get('AWS_REGION')}:{os.environ.get('AWS_ACCOUNT_ID')}:rule/{rule_name.title()}_Apae_Leilao",
+                SourceArn=f"arn:aws:events:{os.environ.get('AWS_REGION')}:"
+                          f"{os.environ.get('AWS_ACCOUNT_ID').replace('ID_', '')}:"
+                          f"rule/{rule_name.title()}_Apae_Leilao",
             )
 
             self.__events.put_rule(
