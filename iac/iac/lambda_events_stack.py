@@ -27,7 +27,7 @@ class LambdaEventsStack(Construct):
 
     def __init__(self, scope: Construct,
                  environment_variables: Dict[str, str]) -> None:
-        super().__init__(scope, "ApaeLeilao_Lambdas")
+        super().__init__(scope, "ApaeLeilao_Lambdas_Events")
 
         self.bcrypt_layer = _lambda.LayerVersion(
             self, "Bcrypt_Layer",
