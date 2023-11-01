@@ -59,7 +59,7 @@ jobs:
         run: |
           echo "CDK Bootstrap"
           cd iac
-          cdk bootstrap
+          cdk bootstrap --trust
 
       - name: CDK Deploy
         run: |
