@@ -2,7 +2,7 @@ from typing import Dict, Tuple
 from aws_cdk import (
     aws_lambda as _lambda,
     aws_apigateway as apigw,
-    Duration, aws_events
+    Duration,
 )
 from constructs import Construct
 
@@ -26,10 +26,9 @@ class LambdaStack(Construct):
             memory_size=512,
         )
 
-        if restapi_resource:
-            restapi_resource.add_resource(function_name.replace("_", "-")).add_method(method,
-                                                                                      integration=apigw.LambdaIntegration(
-                                                                                          function))
+        restapi_resource.add_resource(function_name.replace("_", "-")).add_method(method,
+                                                                                  integration=apigw.LambdaIntegration(
+                                                                                      function))
 
         return function
 

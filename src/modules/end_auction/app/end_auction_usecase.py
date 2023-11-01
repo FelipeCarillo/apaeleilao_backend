@@ -1,6 +1,7 @@
 from typing import Dict
 
 from src.shared.errors.modules_errors import *
+from src.shared.helper_functions.events_trigger import EventsTrigger
 from src.shared.structure.entities.auction import Auction
 from src.shared.helper_functions.email_function import Email
 from src.shared.helper_functions.token_authy import TokenAuthy
@@ -11,6 +12,7 @@ from src.shared.structure.interface.auction_interface import AuctionInterface
 class EndAuctionUseCase:
 
     def __init__(self, auction_interface: AuctionInterface):
+        self.__trigger = EventsTrigger()
         self.__auction_interface = auction_interface
         self.__token = TokenAuthy()
         self.__email = Email()
@@ -72,3 +74,7 @@ class EndAuctionUseCase:
             """
             self.__email.set_email_template(f"Leilão {auction.title} Finalizado", email_body)
             self.__email.send_email(to=to_emails, subject='Leilão encerrado')
+
+            self.__trigger.delete_rule(rule_name=f"end_auction_{auction_id}", lambda_function=f"End_Auction")
+
+            # More functions to implement below, waiting for payments functions ...
