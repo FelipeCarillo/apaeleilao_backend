@@ -29,7 +29,8 @@ class IACStack(Stack):
         email_port = os.environ.get("EMAIL_PORT", "")
         domain = os.environ.get("DOMAIN", "")
         dev_domain = os.environ.get("DEV_DOMAIN", "")
-        event_arn = os.environ.get("EVENT_ARN", "")
+        aws_region = os.environ.get("AWS_REGION", "")
+        aws_account_id = os.environ.get("AWS_ACCOUNT_ID", "")
 
         ENVIRONMENT_VARIABLES = {
             "STAGE": stage,
@@ -41,7 +42,8 @@ class IACStack(Stack):
             "EMAIL_HOST": email_host,
             "EMAIL_PORT": email_port,
             "DOMAIN": domain if stage == "prod" else dev_domain,
-            "EVENT_ARN": event_arn,
+            "AWS_ACCOUNT_ID": aws_account_id,
+            "AWS_REGION": aws_region,
         }
 
         self.__restapi = apigw.RestApi(
