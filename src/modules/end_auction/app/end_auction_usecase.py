@@ -40,18 +40,38 @@ class EndAuctionUseCase:
             status_auction=auction["status_auction"],
             created_at=auction["created_at"],
         )
-
-        auction.status_auction = STATUS_AUCTION_ENUM.CLOSED
-
-        self.__auction_interface.update_auction(auction)
         bids = self.__auction_interface.get_all_bids_by_auction_id(auction_id=auction_id)
-        if bids:
-            email_body = f"""
-            """
 
-            self.__email.send_email(,
-                                    "Leilão encerrado",
-                                    email_body)
+        if not bids:
+            auction.status_auction = STATUS_AUCTION_ENUM.AVAILABLE
+            self.__auction_interface.update_auction(auction)
+
+        else:
+            auction.status_auction = STATUS_AUCTION_ENUM.CLOSED
+
+            self.__auction_interface.update_auction(auction)
+            bids_sorted = sorted(bids, key=lambda k: k['amount'], reverse=True)
+
+            winner_email = bids_sorted[0].get('email')
+            to_emails = list(set([item.get('email') for item in bids_sorted][1:]))
+
+            email_body= f"""
+            <h1>Leilão<span style="font-weight: bold;">LOTE[{auction.auction_id}]</span> Finalizado!</h1>
+            <p>Parabéns você ganhou o leilão!</p>
+            <p>Para mais informações acesse o site.</p>
+            """
+            self.__email.send_email(to=winner_email, subject='Você Ganhou o Leilão', body=email_body)
+
+            email_body= f"""
+            <h1>Leilão<span style="font-weight: bold;">LOTE[{auction.auction_id}]</span> Finalizado!</h1>
+            <p>Infelizmente você não ganhou o leilão.</p>
+            <p>Para mais informações acesse o site.</p>
+            """
+            self.__email.send_email(to=to_emails, subject='Leilão encerrado', body=email_body)
+
+
+
+
 
 
 

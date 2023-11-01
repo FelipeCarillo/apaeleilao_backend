@@ -1,3 +1,4 @@
+from abc import ABC
 from typing import List, Optional, Dict
 
 from src.shared.errors.modules_errors import *
@@ -7,7 +8,7 @@ from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
 from src.shared.helper_functions.time_manipulation import TimeManipulation
 
 
-class Auction:
+class Auction(ABC):
     auction_id: str
     created_by: str  # who created the auction user_id
     title: str

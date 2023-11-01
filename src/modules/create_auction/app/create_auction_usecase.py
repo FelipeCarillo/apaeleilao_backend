@@ -85,10 +85,14 @@ class CreateUserUseCase:
 
         self.__auction_interface.create_auction(auction)
 
-        # payload = {
-        #     "auction_id": auction.auction_id,
-        #     ""
-        # }
+        end_auction_payload = {
+            "auction_id": auction.auction_id,
+        }
+
+        start_auction_payload = {
+            "auction_id": auction.auction_id,
+            "send_before": True,
+        }
 
         self.__trigger.set_trigger(rule_name=f'END_AUCTION#{auction_id}', lambda_function='get_auction', date=auction.end_date)
 

@@ -3,9 +3,9 @@ from typing import Dict
 from src.shared.structure.entities.bid import Bid
 from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.interface.user_interface import UserInterface
-from src.shared.structure.enums.user_enum import TYPE_ACCOUNT_USER_ENUM, STATUS_USER_ACCOUNT_ENUM
 from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.structure.interface.auction_interface import AuctionInterface
+from src.shared.structure.enums.user_enum import TYPE_ACCOUNT_USER_ENUM, STATUS_USER_ACCOUNT_ENUM
 from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated, DataNotFound
 
 
@@ -50,11 +50,14 @@ class CreateUserUseCase:
 
         bid = Bid(
             bid_id=str(bid_id),
-            user_id=user.get('user_id'),
-            auction_id=auction.get('auction_id'),
+            user_id=user_id,
+            email=user.get('email'),
+            first_name=user.get('first_name'),
+            auction_id=body.get('auction_id'),
             amount=body.get('amount'),
             created_at=TimeManipulation.get_current_time()
         )
+
         self.__auction_interface.create_bid(bid=bid)
 
         return None
