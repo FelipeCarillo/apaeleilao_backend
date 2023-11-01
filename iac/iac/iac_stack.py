@@ -29,6 +29,7 @@ class IACStack(Stack):
         email_port = os.environ.get("EMAIL_PORT", "")
         domain = os.environ.get("DOMAIN", "")
         dev_domain = os.environ.get("DEV_DOMAIN", "")
+        event_arn = os.environ.get("EVENT_ARN", "")
 
         ENVIRONMENT_VARIABLES = {
             "STAGE": stage,
@@ -40,6 +41,7 @@ class IACStack(Stack):
             "EMAIL_HOST": email_host,
             "EMAIL_PORT": email_port,
             "DOMAIN": domain if stage == "prod" else dev_domain,
+            "EVENT_ARN": event_arn,
         }
 
         self.__restapi = apigw.RestApi(
