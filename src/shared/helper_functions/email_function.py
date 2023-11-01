@@ -31,13 +31,13 @@ class Email:
     def __disconnect(self):
         self.__server.quit()
 
-    def send_email(self, to: str | Sequence[str], subject: str, body: str):
+    def send_email(self, to: str | Sequence[str], subject: str):
         try:
             message = MIMEMultipart()
             message['From'] = self.__email
             message['To'] = to
             message['Subject'] = subject
-            message.attach(MIMEText(body, 'html'))
+            message.attach(MIMEText(self.__email, 'html'))
             self.__connect()
             self.__server.sendmail(self.__email, to, message.as_string())
             self.__disconnect()
