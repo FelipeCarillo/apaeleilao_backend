@@ -62,7 +62,6 @@ class DynamoDBStack(Construct):
                                          dynamodb.AttributeType.STRING)
         create_global_secondary_index(self.__user_table, "SK_type_account-index", "SK",
                                       "type_account", dynamodb.AttributeType.STRING)
-        create_global_secondary_index(self.__user_table, "user_id-index", "user_id")
         create_global_secondary_index(self.__user_table, "email-index", "email")
         create_global_secondary_index(self.__user_table, "cpf-index", "cpf")
         create_global_secondary_index(self.__user_table, "access_key-index", "access_key")

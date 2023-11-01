@@ -13,7 +13,7 @@ class GetUserUseCase:
         self.__token = TokenAuthy()
 
     def __call__(self, body: Dict) -> Dict:
-        if not body.get('Authorization'):
+        if body.get('Authorization') is None:
             raise MissingParameter('Authorization')
 
         decoded_token = self.__token.decode_token(body["Authorization"])

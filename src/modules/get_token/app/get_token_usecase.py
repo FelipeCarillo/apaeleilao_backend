@@ -11,16 +11,16 @@ class GetTokenUseCase:
         self.__token = TokenAuthy()
 
     def __call__(self, body: Dict) -> Dict:
-        if not body.get('email') and not body.get('access_key'):
+        if body.get('email') is None and body.get('access_key') is None:
             raise MissingParameter('Dado de acesso')
 
         if body.get('email') and body.get('access_key'):
             raise InvalidParameter('Dado de acesso', 'incorreto')
 
-        if not body.get('password'):
+        if body.get('password') is None:
             raise MissingParameter('Password')
 
-        if not body.get('keep_login'):
+        if body.get('keep_login') is None:
             raise MissingParameter('Keep login')
 
         if body.get('email'):
