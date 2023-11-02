@@ -12,7 +12,7 @@ aws_region = os.environ.get("AWS_REGION")
 
 adjust_layer_directory(shared_dir_name="shared", destination="apaeleilao_layer")
 
-IACStack(app, os.environ.get("STACK_NAME"),
+IACStack(app, os.environ.get("STACK_NAME").lower(),
          env=Environment(account=aws_account_id, region=aws_region))
 
 app.synth()
