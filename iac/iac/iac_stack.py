@@ -7,9 +7,9 @@ from aws_cdk import (
 
 from constructs import Construct
 
-from iac.iac.lambda_stack import LambdaStack
-from iac.iac.dynamodb_stack import DynamoDBStack
-from iac.iac.lambda_events_stack import LambdaEventsStack
+from .lambda_stack import LambdaStack
+from .dynamodb_stack import DynamoDBStack
+from .lambda_events_stack import LambdaEventsStack
 
 
 class IACStack(Stack):
