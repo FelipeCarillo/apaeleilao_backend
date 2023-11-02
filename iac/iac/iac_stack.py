@@ -3,8 +3,6 @@ import os
 from aws_cdk import (
     aws_apigateway as apigw,
     Stack,
-    aws_s3 as s3,
-    RemovalPolicy
 )
 
 from constructs import Construct
@@ -30,6 +28,7 @@ class IACStack(Stack):
         domain = os.environ.get("DOMAIN", "")
         dev_domain = os.environ.get("DEV_DOMAIN", "")
         aws_account_id = os.environ.get("AWS_ACCOUNT_ID", "")
+        aws_region = os.environ.get("AWS_REGION", "")
 
         ENVIRONMENT_VARIABLES = {
             "STAGE": stage,
@@ -42,6 +41,7 @@ class IACStack(Stack):
             "EMAIL_PORT": email_port,
             "DOMAIN": domain if stage == "prod" else dev_domain,
             "AWS_ACCOUNT_ID": aws_account_id,
+            "AWS_REGION": aws_region,
         }
 
         self.__restapi = apigw.RestApi(
