@@ -7,9 +7,9 @@ from aws_cdk import (
 
 from constructs import Construct
 
-from .lambda_events_stack import LambdaEventsStack
 from .lambda_stack import LambdaStack
 from .dynamodb_stack import DynamoDBStack
+from .lambda_events_stack import LambdaEventsStack
 
 
 class IACStack(Stack):
@@ -27,8 +27,7 @@ class IACStack(Stack):
         email_port = os.environ.get("EMAIL_PORT", "")
         domain = os.environ.get("DOMAIN", "")
         dev_domain = os.environ.get("DEV_DOMAIN", "")
-        aws_account_id = os.environ.get("AWS_ACCOUNT_ID", "")
-        aws_region = os.environ.get("AWS_REGION", "")
+        AWS_ID = os.environ.get("AWS_ACCOUNT_ID", "")
 
         ENVIRONMENT_VARIABLES = {
             "STAGE": stage,
@@ -40,8 +39,7 @@ class IACStack(Stack):
             "EMAIL_HOST": email_host,
             "EMAIL_PORT": email_port,
             "DOMAIN": domain if stage == "prod" else dev_domain,
-            "AWS_ACCOUNT_ID": aws_account_id,
-            "AWS_REGION": aws_region,
+            "AWS_ID": AWS_ID
         }
 
         self.__restapi = apigw.RestApi(
@@ -74,7 +72,9 @@ class IACStack(Stack):
         self.lambda_events_function = LambdaEventsStack(self, environment_variables=ENVIRONMENT_VARIABLES)
 
         for function in self.lambda_events_function.functions_need_return_arn:
-            ENVIRONMENT_VARIABLES[function.function_name.replace("_Apae_Leilao", "").upper() + "_ARN"] = function.function_arn
+            ENVIRONMENT_VARIABLES[
+                function.function_name.replace("_Apae_Leilao", "").upper() + "_ARN"] = function.function_arn
+
         self.add_lambda_database_permissions(self.lambda_events_function)
 
         self.lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,
@@ -82,7 +82,8 @@ class IACStack(Stack):
         self.add_lambda_database_permissions(self.lambda_events_function)
 
     def add_lambda_database_permissions(self, lambda_stack):
-        [self.dynamodb_stack.user_table.grant_read_write_data(lambda_function) for lambda_function in
-         lambda_stack.functions_need_user_table_permission]
-        [self.dynamodb_stack.auction_table.grant_read_write_data(lambda_function) for lambda_function in
-         lambda_stack.functions_need_auction_table_permission]
+        for lambda_function in lambda_stack.functions_need_user_table_permission:
+            self.dynamodb_stack.user_table.grant_read_write_data(lambda_function)
+
+        for lambda_function in lambda_stack.functions_need_auction_table_permission:
+            self.dynamodb_stack.auction_table.grant_read_write_data(lambda_function)
