@@ -73,7 +73,8 @@ class IACStack(Stack):
 
         for function in self.lambda_events_function.functions_need_return_arn:
             ENVIRONMENT_VARIABLES[
-                function.function_name.replace("_Apae_Leilao", "").upper() + "_ARN"] = function.function_arn
+                function.function_name.replace("_Apae_Leilao", "").upper() + "_ARN"
+            ] = function.function_arn
 
         self.add_lambda_database_permissions(self.lambda_events_function)
 
