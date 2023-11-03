@@ -32,7 +32,7 @@ class LambdaEventsStack(Construct):
         self.bcrypt_layer = _lambda.LayerVersion(
             self, "Bcrypt_Layer",
             code=_lambda.Code.from_asset("./bcrypt_layer"),
-            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9],
         )
 
         self.jwt_layer = _lambda.LayerVersion(
@@ -66,20 +66,6 @@ class LambdaEventsStack(Construct):
 
     @property
     def functions_need_auction_table_permission(self) -> Tuple[_lambda.Function] or None:
-        return (
-            self.start_auction,
-            # self.end_auction,
-        )
-
-    @property
-    def functions_need_events_permission(self) -> Tuple[_lambda.Function] or None:
-        return (
-            self.start_auction,
-            # self.end_auction,
-        )
-
-    @property
-    def functions_need_return_arn(self) -> Tuple[_lambda.Function] or None:
         return (
             self.start_auction,
             # self.end_auction,

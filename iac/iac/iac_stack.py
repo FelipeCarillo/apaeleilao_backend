@@ -1,10 +1,8 @@
 import os
-
 from aws_cdk import (
     aws_apigateway as apigw,
     Stack,
 )
-
 from constructs import Construct
 
 from .lambda_stack import LambdaStack
@@ -70,11 +68,6 @@ class IACStack(Stack):
         ENVIRONMENT_VARIABLES["AUCTION_TABLE"] = self.dynamodb_stack.auction_table.table_name
 
         self.lambda_events_function = LambdaEventsStack(self, environment_variables=ENVIRONMENT_VARIABLES)
-
-        for function in self.lambda_events_function.functions_need_return_arn:
-            ENVIRONMENT_VARIABLES[
-                function.function_name.replace("_Apae_Leilao", "").upper() + "_ARN"
-            ] = function.function_arn
 
         self.add_lambda_database_permissions(self.lambda_events_function)
 

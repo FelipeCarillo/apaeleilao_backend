@@ -57,7 +57,7 @@ class StartAuctionUseCase:
             self.__email.send_email(to=to_email,
                                     subject="Leilão começou!")
 
-            self.__trigger.delete_rule(rule_name=f"start_auction_{auction_id}_1", lambda_function=f"Start_Auction")
+            self.__trigger.delete_rule(rule_name=f"start_auction_{auction_id}_1", lambda_function=f"start_auction")
 
             payload = {
                 "body": {
@@ -65,5 +65,5 @@ class StartAuctionUseCase:
                 }
             }
 
-            self.__trigger.create_trigger(rule_name=f"end_auction_{auction_id}", lambda_function="End_Auction",
-                                          payload=payload, date=auction['end_date'])
+            # self.__trigger.create_trigger(rule_name=f"end_auction_{auction_id}", lambda_function="end_Auction",
+            #                               payload=payload, date=auction['end_date'])

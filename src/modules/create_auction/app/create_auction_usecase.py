@@ -102,11 +102,11 @@ class CreateUserUseCase:
         notification_date = TimeManipulation(time_now=auction.start_date).plus_minute(-10)
 
         self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_0",
-                                      lambda_function=f"Start_Auction",
+                                      lambda_function=f"start_auction",
                                       payload=payload_0,
                                       date=auction.start_date)
         self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_1",
-                                      lambda_function="Start_Auction",
+                                      lambda_function="start_auction",
                                       payload=payload_1,
                                       date=notification_date)
 

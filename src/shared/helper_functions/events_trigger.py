@@ -14,36 +14,42 @@ class EventsTrigger:
     def create_trigger(self, rule_name: str, lambda_function: str, date: int, payload: Optional[Dict] = None):
 
         try:
+            rule_name = rule_name.title()
+            lambda_function = lambda_function.title() + '_Apae_Leilao'
+
             try:
                 self.__lambda.remove_permission(
-                    FunctionName=lambda_function + '_Apae_Leilao',
-                    StatementId=f'{rule_name}'
+                    FunctionName=lambda_function,
+                    StatementId=rule_name
                 )
             except:
                 pass
 
+            function = self.__lambda.get_function(FunctionName=lambda_function + '_Apae_Leilao')
+            function_arn = function['Configuration']['FunctionArn']
+
             self.__lambda.add_permission(
                 Action='lambda:InvokeFunction',
-                FunctionName=lambda_function + '_Apae_Leilao',
+                FunctionName=lambda_function,
                 Principal='events.amazonaws.com',
-                StatementId=f'{rule_name}',
+                StatementId=rule_name,
                 SourceArn=f"arn:aws:events:{os.environ.get('AWS_REGION')}:"
                           f"{os.environ.get('AWS_ACCOUNT_ID').replace('ID_', '')}:"
-                          f"rule/{rule_name.title()}_Apae_Leilao",
+                          f"rule/{rule_name}_Apae_Leilao",
             )
 
             self.__events.put_rule(
-                Name=rule_name.title() + '_Apae_Leilao',
+                Name=rule_name,
                 ScheduleExpression=f'cron({self.__format_date(date)})',
                 State='ENABLED',
 
             )
             self.__events.put_targets(
-                Rule=rule_name.title() + '_Apae_Leilao',
+                Rule=rule_name,
                 Targets=[
                     {
                         'Id': '1',
-                        'Arn': os.environ.get(f'{lambda_function}_ARN'),
+                        'Arn': function_arn,
                         'InputTransformer': {
                             'InputPathsMap': {
                                 'body': '$.body'
