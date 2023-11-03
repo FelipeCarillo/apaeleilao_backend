@@ -58,8 +58,7 @@ jobs:
         run: |
           echo "CDK Bootstrap"
           cd iac
-          aws cloudformation describe-stacks --stack-name CDKToolkit 2>&1 > /dev/null
-          || \\
+          aws cloudformation describe-stacks --stack-name CDKToolkit 2>&1 > /dev/null || \
             cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }}
 
 
