@@ -68,12 +68,11 @@ class IACStack(Stack):
         ENVIRONMENT_VARIABLES["AUCTION_TABLE"] = self.dynamodb_stack.auction_table.table_name
 
         self.lambda_events_function = LambdaEventsStack(self, environment_variables=ENVIRONMENT_VARIABLES)
-
         self.add_lambda_database_permissions(self.lambda_events_function)
 
         self.lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,
                                            environment_variables=ENVIRONMENT_VARIABLES)
-        self.add_lambda_database_permissions(self.lambda_events_function)
+        self.add_lambda_database_permissions(self.lambda_function)
 
     def add_lambda_database_permissions(self, lambda_stack):
         for lambda_function in lambda_stack.functions_need_user_table_permission:
