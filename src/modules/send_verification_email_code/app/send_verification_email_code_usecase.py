@@ -77,7 +77,6 @@ class SendVerificationEmailCodeUseCase:
         self.__email.send_email(
             to=user.email,
             subject="Código de Validação.",
-            body=self.__email.email_body
         )
 
         return {"email": user.email, 'code_expires_at': code_expires_at}
