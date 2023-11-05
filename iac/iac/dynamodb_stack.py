@@ -57,11 +57,8 @@ def create_global_secondary_index(table: dynamodb.Table,
 
 
 def add_admin_user() -> None:
-    client = boto3.resource('dynamodb')
-    if not client.get_item(
-            TableName="User_Apae_Leilao",
-            Key={"PK": os.environ.get("ADMIN_ID"), "SK": "USER"}
-    ).get("Item"):
+    client = boto3.resource('dynamodb').Table("User_Apae_Leilao")
+    if not client.get_item(Key={"PK": os.environ.get("ADMIN_ID"), "SK": "USER"}).get("Item"):
         admin_user = {
             "PK": os.environ.get("ADMIN_ID"),
             "SK": "USER",
@@ -71,7 +68,6 @@ def add_admin_user() -> None:
             "status_account": "ACTIVE",
         }
         client.put_item(
-            TableName="User_Apae_Leilao",
             Item=admin_user
         )
 
