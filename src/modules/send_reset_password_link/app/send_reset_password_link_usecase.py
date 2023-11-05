@@ -53,7 +53,6 @@ class SendResetPasswordLinkUseCase:
         self.__email.send_email(
             to=user.get('email'),
             subject="Redefinir Senha.",
-            body=self.__email.email_body
         )
 
         return user.get('email')
