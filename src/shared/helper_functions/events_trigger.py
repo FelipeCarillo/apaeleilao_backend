@@ -63,20 +63,24 @@ class EventsTrigger:
             return e
 
     def delete_rule(self, rule_name: str, lambda_function: str):
+
+        rule_name = rule_name.title()
+        lambda_function = lambda_function.title() + '_Apae_Leilao'
+
         try:
             self.__lambda.remove_permission(
-                FunctionName=lambda_function + '_Apae_Leilao',
+                FunctionName=lambda_function,
                 StatementId=f'{rule_name}'
             )
 
             self.__events.remove_targets(
-                Rule=rule_name.title() + '_Apae_Leilao',
+                Rule=rule_name,
                 Ids=[
                     '1',
                 ]
             )
             self.__events.delete_rule(
-                Name=rule_name.title() + '_Apae_Leilao',
+                Name=rule_name,
             )
         except Exception as e:
             return e

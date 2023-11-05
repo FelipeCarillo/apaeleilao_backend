@@ -83,3 +83,6 @@ jobs:
           EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
           DOMAIN: ${{ vars.DOMAIN }}
           DEV_DOMAIN: ${{ secrets.DEV_DOMAIN }}
+          ADMIN_ID: ${{ secrets.ADMIN_ID }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          ADMIN_ACCESS_KEY: ${{ secrets.ADMIN_ACCESS_KEY }}

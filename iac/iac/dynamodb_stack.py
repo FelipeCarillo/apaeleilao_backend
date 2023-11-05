@@ -1,8 +1,11 @@
+import os
+
 from aws_cdk import (
     aws_dynamodb as dynamodb,
     RemovalPolicy,
     CfnOutput
 )
+import boto3
 from constructs import Construct
 
 
@@ -74,6 +77,9 @@ class DynamoDBStack(Construct):
         #                               dynamodb.AttributeType.NUMBER)
         # create_global_secondary_index(self.__auction_table, "sort_amount-index", "_id", "amount",
         #                               dynamodb.AttributeType.NUMBER)
+        # create_global_secondary_index(self.__auction_table, "sort_created_at-index", "_id", "created_at",
+
+        self.add_admin_user()
 
     @property
     def user_table(self) -> dynamodb.Table:
@@ -82,3 +88,16 @@ class DynamoDBStack(Construct):
     @property
     def auction_table(self) -> dynamodb.Table:
         return self.__auction_table
+
+    def add_admin_user(self) -> None:
+        user_table = boto3.resource('dynamodb').Table(self.__user_table.table_name)
+        if not user_table.get_item(Key={"PK": os.environ.get("ADMIN_ID"), "SK": "USER"}).get("Item"):
+            admin_user = {
+                "PK": os.environ.get("ADMIN_ID"),
+                "SK": "USER",
+                "password": os.environ.get("ADMIN_PASSWORD"),
+                "access_key": os.environ.get("ADMIN_ACCESS_KEY"),
+                "type_account": "ADMIN",
+                "status_account": "ACTIVE",
+            }
+            user_table.put_item(Item=admin_user)

@@ -85,29 +85,30 @@ class CreateUserUseCase:
 
         self.__auction_interface.create_auction(auction)
 
-        payload_0 = {
+        notification_date = TimeManipulation(time_now=auction.start_date).plus_minute(-10)
+
+        payload = {
             'body': {
                 'auction_id': auction.auction_id,
                 'send_before': True
             }
         }
 
-        payload_1 = {
+        self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_0",
+                                      lambda_function=f"start_auction",
+                                      payload=payload,
+                                      date=auction.start_date)
+
+        payload = {
             'body': {
                 'auction_id': auction.auction_id,
                 'send_before': False
             }
         }
 
-        notification_date = TimeManipulation(time_now=auction.start_date).plus_minute(-10)
-
-        self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_0",
-                                      lambda_function=f"start_auction",
-                                      payload=payload_0,
-                                      date=auction.start_date)
         self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_1",
                                       lambda_function="start_auction",
-                                      payload=payload_1,
+                                      payload=payload,
                                       date=notification_date)
 
         return None
