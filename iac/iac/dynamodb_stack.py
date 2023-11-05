@@ -56,6 +56,26 @@ def create_global_secondary_index(table: dynamodb.Table,
     )
 
 
+def add_admin_user() -> None:
+    client = boto3.resource('dynamodb')
+    if not client.get_item(
+            TableName="User_Apae_Leilao",
+            Key={"PK": os.environ.get("ADMIN_ID"), "SK": "USER"}
+    ).get("Item"):
+        admin_user = {
+            "PK": os.environ.get("ADMIN_ID"),
+            "SK": "USER",
+            "password": os.environ.get("ADMIN_PASSWORD"),
+            "access_key": os.environ.get("ADMIN_ACCESS_KEY"),
+            "type_account": "ADMIN",
+            "status_account": "ACTIVE",
+        }
+        client.put_item(
+            TableName="User_Apae_Leilao",
+            Item=admin_user
+        )
+
+
 class DynamoDBStack(Construct):
 
     def __init__(self, scope: Construct) -> None:
@@ -79,7 +99,7 @@ class DynamoDBStack(Construct):
         #                               dynamodb.AttributeType.NUMBER)
         # create_global_secondary_index(self.__auction_table, "sort_created_at-index", "_id", "created_at",
 
-        self.add_admin_user()
+        add_admin_user()
 
     @property
     def user_table(self) -> dynamodb.Table:
@@ -88,16 +108,3 @@ class DynamoDBStack(Construct):
     @property
     def auction_table(self) -> dynamodb.Table:
         return self.__auction_table
-
-    def add_admin_user(self) -> None:
-        user_table = boto3.resource('dynamodb').Table(self.__user_table.table_name)
-        if not user_table.get_item(Key={"PK": os.environ.get("ADMIN_ID"), "SK": "USER"}).get("Item"):
-            admin_user = {
-                "PK": os.environ.get("ADMIN_ID"),
-                "SK": "USER",
-                "password": os.environ.get("ADMIN_PASSWORD"),
-                "access_key": os.environ.get("ADMIN_ACCESS_KEY"),
-                "type_account": "ADMIN",
-                "status_account": "ACTIVE",
-            }
-            user_table.put_item(Item=admin_user)
