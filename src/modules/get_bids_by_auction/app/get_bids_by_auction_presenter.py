@@ -1,11 +1,11 @@
-from .get_bids_by_auction_usecase import GetAuctionUseCase
-from .get_bids_by_auction_controller import GetAuctionController
+from .get_bids_by_auction_usecase import GetBidUseCase
+from .get_bids_by_auction_controller import GetBidController
 
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 from src.shared.database.database_user import UserDynamodb
 
-usecase = GetAuctionUseCase(UserDynamodb())
-controller = GetAuctionController(usecase)
+usecase = GetBidUseCase(UserDynamodb())
+controller = GetBidController(usecase)
 
 
 def lambda_handler(event, context):

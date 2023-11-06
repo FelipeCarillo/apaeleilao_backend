@@ -8,7 +8,7 @@ from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 from src.shared.structure.interface.auction_interface import AuctionInterface
 
 
-class GetAuctionUseCase:
+class GetBidUseCase:
     def __init__(self, user_interface: UserInterface, auction_interface: AuctionInterface):
         self.__user_interface = user_interface
         self.__auction_interface = auction_interface

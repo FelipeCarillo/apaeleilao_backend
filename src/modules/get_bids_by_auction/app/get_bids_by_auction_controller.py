@@ -1,13 +1,13 @@
 from typing import Dict
 
-from .get_bids_by_auction_usecase import GetAuctionUseCase
+from .get_bids_by_auction_usecase import GetBidUseCase
 
 from src.shared.https_codes.https_code import OK, BadRequest, InternalServerError, Unauthorized, ParameterError
 from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
 
 
-class GetAuctionController:
-    def __init__(self, usecase: GetAuctionUseCase):
+class GetBidController:
+    def __init__(self, usecase: GetBidUseCase):
         self.__usecase = usecase
 
     def __call__(self, request: Dict):
@@ -23,7 +23,7 @@ class GetAuctionController:
 
             usecase = self.__usecase(auth=request.get('auth'), body=request.get('body'))
 
-            return OK(body=usecase, message='Usuário encontrado com sucesso.')
+            return OK(body=usecase, message='Lance encontrado com sucesso.')
 
         except UserNotAuthenticated as e:
             return Unauthorized(message=e.message)
