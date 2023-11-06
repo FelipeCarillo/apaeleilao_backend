@@ -91,10 +91,6 @@ class DynamoDBStack(Construct):
                                       "created_at", dynamodb.AttributeType.NUMBER)
         create_global_secondary_index(self.__auction_table, "SK-index", "SK")
         create_global_secondary_index(self.__auction_table, "user_id-index", "user_id")
-        # create_global_secondary_index(self.__auction_table, "sort_amount-index", "_id", "amount",
-        #                               dynamodb.AttributeType.NUMBER)
-        # create_global_secondary_index(self.__auction_table, "sort_created_at-index", "_id", "created_at",
-
         add_admin_user()
 
     @property

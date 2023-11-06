@@ -82,6 +82,7 @@ jobs:
           BUCKET_NAME: ${{ env.BUCKET_NAME }}
           ENCRYPTED_KEY: ${{ secrets.ENCRYPTED_KEY }}
           JWT_ALGORITHM: ${{ secrets.JWT_ALGORITHM }}
+          MERCADO_PAGO_ACCESS_TOKEN: ${{ secrets.MERCADO_PAGO_ACCESS_TOKEN }}
           EMAIL_SENDER: ${{ vars.EMAIL_SENDER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_HOST: ${{ secrets.EMAIL_HOST }}

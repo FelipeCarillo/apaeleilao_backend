@@ -16,6 +16,7 @@ class IACStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         stage = os.environ.get("STAGE", "test")
+        mercado_pago_token = os.environ.get("MERCADO_PAGO_ACCESS_TOKEN", "")
         bucket_name = os.environ.get("BUCKET_NAME", "")
         encrypted_key = os.environ.get("ENCRYPTED_KEY", "")
         jwt_algorithm = os.environ.get("JWT_ALGORITHM", "")
@@ -37,7 +38,8 @@ class IACStack(Stack):
             "EMAIL_HOST": email_host,
             "EMAIL_PORT": email_port,
             "DOMAIN": domain if stage == "prod" else dev_domain,
-            "AWS_ACCOUNT_ID": AWS_ACCOUNT_ID
+            "AWS_ACCOUNT_ID": AWS_ACCOUNT_ID,
+            "MERCADO_PAGO_ACCESS_TOKEN": mercado_pago_token,
         }
 
         self.__restapi = apigw.RestApi(

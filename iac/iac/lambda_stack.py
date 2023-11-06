@@ -54,6 +54,12 @@ class LambdaStack(Construct):
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
         )
 
+        self.mercadopago = _lambda.LayerVersion(
+            self, "MercadoPago_Layer",
+            code=_lambda.Code.from_asset("./mercadopago_layer"),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
+        )
+
         self.create_user = self.create_lambda(
             function_name="create_user",
             method="POST",

@@ -18,7 +18,7 @@ class LambdaEventsStack(Construct):
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
             handler=f"app.{function_name}_presenter.lambda_handler",
-            layers=[self.shared_layer, self.jwt_layer, self.bcrypt_layer],
+            layers=[self.shared_layer, self.jwt_layer, self.bcrypt_layer, self.mercadopago],
             timeout=Duration.seconds(15),
             memory_size=512,
         )
@@ -47,6 +47,12 @@ class LambdaEventsStack(Construct):
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
         )
 
+        self.mercadopago = _lambda.LayerVersion(
+            self, "MercadoPago_Layer",
+            code=_lambda.Code.from_asset("./mercadopago_layer"),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
+        )
+
         self.start_auction = self.create_lambda(
             function_name="start_auction",
             environment_variables=environment_variables,
@@ -61,12 +67,12 @@ class LambdaEventsStack(Construct):
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
             self.start_auction,
-            # self.end_auction,
+            self.end_auction,
         )
 
     @property
     def functions_need_auction_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
             self.start_auction,
-            # self.end_auction,
+            self.end_auction,
         )
