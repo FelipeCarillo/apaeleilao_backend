@@ -20,7 +20,7 @@ class SendResetPasswordLinkUseCase:
 
     def __call__(self, body: Dict):
         if not body.get('email'):
-            MissingParameter('Email')
+            raise MissingParameter('Email')
 
         user = self.__user_interface.get_user_by_email(email=body.get('email'))
         if not user:

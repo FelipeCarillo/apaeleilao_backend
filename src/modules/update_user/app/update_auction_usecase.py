@@ -15,12 +15,12 @@ class UpdateUserUseCase:
 
     def __call__(self, auth: Dict, body: Dict):
         if not auth:
-            MissingParameter('auth')
+            raise MissingParameter('auth')
         if not auth.get('Authorization'):
-            MissingParameter('Authorization')
+            raise UserNotAuthenticated('Token de acesso não encontrado.')
 
         if not body:
-            MissingParameter('body')
+            raise MissingParameter('body')
 
         decoded_token = self.__token.decode_token(auth['Authorization'])
         if not decoded_token:

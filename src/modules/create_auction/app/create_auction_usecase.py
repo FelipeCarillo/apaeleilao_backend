@@ -21,7 +21,7 @@ class CreateUserUseCase:
     def __call__(self, auth: Dict, body: Dict) -> None:
 
         if not auth.get('Authorization'):
-            raise MissingParameter('Authorization')
+            raise UserNotAuthenticated('Token de acesso não encontrado.')
 
         decoded_token = self.__token.decode_token(auth.get('Authorization'))
         if not decoded_token:

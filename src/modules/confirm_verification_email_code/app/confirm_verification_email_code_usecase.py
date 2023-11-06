@@ -17,12 +17,12 @@ class ConfirmVerificationEmailCodeUseCase:
 
     def __call__(self, auth: Dict, body: Dict):
         if not auth:
-            MissingParameter('auth')
+            raise MissingParameter('auth')
         if not auth.get('Authorization'):
-            MissingParameter('Authorization')
+            raise UserNotAuthenticated('Authorization')
 
         if not body:
-            MissingParameter('body')
+            raise MissingParameter('body')
         if not body.get('verification_email_code'):
             raise MissingParameter('Código de validação')
 

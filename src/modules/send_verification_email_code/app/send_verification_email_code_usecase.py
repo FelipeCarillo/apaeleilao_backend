@@ -25,7 +25,7 @@ class SendVerificationEmailCodeUseCase:
 
     def __call__(self, auth: Dict):
         if not auth.get('Authorization'):
-            MissingParameter('Authorization')
+            raise UserNotAuthenticated('Token de acesso não encontrado.')
 
         decoded_token = self.__token.decode_token(auth['Authorization'])
         if not decoded_token:
