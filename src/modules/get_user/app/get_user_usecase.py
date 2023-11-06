@@ -43,7 +43,7 @@ class GetUserUseCase:
             status_account=user.get('status_account'),
             type_account=user.get('type_account'),
             created_at=int(user.get('created_at')) if user.get('created_at') else None,
-            verification_email_code=int(user.get('verification_email_code')) if user.get(
+            verification_email_code=str(user.get('verification_email_code')) if user.get(
                 'verification_email_code') else None,
             verification_email_code_expires_at=int(user.get('verification_email_code_expires_at')) if user.get(
                 'verification_email_code_expires_at') else None,

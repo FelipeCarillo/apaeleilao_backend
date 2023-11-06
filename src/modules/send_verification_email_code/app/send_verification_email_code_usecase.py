@@ -1,6 +1,7 @@
 import os
 import random
 import smtplib
+import string
 import datetime
 from typing import Dict
 from email.mime.text import MIMEText
@@ -42,7 +43,8 @@ class SendVerificationEmailCodeUseCase:
         if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) != TYPE_ACCOUNT_USER_ENUM.USER:
             raise UserNotAuthenticated(message='Você não tem permissão para validar uma conta de usuário.')
 
-        code = random.randint(10000, 99999)
+        numbers = string.digits
+        code = ''.join(random.choice(numbers) for i in range(6))
         code_expires_at = TimeManipulation().plus_minute(1.5)
 
         user = User(user_id=user['user_id'],
@@ -57,7 +59,7 @@ class SendVerificationEmailCodeUseCase:
                     type_account=user['type_account'],
                     created_at=int(user['created_at']),
                     verification_email_code=str(code),
-                    verification_email_code_expires_at=code_expires_at,
+                    verification_email_code_expires_at=int(code_expires_at),
                     )
 
         datetime_expire = datetime.datetime.fromtimestamp(code_expires_at).strftime(

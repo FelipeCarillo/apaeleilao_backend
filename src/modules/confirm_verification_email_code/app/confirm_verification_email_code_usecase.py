@@ -45,7 +45,7 @@ class ConfirmVerificationEmailCodeUseCase:
         if current_time > user.get('verification_email_code_expires_at'):
             raise InvalidParameter(parameter='Código de validação', body='expirado')
 
-        if body.get('verification_email_code') != user.get('verification_email_code'):
+        if str(body.get('verification_email_code')) != str(user.get('verification_email_code')):
             raise InvalidParameter(parameter='Código de validação', body='inválido')
 
         status_account = STATUS_USER_ACCOUNT_ENUM.ACTIVE.value

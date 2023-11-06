@@ -37,8 +37,8 @@ class CreateUserUseCase:
         created_at = TimeManipulation.get_current_time()
 
         user = User(user_id=user_id,
-                    first_name=body.get('first_name'),
-                    last_name=body.get('last_name'),
+                    first_name=body.get('first_name').title(),
+                    last_name=body.get('last_name').title(),
                     cpf=body.get('cpf'),
                     email=body.get('email'),
                     phone=body.get('phone'),
