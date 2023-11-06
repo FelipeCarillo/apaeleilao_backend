@@ -22,7 +22,7 @@ class SendResetPasswordLinkController:
 
             usecase = self.__usecase(body=request.get('body'))
 
-            message = f"Código enviado com sucesso para o e-mail: {usecase.get('email')}."
+            message = f"Código enviado com sucesso para o e-mail: {usecase}."
 
             return OK(body=None, message=message)
 

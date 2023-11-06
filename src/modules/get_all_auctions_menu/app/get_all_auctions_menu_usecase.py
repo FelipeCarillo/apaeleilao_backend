@@ -25,7 +25,7 @@ class GetAllAuctionsMenuUseCase:
             start_amount=float(auction.get("start_amount")),
             current_amount=float(auction.get("current_amount")),
             images=auction.get("images"),
-            status_auction=STATUS_AUCTION_ENUM(auction.get("status_auction")),
+            status_auction=auction.get("status_auction"),
             created_at=int(auction.get("created_at"))
         ) for auction in auctions]
 
