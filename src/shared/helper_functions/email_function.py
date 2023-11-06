@@ -31,7 +31,7 @@ class Email:
     def __disconnect(self):
         self.__server.quit()
 
-    def send_email(self, to: str | Sequence[str], subject: str):
+    def send_email(self, to, subject: str):
         try:
             message = MIMEMultipart()
             message['From'] = self.__email

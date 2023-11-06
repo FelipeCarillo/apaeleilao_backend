@@ -23,7 +23,7 @@ class GetAuctionController:
 
             usecase = self.__usecase(auth=request.get('auth'), body=request.get('body'))
 
-            return OK(body=usecase, message='Usuário encontrado com sucesso.')
+            return OK(body=usecase, message='Leilão encontrado com sucesso.')
 
         except UserNotAuthenticated as e:
             return Unauthorized(message=e.message)
