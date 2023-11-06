@@ -89,8 +89,8 @@ class DynamoDBStack(Construct):
                                             dynamodb.AttributeType.STRING)
         create_global_secondary_index(self.__auction_table, "SK_created_at-index", "SK",
                                       "created_at", dynamodb.AttributeType.NUMBER)
-        # create_global_secondary_index(self.__auction_table, "auction_start_date-index", "_id", "start_date",
-        #                               dynamodb.AttributeType.NUMBER)
+        create_global_secondary_index(self.__auction_table, "SK-index", "SK")
+        create_global_secondary_index(self.__auction_table, "user_id-index", "user_id")
         # create_global_secondary_index(self.__auction_table, "sort_amount-index", "_id", "amount",
         #                               dynamodb.AttributeType.NUMBER)
         # create_global_secondary_index(self.__auction_table, "sort_created_at-index", "_id", "created_at",

@@ -212,3 +212,61 @@ class AuctionDynamodb(AuctionInterface):
 
     def create_bid(self, bid: Bid) -> Dict or None:
         pass
+
+    def create_payment(self, payment) -> Dict or None:
+        try:
+            payload = {
+                "PK": payment.auction_id,
+                "SK": AUCTION_TABLE_ENTITY.PAYMENT.value + "#" + payment.payment_id,
+                "user_id": payment.user_id,
+                "service": payment.payment_service.value,
+            }
+            self.__dynamodb.put_item(Item=payload)
+            return payload
+        except Exception as e:
+            raise e
+
+    def get_payment_by_id(self, payment_id: str) -> Dict or None:
+        try:
+            query = self.__dynamodb.query(
+                IndexName="SK-index",
+                KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.PAYMENT.value + "#" + payment_id),
+            )
+            response = query.get('Items', None)
+            if response:
+                response = response[0]
+                response['payment_id'] = response.pop('SK').split('#')[1]
+                response['auction_id'] = response.pop('PK')
+            return response
+        except Exception as e:
+            raise e
+
+    def get_payment_by_auction_id(self, auction_id: str) -> Dict or None:
+        try:
+            query = self.__dynamodb.query(
+                KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').begins_with(AUCTION_TABLE_ENTITY.PAYMENT.value),
+            )
+            response = query.get('Items', None)
+            if response:
+                response = response[0]
+                response['payment_id'] = response.pop('SK').split('#')[1]
+                response['auction_id'] = response.pop('PK')
+            return response
+        except Exception as e:
+            raise e
+
+    def get_payment_by_user_id(self, user_id: str) -> Dict or None:
+        try:
+            query = self.__dynamodb.query(
+                IndexName="user_id-index",
+                KeyConditionExpression=Key('user_id').eq(user_id),
+                FilterExpression=Attr('SK').begins_with(AUCTION_TABLE_ENTITY.PAYMENT.value),
+            )
+            response = query.get('Items', None)
+            if response:
+                response = response[0]
+                response['payment_id'] = response.pop('SK').split('#')[1]
+                response['auction_id'] = response.pop('PK')
+            return response
+        except Exception as e:
+            raise e

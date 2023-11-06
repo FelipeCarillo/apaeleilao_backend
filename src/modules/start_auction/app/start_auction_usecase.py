@@ -11,11 +11,11 @@ from src.shared.structure.interface.auction_interface import AuctionInterface
 class StartAuctionUseCase:
 
     def __init__(self, auction_interface: AuctionInterface, user_interface: UserInterface):
-        self.__auction_interface = auction_interface
-        self.__user_interface = user_interface
-        self.__token = TokenAuthy()
         self.__email = Email()
+        self.__token = TokenAuthy()
         self.__trigger = EventsTrigger()
+        self.__user_interface = user_interface
+        self.__auction_interface = auction_interface
 
     def __call__(self, body: Dict) -> Any:
 
@@ -65,5 +65,5 @@ class StartAuctionUseCase:
                 }
             }
 
-            # self.__trigger.create_trigger(rule_name=f"end_auction_{auction_id}", lambda_function="end_Auction",
-            #                               payload=payload, date=auction['end_date'])
+            self.__trigger.create_trigger(rule_name=f"end_auction_{auction_id}", lambda_function=f"end_auction",
+                                          payload=payload, date=int(auction["end_date"]))

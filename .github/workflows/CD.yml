@@ -38,13 +38,18 @@ jobs:
           cd iac
           rm -rf bcrypt_layer 
           rm -rf jwt_layer
+          rm -rf mercadopago_layer
           mkdir bcrypt_layer
           mkdir jwt_layer
+          mkdir mercadopago_layer
           cd bcrypt_layer
           pip install bcrypt==3.2.2 -t python
           cd ..
           cd jwt_layer
           pip install pyjwt -t python
+          cd ..
+          cd mercadopago_layer
+          pip install mercadopago -t python
 
       - name: AWS Credentials
         run: |

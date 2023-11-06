@@ -1,21 +1,24 @@
 from typing import Dict
 
 from src.shared.errors.modules_errors import *
-from src.shared.helper_functions.events_trigger import EventsTrigger
+from src.shared.structure.entities.payment import Payment
 from src.shared.structure.entities.auction import Auction
 from src.shared.helper_functions.email_function import Email
 from src.shared.helper_functions.token_authy import TokenAuthy
-from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
+from src.shared.helper_functions.mercadopago_api import MercadoPago
+from src.shared.helper_functions.events_trigger import EventsTrigger
 from src.shared.structure.interface.auction_interface import AuctionInterface
+from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM, PAYMENT_SERVICES, STATUS_AUCTION_PAYMENT_ENUM
 
 
 class EndAuctionUseCase:
 
     def __init__(self, auction_interface: AuctionInterface):
+        self.__email = Email()
+        self.__token = TokenAuthy()
+        self.__payment = MercadoPago()
         self.__trigger = EventsTrigger()
         self.__auction_interface = auction_interface
-        self.__token = TokenAuthy()
-        self.__email = Email()
 
     def __call__(self, body: Dict):
 
@@ -77,4 +80,24 @@ class EndAuctionUseCase:
 
             self.__trigger.delete_rule(rule_name=f"end_auction_{auction_id}", lambda_function=f"End_Auction")
 
-            # More functions to implement below, waiting for payments functions ...
+            payment = Payment(
+                auction_id=auction.auction_id,
+                user_id=winner.get('user_id'),
+                auction_title=auction.title,
+                auction_description=auction.description,
+                first_name=winner.get('first_name'),
+                last_name=winner.get('last_name'),
+                cpf=winner.get('cpf'),
+                phone=winner.get('phone'),
+                email=winner.get('email'),
+                amount=winner.get('amount'),
+                status_payment=STATUS_AUCTION_PAYMENT_ENUM.PENDING,
+                payment_service=PAYMENT_SERVICES.MERCADO_PAGO
+            )
+
+            self.__payment.set_payment_preference(payment=payment)
+            payment_created = self.__payment.create_payment()
+
+            payment.payment_id = payment_created.get('response').get('id')
+            payment.payment_expires_at = payment_created.get('response').get('date_of_expiration')
+            self.__auction_interface.create_payment(payment=payment)

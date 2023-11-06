@@ -3,6 +3,7 @@ from typing import Optional, Dict, List
 
 from src.shared.structure.entities.bid import Bid
 from src.shared.structure.entities.auction import Auction
+from src.shared.structure.entities.payment import Payment
 
 
 class AuctionInterface(ABC):
@@ -17,6 +18,13 @@ class AuctionInterface(ABC):
     def create_bid(self, bid: Bid) -> Dict or None:
         """
         Create a new bid
+        """
+        pass
+
+    @abstractmethod
+    def create_payment(self, payment: Payment) -> Dict or None:
+        """
+        Create a new payment
         """
         pass
 

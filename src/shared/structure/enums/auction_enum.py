@@ -25,3 +25,10 @@ class STATUS_AUCTION_PAYMENT_ENUM(Enum):
     PENDING = 'PENDING'
     PAID = 'PAID'
     EXPIRED = 'EXPIRED'
+
+
+class PAYMENT_SERVICES(Enum):
+    """
+    MERCADO_PAGO: Mercado Pago API
+    """
+    MERCADO_PAGO = 'MERCADO_PAGO'
