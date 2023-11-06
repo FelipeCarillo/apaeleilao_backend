@@ -294,11 +294,11 @@ class UserValidator(ABC):
         return type_account
 
     @staticmethod
-    def validate_and_set_verification_email_code(verification_email_code: str) -> str or None:
+    def validate_and_set_verification_email_code(verification_email_code: int) -> int or None:
         if verification_email_code is None:
             return None
-        if type(verification_email_code) != str:
-            raise InvalidParameter("verification_code", "deve ser str")
+        if isinstance(verification_email_code, int) is False:
+            raise InvalidParameter("verification_email_code", "deve ser int")
         return verification_email_code
 
     @staticmethod

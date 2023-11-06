@@ -1,6 +1,5 @@
 import os
 import smtplib
-from typing import Sequence
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -37,7 +36,7 @@ class Email:
             message['From'] = self.__email
             message['To'] = to
             message['Subject'] = subject
-            message.attach(MIMEText(self.__email, 'html'))
+            message.attach(MIMEText(self.email_body, 'html'))
             self.__connect()
             self.__server.sendmail(self.__email, to, message.as_string())
             self.__disconnect()
