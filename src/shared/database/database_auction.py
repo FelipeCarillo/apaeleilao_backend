@@ -111,17 +111,17 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_auction_by_id(self, auction_id: str) -> Dict or None:
         try:
-            query = self.__dynamodb.get_item(
-                Key={'PK': auction_id,
-                     'SK': AUCTION_TABLE_ENTITY.AUCTION.value},
-            )
-            response = query.get('Item', None)
-            if response:
-                response.pop('SK')
-                response['auction_id'] = response.pop('PK')
-                response['start_amount'] = round(float(response['start_amount']), 2)
-                response['current_amount'] = round(float(response['current_amount']), 2)
-            return response
+            query = self.__dynamodb.query(
+                KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
+            ).get('Items', None)
+
+            item = query[0] if query else None
+            if item:
+                item.pop('SK')
+                item['auction_id'] = item.pop('PK')
+                item['start_amount'] = round(float(item['start_amount']), 2)
+                item['current_amount'] = round(float(item['current_amount']), 2)
+            return item
         except ClientError as e:
             raise e
 
