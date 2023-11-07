@@ -59,7 +59,7 @@ class EventsTrigger:
                 ]
             )
         except Exception as e:
-            return e
+            print(e)
 
     def delete_rule(self, rule_name: str, lambda_function: str):
 
@@ -82,7 +82,7 @@ class EventsTrigger:
                 Name=rule_name,
             )
         except Exception as e:
-            return e
+            print(e)
 
     @staticmethod
     def __format_date(date: int) -> str:
