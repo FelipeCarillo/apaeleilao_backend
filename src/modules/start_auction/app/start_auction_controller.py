@@ -16,7 +16,9 @@ class StartAuctionController:
             if not request["body"]:
                 raise MissingParameter("body")
 
-            self.__usecase(body=request["body"])
+            usecase = self.__usecase(body=request["body"])
+
+            return OK(body=usecase, message="Leilão iniciado com sucesso!")
 
         except InvalidRequest as e:
             return BadRequest(message=e.message)
