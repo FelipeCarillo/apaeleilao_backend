@@ -109,7 +109,7 @@ class LambdaStack(Construct):
 
         self.update_user = self.create_lambda(
             function_name="update_user",
-            method="PUT",
+            method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
