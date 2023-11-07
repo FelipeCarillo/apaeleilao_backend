@@ -223,8 +223,9 @@ class UserDynamodb(UserInterface):
                     ':verification_email_code': user.verification_email_code,
                     ':verification_email_code_expires_at': user.verification_email_code_expires_at,
                 },
-                ReturnValues='UPDATED_NEW'
+                ReturnValues='ALL_NEW'
             )['Attributes']
+            print(response)
             if response:
                 response.pop('SK')
                 response['user_id'] = response.pop('PK')
