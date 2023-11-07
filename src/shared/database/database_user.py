@@ -2,6 +2,7 @@ from typing import Dict, List, Optional
 from boto3.dynamodb.conditions import Key
 
 from src.shared.database.database import Database
+from src.shared.structure.entities.feedback import Feedback
 from src.shared.structure.entities.user import User, UserModerator
 from src.shared.structure.enums.table_entities import USER_TABLE_ENTITY
 from src.shared.structure.interface.user_interface import UserInterface
@@ -26,6 +27,23 @@ class UserDynamodb(UserInterface):
             user.pop('SK')
 
             return user
+        except Exception as e:
+            raise e
+        
+    def create_feedback(self, feedback: Feedback) -> Dict:
+        try:
+            feedback = feedback.to_dict()
+            feedback['PK'] = feedback.pop('feedback_id')
+            feedback['SK'] = feedback.pop('email')
+
+            self.__dynamodb.put_item(
+                Item=feedback
+            )
+
+            feedback['feedback_id'] = feedback.pop('PK')
+            feedback['email'] = feedback.pop('SK')
+
+            return feedback
         except Exception as e:
             raise e
 

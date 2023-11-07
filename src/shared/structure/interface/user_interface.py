@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Dict, List
 
+from src.shared.structure.entities.feedback import Feedback
 from src.shared.structure.entities.suspension import Suspension
 from src.shared.structure.entities.user import User, UserModerator
 
@@ -12,6 +13,13 @@ class UserInterface(ABC):
                      access_key: str = None,
                      email: str = None,
                      ) -> Optional[Dict]:
+        pass
+
+    @abstractmethod
+    def create_feedback(self,feedback: Feedback) -> Dict or None:
+        """
+        Create a new feedback
+        """
         pass
 
     @abstractmethod
@@ -50,3 +58,7 @@ class UserInterface(ABC):
     @abstractmethod
     def create_suspension(self, suspension: Suspension) -> Optional[Dict]:
         pass
+
+    @abstractmethod
+    def get_last_feedback_id(self) -> int:
+        pass 
