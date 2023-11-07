@@ -1,12 +1,9 @@
-import os
-
-from .update_auction_usecase import UpdateUserUseCase
-from .update_auction_controller import UpdateUserController
+from .update_user_usecase import UpdateUserUseCase
+from .update_user_controller import UpdateUserController
 
 from src.shared.database.database_user import UserDynamodb
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 
-stage = os.environ.get("STAGE", "test")
 usecase = UpdateUserUseCase(UserDynamodb())
 controller = UpdateUserController(usecase)
 

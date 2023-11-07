@@ -15,7 +15,8 @@ class UserInterface(ABC):
         pass
 
     @abstractmethod
-    def get_all_users(self) -> Optional[Dict]:
+    def get_all_users(self, exclusive_start_key: str = None, limit: int = None,
+                      type_account: str = 'USER') -> Optional[Dict]:
         pass
 
     @abstractmethod

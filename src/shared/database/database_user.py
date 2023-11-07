@@ -75,13 +75,15 @@ class UserDynamodb(UserInterface):
             if not exclusive_start_key:
                 query = self.__dynamodb.query(
                     IndexName='SK_type_account-index',
-                    KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) & Key('type_account').eq(type_account),
+                    KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) &
+                                           Key('type_account').eq(type_account),
                     Limit=limit
                 )
             else:
                 query = self.__dynamodb.query(
                     IndexName='SK_type_account-index',
-                    KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) & Key('type_account').eq(type_account),
+                    KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) &
+                                           Key('type_account').eq(type_account),
                     ExclusiveStartKey=exclusive_start_key,
                     Limit=limit
                 )

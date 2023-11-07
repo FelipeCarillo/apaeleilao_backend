@@ -1,9 +1,8 @@
-from typing import Any, Dict
+from .update_user_usecase import UpdateUserUseCase
 
-from .update_auction_usecase import UpdateUserUseCase
-
-from src.shared.https_codes.https_code import *
 from src.shared.errors.modules_errors import *
+from src.shared.https_codes.https_code import *
+
 
 class UpdateUserController:
     def __init__(self, usecase: UpdateUserUseCase):
@@ -13,17 +12,17 @@ class UpdateUserController:
         try:
             if not request:
                 raise InvalidRequest()
-            
+
             if not request["auth"]:
                 raise MissingParameter("auth")
-            
+
             if not request["body"]:
                 raise MissingParameter("body")
-            
+
             update_user_usecase = self.__usecase(auth=request["auth"], body=request["body"])
 
             return OK(body=update_user_usecase, message="Dados alterados com sucesso.")
-        
+
         except InvalidRequest as e:
             return BadRequest(message=e.message)
 
