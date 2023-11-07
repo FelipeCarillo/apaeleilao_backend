@@ -3,8 +3,8 @@ from typing import Dict, List, Optional
 from boto3.dynamodb.conditions import Key, Attr
 
 from src.shared.database.database import Database
-from src.shared.structure.entities.auction import Auction
 from src.shared.structure.entities.bid import Bid
+from src.shared.structure.entities.auction import Auction
 from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
 from src.shared.structure.enums.table_entities import AUCTION_TABLE_ENTITY
 from src.shared.structure.interface.auction_interface import AuctionInterface

@@ -1,7 +1,5 @@
 from typing import Dict
-
-from bcrypt import checkpw
-from boto3.dynamodb.conditions import Key, Attr
+from boto3.dynamodb.conditions import Key
 
 from src.shared.database.database import Database
 from src.shared.structure.entities.user import User, UserModerator
@@ -34,7 +32,6 @@ class UserDynamodb(UserInterface):
     def authenticate(self,
                      access_key: str = None,
                      email: str = None,
-                     password: str = None,
                      ) -> Dict or None:
         try:
             if access_key:
@@ -50,12 +47,9 @@ class UserDynamodb(UserInterface):
             item = query.get('Items', None)
             item = item[0] if item else None
             if item:
-                if checkpw(password.encode('utf-8'), item['password'].encode('utf-8')):
-                    item['user_id'] = item.pop('PK')
-                    item.pop('SK')
-                    return item
-                else:
-                    return None
+                item['user_id'] = item.pop('PK')
+                item.pop('SK')
+                return item
             else:
                 return None
         except Exception as e:

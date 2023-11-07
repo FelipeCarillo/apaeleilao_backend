@@ -1,4 +1,5 @@
 from typing import Dict
+from bcrypt import checkpw
 
 from src.shared.errors.modules_errors import *
 from src.shared.helper_functions.token_authy import TokenAuthy
@@ -24,12 +25,15 @@ class GetTokenUseCase:
             raise MissingParameter('Keep login')
 
         if body.get('email'):
-            user = self.__user_interface.authenticate(email=body['email'], password=body['password'])
+            user = self.__user_interface.authenticate(email=body['email'])
         else:
-            user = self.__user_interface.authenticate(access_key=body['access_key'], password=body['password'])
-
+            user = self.__user_interface.authenticate(access_key=body['access_key'])
         if not user:
             raise UserNotAuthenticated()
+
+        if not checkpw(body['password'].encode('utf-8'), user['password'].encode('utf-8')):
+            raise UserNotAuthenticated()
+
         token = self.__token.generate_token(user_id=user['user_id'], keep_login=body.get('keep_login'))
 
         return {"token": token}

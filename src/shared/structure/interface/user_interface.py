@@ -11,7 +11,6 @@ class UserInterface(ABC):
     def authenticate(self,
                      access_key: str = None,
                      email: str = None,
-                     password: str = None,
                      ) -> Optional[Dict]:
         pass
 
