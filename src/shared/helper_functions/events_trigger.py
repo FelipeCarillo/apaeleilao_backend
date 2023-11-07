@@ -24,7 +24,7 @@ class EventsTrigger:
             except:
                 pass
 
-            function = self.__lambda.get_function(FunctionName=lambda_function + '_Apae_Leilao')
+            function = self.__lambda.get_function(FunctionName=lambda_function)
             function_arn = function['Configuration']['FunctionArn']
 
             self.__lambda.add_permission(
@@ -34,7 +34,7 @@ class EventsTrigger:
                 StatementId=rule_name,
                 SourceArn=f"arn:aws:events:{os.environ.get('AWS_REGION')}:"
                           f"{os.environ.get('AWS_ACCOUNT_ID')}:"
-                          f"rule/{rule_name}_Apae_Leilao",
+                          f"rule/{rule_name}",
             )
 
             self.__events.put_rule(
