@@ -1,5 +1,6 @@
 from decimal import Decimal
 from typing import Dict, List, Optional
+from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key, Attr
 
 from src.shared.database.database import Database
@@ -26,7 +27,7 @@ class AuctionDynamodb(AuctionInterface):
             auction['auction_id'] = auction.pop('PK')
             auction.pop('SK')
             return auction
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_all_auctions(self, exclusive_start_key: str = None, amount: int = 6, scan_forward: bool = False,
@@ -61,7 +62,7 @@ class AuctionDynamodb(AuctionInterface):
     #                 auction['start_amount'] = round(float(auction['start_amount']), 2)
     #                 auction['current_amount'] = round(float(auction['current_amount']), 2)
     #         return response
-    #     except Exception as e:
+    #     except ClientError as e:
     #         raise e
 
     def get_all_auctions_menu(self) -> Optional[List[Dict]]:
@@ -83,7 +84,7 @@ class AuctionDynamodb(AuctionInterface):
                     auction['start_amount'] = round(float(auction['start_amount']), 2)
                     auction['current_amount'] = round(float(auction['current_amount']), 2)
             return response if len(response) > 0 else None
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_auction_between_dates(self, start_date: int, end_date: int) -> List[Dict] or None:
@@ -105,7 +106,7 @@ class AuctionDynamodb(AuctionInterface):
                     auction['start_amount'] = round(float(auction['start_amount']), 2)
                     auction['current_amount'] = round(float(auction['current_amount']), 2)
             return response if len(response) > 0 else None
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_auction_by_id(self, auction_id: str) -> Dict or None:
@@ -121,7 +122,7 @@ class AuctionDynamodb(AuctionInterface):
                 response['start_amount'] = round(float(response['start_amount']), 2)
                 response['current_amount'] = round(float(response['current_amount']), 2)
             return response
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_last_auction_id(self) -> int or None:
@@ -135,7 +136,7 @@ class AuctionDynamodb(AuctionInterface):
             if response:
                 return int(response[0]['PK'])
             return None
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def update_auction(self, auction: Auction = None, auction_dict: Dict = None) -> Dict or None:
@@ -166,7 +167,7 @@ class AuctionDynamodb(AuctionInterface):
             response['Attributes']['start_amount'] = round(float(response['Attributes']['start_amount']), 2)
             response['Attributes']['current_amount'] = round(float(response['Attributes']['current_amount']), 2)
             return response['Attributes']
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def update_auction_current_amount(self, auction_id: str = None, current_amount: float = None) -> Dict or None:
@@ -180,7 +181,7 @@ class AuctionDynamodb(AuctionInterface):
                 },
                 ReturnValues='UPDATED_NEW'
             )
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_last_bid_id(self) -> Optional[int]:
@@ -194,7 +195,7 @@ class AuctionDynamodb(AuctionInterface):
             if response:
                 return int(response[0]['SK'].split('#')[1])
             return None
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_all_bids_by_auction_id(self, auction_id: str) -> List[Dict]:
@@ -209,7 +210,7 @@ class AuctionDynamodb(AuctionInterface):
                     bid['auction_id'] = bid.pop('PK')
                     bid['amount'] = round(float(bid['amount']), 2)
             return response
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def create_bid(self, bid: Bid) -> Dict or None:
@@ -225,7 +226,7 @@ class AuctionDynamodb(AuctionInterface):
             }
             self.__dynamodb.put_item(Item=payload)
             return payload
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_payment_by_id(self, payment_id: str) -> Dict or None:
@@ -240,7 +241,7 @@ class AuctionDynamodb(AuctionInterface):
                 response['payment_id'] = response.pop('SK').split('#')[1]
                 response['auction_id'] = response.pop('PK')
             return response
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_payment_by_auction_id(self, auction_id: str) -> Dict or None:
@@ -254,7 +255,7 @@ class AuctionDynamodb(AuctionInterface):
                 response['payment_id'] = response.pop('SK').split('#')[1]
                 response['auction_id'] = response.pop('PK')
             return response
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_payment_by_user_id(self, user_id: str) -> Dict or None:
@@ -270,5 +271,5 @@ class AuctionDynamodb(AuctionInterface):
                 response['payment_id'] = response.pop('SK').split('#')[1]
                 response['auction_id'] = response.pop('PK')
             return response
-        except Exception as e:
+        except ClientError as e:
             raise e

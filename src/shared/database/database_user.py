@@ -1,5 +1,6 @@
 from typing import Dict, Optional
 from boto3.dynamodb.conditions import Key
+from botocore.exceptions import ClientError
 
 from src.shared.database.database import Database
 from src.shared.structure.entities.feedback import Feedback
@@ -27,7 +28,7 @@ class UserDynamodb(UserInterface):
             user.pop('SK')
 
             return user
-        except Exception as e:
+        except ClientError as e:
             raise e
         
     def create_feedback(self, feedback: Feedback) -> Dict:
@@ -43,7 +44,7 @@ class UserDynamodb(UserInterface):
             feedback['email'] = feedback.pop('SK')
 
             return feedback
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_last_feedback_id(self) -> int:
@@ -58,7 +59,7 @@ class UserDynamodb(UserInterface):
                 return int(response[0].get('PK'))
             else:
                 return 0
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def authenticate(self,
@@ -84,7 +85,7 @@ class UserDynamodb(UserInterface):
                 return item
             else:
                 return None
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_user_by_id(self, user_id: str) -> Dict or None:
@@ -98,7 +99,7 @@ class UserDynamodb(UserInterface):
                 item['user_id'] = item.pop('PK')
                 item.pop('SK')
             return item
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_all_users(self, exclusive_start_key: str = None, limit: int = None,
@@ -128,7 +129,7 @@ class UserDynamodb(UserInterface):
                     item['user_id'] = item.pop('PK')
                     item.pop('SK')
             return response
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_all_users_to_send_email(self) -> Optional[Dict]:
@@ -146,7 +147,7 @@ class UserDynamodb(UserInterface):
                     item['user_id'] = item.pop('PK')
                     item.pop('SK')
             return response
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_user_by_email(self, email) -> Dict or None:
@@ -160,7 +161,7 @@ class UserDynamodb(UserInterface):
                 response[0]['user_id'] = response[0].pop('PK')
                 response[0].pop('SK')
             return response[0] if response else None
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_user_by_cpf(self, cpf) -> Dict or None:
@@ -174,7 +175,7 @@ class UserDynamodb(UserInterface):
                 response[0]['user_id'] = response[0].pop('PK')
                 response[0].pop('SK')
             return response[0] if response else None
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def get_user_by_access_key(self, access_key) -> Dict or None:
@@ -188,7 +189,7 @@ class UserDynamodb(UserInterface):
                 response[0]['user_id'] = response[0].pop('PK')
                 response[0].pop('SK')
             return response[0] if response else None
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def update_user(self, user: User) -> Dict or None:
@@ -229,7 +230,7 @@ class UserDynamodb(UserInterface):
                 response['user_id'] = response.pop('PK')
                 response['created_at'] = int(response['created_at'])
             return response if response else None
-        except Exception as e:
+        except ClientError as e:
             raise e
 
     def create_suspension(self, suspension) -> Dict or None:
@@ -246,5 +247,5 @@ class UserDynamodb(UserInterface):
             suspension['suspension_id'] = suspension.pop('SK').split('#')[1]
 
             return suspension
-        except Exception as e:
+        except ClientError as e:
             raise e
