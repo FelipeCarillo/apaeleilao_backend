@@ -30,8 +30,9 @@ class UpdateUserUseCase:
         if not user:
             raise UserNotAuthenticated()
 
-        if checkpw(body.get("password").encode("utf-8"), user.get("password").encode("utf-8")):
-            raise InvalidParameter("Senha", "deve ser diferente da anterior")
+        if body.get("password"):
+            if checkpw(body.get("password").encode("utf-8"), user.get("password").encode("utf-8")):
+                raise InvalidParameter("Senha", "deve ser diferente da anterior")
 
         first_name = body.get("first_name", user.get("first_name")).title()
         last_name = body.get("last_name", user.get("last_name")).title()
