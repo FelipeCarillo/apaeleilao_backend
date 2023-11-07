@@ -70,13 +70,13 @@ class UserDynamodb(UserInterface):
             raise e
 
     def get_all_users(self, exclusive_start_key: str = None, limit: int = None,
-                      type_account: str = 'USER') -> Dict or None:
+                      type_account: str = 'USER', status_account: str = None) -> Dict or None:
         try:
             if not exclusive_start_key:
                 query = self.__dynamodb.query(
                     IndexName='SK_type_account-index',
                     KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) &
-                                           Key('type_account').eq(type_account),
+                                           Key('type_account').begins_with(type_account),
                     Limit=limit
                 )
             else:
@@ -84,6 +84,7 @@ class UserDynamodb(UserInterface):
                     IndexName='SK_type_account-index',
                     KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) &
                                            Key('type_account').eq(type_account),
+
                     ExclusiveStartKey=exclusive_start_key,
                     Limit=limit
                 )

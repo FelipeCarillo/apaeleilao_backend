@@ -210,7 +210,7 @@ class UserValidator(ABC):
     def validate_and_set_cpf(cpf: str) -> str or None:
         if cpf is None:
             raise MissingParameter("CPF")
-        if type(cpf) != str:
+        if isinstance(cpf, str) is False:
             raise InvalidParameter("cpf", "deve ser str")
         if not cpf.isnumeric():
             raise InvalidParameter("cpf", "deve ser numérico")
@@ -221,12 +221,14 @@ class UserValidator(ABC):
         numbers = [int(digit) for digit in cpf]
 
         sum_of_products = sum(a * b for a, b in zip(numbers[0:9], range(10, 1, -1)))
-        expected_digit = (sum_of_products * 10 % 11) % 10
+        expected_digit = 11 - (sum_of_products % 11)
+        expected_digit = expected_digit if expected_digit < 10 else 0
         if numbers[9] != expected_digit:
             raise InvalidParameter("CPF", "inválido")
 
         sum_of_products = sum(a * b for a, b in zip(numbers[0:10], range(11, 1, -1)))
-        expected_digit = (sum_of_products * 10 % 11) % 10
+        expected_digit = 11 - (sum_of_products % 11)
+        expected_digit = expected_digit if expected_digit < 10 else 0
         if numbers[10] != expected_digit:
             raise InvalidParameter("CPF", "inválido")
 
@@ -246,8 +248,12 @@ class UserValidator(ABC):
     def validate_and_set_phone(phone: str) -> str or None:
         if phone is None:
             raise MissingParameter("Celular")
-        if type(phone) != str:
+        if isinstance(phone, str) is False:
             raise InvalidParameter("phone", "deve ser str")
+        if not phone.isnumeric():
+            raise InvalidParameter("phone", "deve ser numérico")
+        if len(phone) != 11:
+            raise InvalidParameter("phone", "deve ter 11 digitos")
         return phone
 
     @staticmethod
