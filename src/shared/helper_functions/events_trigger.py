@@ -1,9 +1,8 @@
 import os
-from typing import Dict, Optional
-
 import json
 import boto3
 from datetime import datetime
+from typing import Dict, Optional
 
 
 class EventsTrigger:
@@ -34,7 +33,7 @@ class EventsTrigger:
                 Principal='events.amazonaws.com',
                 StatementId=rule_name,
                 SourceArn=f"arn:aws:events:{os.environ.get('AWS_REGION')}:"
-                          f"{os.environ.get('AWS_ACCOUNT_ID').replace('ID_', '')}:"
+                          f"{os.environ.get('AWS_ACCOUNT_ID')}:"
                           f"rule/{rule_name}_Apae_Leilao",
             )
 

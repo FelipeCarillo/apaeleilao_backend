@@ -2,7 +2,6 @@ from typing import Any, Dict
 
 from src.shared.errors.modules_errors import *
 from src.shared.helper_functions.email_function import Email
-from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.helper_functions.events_trigger import EventsTrigger
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.structure.interface.auction_interface import AuctionInterface
@@ -12,7 +11,6 @@ class StartAuctionUseCase:
 
     def __init__(self, auction_interface: AuctionInterface, user_interface: UserInterface):
         self.__email = Email()
-        self.__token = TokenAuthy()
         self.__trigger = EventsTrigger()
         self.__user_interface = user_interface
         self.__auction_interface = auction_interface
