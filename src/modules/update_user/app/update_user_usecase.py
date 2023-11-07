@@ -16,6 +16,7 @@ class UpdateUserUseCase:
     def __call__(self, auth: Dict, body: Dict):
         if not auth:
             raise MissingParameter('auth')
+
         if not auth.get('Authorization'):
             raise UserNotAuthenticated('Token de acesso não encontrado.')
 
