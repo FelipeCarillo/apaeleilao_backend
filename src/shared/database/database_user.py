@@ -225,7 +225,6 @@ class UserDynamodb(UserInterface):
                 },
                 ReturnValues='ALL_NEW'
             )['Attributes']
-            print(response)
             if response:
                 response.pop('SK')
                 response['user_id'] = response.pop('PK')
