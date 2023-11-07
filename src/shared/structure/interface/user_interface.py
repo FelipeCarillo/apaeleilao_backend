@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 
 from src.shared.structure.entities.suspension import Suspension
 from src.shared.structure.entities.user import User, UserModerator
@@ -16,7 +16,11 @@ class UserInterface(ABC):
 
     @abstractmethod
     def get_all_users(self, exclusive_start_key: str = None, limit: int = None,
-                      type_account: str = 'USER') -> Optional[Dict]:
+                      type_account: List[str] = 'USER') -> Optional[Dict]:
+        pass
+
+    @abstractmethod
+    def get_all_users_to_send_email(self) -> Optional[Dict]:
         pass
 
     @abstractmethod

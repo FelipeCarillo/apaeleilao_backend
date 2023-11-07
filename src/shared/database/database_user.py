@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List, Optional
 from boto3.dynamodb.conditions import Key
 
 from src.shared.database.database import Database
@@ -70,13 +70,15 @@ class UserDynamodb(UserInterface):
             raise e
 
     def get_all_users(self, exclusive_start_key: str = None, limit: int = None,
-                      type_account: str = 'USER', status_account: str = None) -> Dict or None:
+                      type_account=None, status_account: str = None) -> Dict or None:
         try:
             if not exclusive_start_key:
                 query = self.__dynamodb.query(
-                    IndexName='SK_type_account-index',
-                    KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) &
-                                           Key('type_account').begins_with(type_account),
+                    IndexName='SK-index',
+                    KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value),
+                    FilterExpression=Key('type_account').is_in(type_account) &
+                                     Key('status_account').eq(status_account) if status_account else
+                                     Key('type_account').is_in(type_account),
                     Limit=limit
                 )
             else:
@@ -88,6 +90,24 @@ class UserDynamodb(UserInterface):
                     ExclusiveStartKey=exclusive_start_key,
                     Limit=limit
                 )
+            response = query.get('Items', None)
+            if response:
+                for item in response:
+                    item['user_id'] = item.pop('PK')
+                    item.pop('SK')
+            return response
+        except Exception as e:
+            raise e
+
+    def get_all_users_to_send_email(self) -> Optional[Dict]:
+        try:
+            query = self.__dynamodb.query(
+                IndexName='SK_type_account-index',
+                KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) &
+                                       Key('type_account').eq('USER'),
+                FilterExpression=Key('status_account').eq('ACTIVE'),
+                ProjectionExpression='email',
+            )
             response = query.get('Items', None)
             if response:
                 for item in response:
@@ -170,11 +190,12 @@ class UserDynamodb(UserInterface):
                     ':verification_email_code': user.verification_email_code,
                     ':verification_email_code_expires_at': user.verification_email_code_expires_at,
                 },
-                ReturnValues='ALL_NEW'
+                ReturnValues='UPDATED_NEW'
             )['Attributes']
             if response:
                 response.pop('SK')
                 response['user_id'] = response.pop('PK')
+                response['created_at'] = int(response['created_at'])
             return response if response else None
         except Exception as e:
             raise e

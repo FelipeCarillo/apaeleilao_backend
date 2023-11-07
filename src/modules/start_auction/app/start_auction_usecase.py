@@ -28,9 +28,9 @@ class StartAuctionUseCase:
         if not auction:
             raise DataNotFound('Leilão')
 
-        users = self.__user_interface.get_all_users()
+        users = self.__user_interface.get_all_users_to_send_email()
 
-        to_email = [user.get("email") for user in users]
+        to_email = [email for email in users]
 
         if body.get("send_before"):
             email_body = f"""

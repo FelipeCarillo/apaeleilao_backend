@@ -185,8 +185,9 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_last_bid_id(self) -> Optional[int]:
         try:
-            query = self.__dynamodb.scan(
-                FilterExpression=Attr('SK').begins_with(AUCTION_TABLE_ENTITY.BID.value),
+            query = self.__dynamodb.query(
+                IndexName="SK_created_at-index",
+                KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.BID.value),
                 Limit=1
             )
             response = query.get('Items', None)
