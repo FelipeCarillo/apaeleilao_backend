@@ -3,12 +3,12 @@ import uuid
 from typing import Dict
 from bcrypt import hashpw, gensalt
 
+from src.shared.errors.modules_errors import *
 from src.shared.structure.entities.user import User
 from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM, TYPE_ACCOUNT_USER_ENUM
-from src.shared.errors.modules_errors import DataAlreadyUsed, MissingParameter
 
 
 class CreateUserUseCase:
@@ -23,6 +23,9 @@ class CreateUserUseCase:
 
         if not body.get('cpf'):
             raise MissingParameter('CPF')
+
+        if not body.get('accepted_terms'):
+            raise InvalidParameter('Termos de uso', 'não aceitos')
 
         if self.__user_interface.get_user_by_email(body['email']):
             raise DataAlreadyUsed('Email')

@@ -34,7 +34,6 @@ class User(ABC):
                  verification_email_code: str = None,
                  verification_email_code_expires_at: int = None,
                  ):
-
         self.user_id = UserValidator.validate_and_set_user_id(user_id)
         self.first_name = UserValidator.validate_and_set_name(first_name)
         self.last_name = UserValidator.validate_and_set_name(last_name)
@@ -263,7 +262,7 @@ class UserValidator(ABC):
     def validate_and_set_accepted_terms(accepted_terms: bool) -> bool or None:
         if accepted_terms is None:
             return None
-        if type(accepted_terms) != bool:
+        if isinstance(accepted_terms, bool) is False:
             raise InvalidParameter("accepted_terms", "deve ser bool")
         return accepted_terms
 
