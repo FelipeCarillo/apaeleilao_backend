@@ -70,3 +70,17 @@ class LambdaEventsStack(Construct):
             self.start_auction,
             self.end_auction,
         )
+
+    @property
+    def functions_need_events_permission(self) -> Tuple[_lambda.Function] or None:
+        return (
+            self.start_auction,
+            self.end_auction
+        )
+
+    @property
+    def functions_need_lambda_permission(self) -> Tuple[_lambda.Function] or None:
+        return (
+            self.start_auction,
+            self.end_auction
+        )

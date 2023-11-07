@@ -1,13 +1,31 @@
 import os
 from aws_cdk import (
     aws_apigateway as apigw,
-    Stack,
+    Stack, aws_iam as iam
 )
 from constructs import Construct
 
 from .lambda_stack import LambdaStack
 from .dynamodb_stack import DynamoDBStack
 from .lambda_events_stack import LambdaEventsStack
+
+
+def add_lambda_policies(lambda_stack):
+    for lambda_function in lambda_stack.functions_need_events_permission:
+        lambda_function.add_to_role_policy(
+            statement=iam.PolicyStatement(
+                actions=["events:*"],
+                resources=["*"]
+            )
+        )
+
+    for lambda_function in lambda_stack.functions_need_lambda_permission:
+        lambda_function.add_to_role_policy(
+            statement=iam.PolicyStatement(
+                actions=["lambda:*"],
+                resources=["*"]
+            )
+        )
 
 
 class IACStack(Stack):
@@ -71,10 +89,12 @@ class IACStack(Stack):
 
         self.lambda_events_function = LambdaEventsStack(self, environment_variables=ENVIRONMENT_VARIABLES)
         self.add_lambda_database_permissions(self.lambda_events_function)
+        add_lambda_policies(self.lambda_events_function)
 
         self.lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,
                                            environment_variables=ENVIRONMENT_VARIABLES)
         self.add_lambda_database_permissions(self.lambda_function)
+        add_lambda_policies(self.lambda_function)
 
     def add_lambda_database_permissions(self, lambda_stack):
         for lambda_function in lambda_stack.functions_need_user_table_permission:

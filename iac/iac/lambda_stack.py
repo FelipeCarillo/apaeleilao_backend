@@ -178,3 +178,15 @@ class LambdaStack(Construct):
             self.get_bids_by_auction,
             self.get_all_auctions_menu,
         )
+
+    @property
+    def functions_need_events_permission(self) -> Tuple[_lambda.Function] or None:
+        return (
+            self.create_auction,
+        )
+
+    @property
+    def functions_need_lambda_permission(self) -> Tuple[_lambda.Function] or None:
+        return (
+            self.create_auction,
+            )
