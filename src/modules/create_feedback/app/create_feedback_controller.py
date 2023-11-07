@@ -3,8 +3,7 @@ from typing import Dict
 from .create_feedback_usecase import CreateFeedbackUseCase
 
 from src.shared.https_codes.https_code import Created, BadRequest, InternalServerError, ParameterError, Unauthorized
-from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, DataAlreadyUsed, \
-    UserNotAuthenticated
+from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
 
 
 class CreateFeedbackController:
@@ -19,12 +18,9 @@ class CreateFeedbackController:
             if not request.get('body'):
                 raise MissingParameter('body')
 
-            usecase = self.__usecase(auth=request.get('auth'), body=request.get('body'))
+            self.__usecase(auth=request.get('auth'), body=request.get('body'))
 
-            return Created(usecase, message='Feedback enviado com sucesso. Obrigado!')
-
-        except DataAlreadyUsed as e:
-            return ParameterError(message=e.message)
+            return Created(message='Feedback enviado com sucesso. Obrigado!')
 
         except InvalidRequest as e:
             return BadRequest(message=e.message)

@@ -16,6 +16,7 @@ class CreateFeedbackUseCase:
 
     def __call__(self, auth: Dict, body: Dict) -> None:
 
+        user = None
         if auth.get("Authorization"):
             decoded_token = self.__token.decode_token(body["Authorization"])
             if not decoded_token:
@@ -36,10 +37,10 @@ class CreateFeedbackUseCase:
         created_at = TimeManipulation.get_current_time()
 
         feedback = Feedback(
-            feedback_id = feedback_id,
-            email = email,
-            created_at= created_at,
-            content = body.get('content')
+            feedback_id=str(feedback_id),
+            email=email,
+            created_at=created_at,
+            content=body.get('content')
         )
 
         self.__user_interface.create_feedback(feedback)
