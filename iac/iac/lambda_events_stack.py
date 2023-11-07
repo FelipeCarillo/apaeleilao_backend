@@ -18,7 +18,7 @@ class LambdaEventsStack(Construct):
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
             handler=f"app.{function_name}_presenter.lambda_handler",
-            layers=[self.shared_layer, self.mercadopago],
+            layers=[self.shared_layer, self.mercadopago, self.urllib3],
             timeout=Duration.seconds(15),
             memory_size=512,
         )
@@ -38,6 +38,12 @@ class LambdaEventsStack(Construct):
         self.mercadopago = _lambda.LayerVersion(
             self, "MercadoPago_Layer",
             code=_lambda.Code.from_asset("./mercadopago_layer"),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
+        )
+
+        self.urllib3 = _lambda.LayerVersion(
+            self, "Urllib3_Layer",
+            code=_lambda.Code.from_asset("./urllib3_layer"),
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
         )
 
