@@ -5,9 +5,11 @@ import datetime
 class TimeManipulation:
     def __init__(self, time_now: int = None, datetime_now: str = None):
         if time_now:
-            self.__time_now = time_now if time_now else self.get_current_time()
-        else:
+            self.__time_now = time_now
+        if datetime_now:
             self.__time_now = int(datetime.datetime.strptime(datetime_now, '%Y-%m-%d %H:%M:%S').timestamp())
+        if not time_now and not datetime_now:
+            self.__time_now = self.get_current_time()
 
     @staticmethod
     def get_current_time() -> int:

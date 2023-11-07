@@ -13,10 +13,10 @@ from src.shared.errors.modules_errors import DataAlreadyUsed, MissingParameter, 
 
 class CreateUserUseCase:
     def __init__(self, user_interface: UserInterface, auction_interface: AuctionInterface):
-        self.__user_interface = user_interface
-        self.__auction_interface = auction_interface
         self.__token = TokenAuthy()
         self.__trigger = EventsTrigger()
+        self.__user_interface = user_interface
+        self.__auction_interface = auction_interface
 
     def __call__(self, auth: Dict, body: Dict) -> None:
 
@@ -34,7 +34,7 @@ class CreateUserUseCase:
         if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) not in AUTHORIZED_TYPE_ACCOUNT:
             raise UserNotAuthenticated()
 
-        if not body.get('tittle'):
+        if not body.get('title'):
             raise MissingParameter('Título')
 
         if not body.get('start_date'):
