@@ -79,6 +79,8 @@ class DynamoDBStack(Construct):
 
         self.__user_table = create_table(self, "User_Apae_Leilao", "PK", "SK",
                                          dynamodb.AttributeType.STRING)
+        create_global_secondary_index(self.__user_table, "SK_created_at-index", "SK",
+                                        "created_at", dynamodb.AttributeType.NUMBER)
         create_global_secondary_index(self.__user_table, "SK_type_account-index", "SK",
                                       "type_account", dynamodb.AttributeType.STRING)
         create_global_secondary_index(self.__user_table, "email-index", "email")

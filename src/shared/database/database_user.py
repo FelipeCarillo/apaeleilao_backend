@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 from boto3.dynamodb.conditions import Key
 
 from src.shared.database.database import Database
@@ -34,16 +34,30 @@ class UserDynamodb(UserInterface):
         try:
             feedback = feedback.to_dict()
             feedback['PK'] = feedback.pop('feedback_id')
-            feedback['SK'] = feedback.pop('email')
+            feedback['SK'] = USER_TABLE_ENTITY.FEEDBACK.value
 
             self.__dynamodb.put_item(
                 Item=feedback
             )
 
-            feedback['feedback_id'] = feedback.pop('PK')
             feedback['email'] = feedback.pop('SK')
 
             return feedback
+        except Exception as e:
+            raise e
+
+    def get_last_feedback_id(self) -> int:
+        try:
+            query = self.__dynamodb.query(
+                IndexName='SK_created_at-index',
+                KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.FEEDBACK.value),
+                Limit=1
+            )
+            response = query.get('Items', None)
+            if response:
+                return int(response[0].get('PK'))
+            else:
+                return 0
         except Exception as e:
             raise e
 
