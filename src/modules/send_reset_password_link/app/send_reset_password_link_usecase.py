@@ -26,7 +26,7 @@ class SendResetPasswordLinkUseCase:
         if not user:
             return body.get('email')
 
-        code_expires_at = TimeManipulation().plus_minute(self.TIME_EXPIRE)
+        code_expires_at = TimeManipulation().plus_minute(self.TIME_EXPIRE) + 3 * 3600
         datetime_expire = datetime.datetime.fromtimestamp(code_expires_at).strftime(
             "%d/%m/%Y %H:%M:%S")
 
