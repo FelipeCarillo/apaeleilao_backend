@@ -151,9 +151,9 @@ class Auction(ABC):
     def validate_and_set_images(images: List[Optional[Dict]]) -> List[Optional[Dict]]:
         if images is None:
             raise MissingParameter("images")
-        if len(images) > 0:
+        if len(images) == 0:
             return []
-        if isinstance(images, list):
+        if isinstance(images, list) is False:
             raise InvalidParameter("images", "deve ser uma lista")
         for image in images:
             if not isinstance(image, dict):
