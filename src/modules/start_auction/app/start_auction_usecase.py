@@ -39,7 +39,7 @@ class StartAuctionUseCase:
             end_date=int(auction['end_date']),
             start_amount=float(auction['start_amount']),
             current_amount=float(auction['current_amount']),
-            images=auction['images'],
+            images=auction['images'] if auction['images'] else [],
             status_auction=STATUS_AUCTION_ENUM.OPEN.value,
             created_at=int(auction['created_at'])
         )
