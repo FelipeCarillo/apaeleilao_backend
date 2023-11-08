@@ -141,6 +141,8 @@ class UserDynamodb(UserInterface):
                 ProjectionExpression='email',
             )
             response = query.get('Items', None)
+            if response:
+                response = [email['email'] for email in response]
             return response
         except ClientError as e:
             raise e
