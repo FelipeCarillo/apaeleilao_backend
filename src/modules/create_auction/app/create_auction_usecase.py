@@ -94,20 +94,8 @@ class CreateUserUseCase:
             }
         }
 
-        self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_1",
+        self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}",
                                       lambda_function=f"start_auction",
-                                      payload=payload,
-                                      date=auction.start_date)
-
-        payload = {
-            'body': {
-                'auction_id': auction.auction_id,
-                'send_before': 0
-            }
-        }
-
-        self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_0",
-                                      lambda_function="start_auction",
                                       payload=payload,
                                       date=notification_date)
 
