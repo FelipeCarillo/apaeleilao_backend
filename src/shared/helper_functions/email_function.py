@@ -17,16 +17,15 @@ default_footer = """
 class Email:
     def __init__(self):
         self.__email_body = None
-        self.__server = None
         self.__email = os.environ.get('EMAIL_SENDER')
         self.__password = os.environ.get('EMAIL_PASSWORD')
         self.__host = os.environ.get('EMAIL_HOST')
         self.__port = int(os.environ.get('EMAIL_PORT'))
 
     def __connect(self):
-        server = smtplib.SMTP(self.__host, self.__port)
-        server.starttls()
-        self.__server = server.login(self.__email, self.__password)
+        self.__server = smtplib.SMTP(self.__host, self.__port)
+        self.__server.starttls()
+        self.__server.login(self.__email, self.__password)
 
     def __disconnect(self):
         self.__server.quit()
