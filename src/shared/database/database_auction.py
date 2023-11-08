@@ -162,7 +162,7 @@ class AuctionDynamodb(AuctionInterface):
                     ':images': auction_dict.get('images'),
                     ':status_auction': auction_dict.get('status_auction').value
                 },
-                ReturnValues='UPDATED_NEW'
+                ReturnValues='ALL_NEW'
             )
 
             response['Attributes'].pop('SK')

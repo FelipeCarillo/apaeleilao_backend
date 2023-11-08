@@ -94,7 +94,7 @@ class CreateUserUseCase:
             }
         }
 
-        self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_0",
+        self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_1",
                                       lambda_function=f"start_auction",
                                       payload=payload,
                                       date=auction.start_date)
@@ -106,7 +106,7 @@ class CreateUserUseCase:
             }
         }
 
-        self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_1",
+        self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_0",
                                       lambda_function="start_auction",
                                       payload=payload,
                                       date=notification_date)
