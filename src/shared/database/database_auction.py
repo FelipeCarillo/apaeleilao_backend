@@ -111,11 +111,11 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_auction_by_id(self, auction_id: str) -> Dict or None:
         try:
-            query = self.__dynamodb.query(
-                KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
-            ).get('Items', None)
-
-            item = query[0] if query else None
+            query = self.__dynamodb.get_item(
+                KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').begins_with(AUCTION_TABLE_ENTITY.AUCTION.value),
+            ).get('Item', None)
+            print(query)
+            item = query if query else None
             if item:
                 item.pop('SK')
                 item['auction_id'] = item.pop('PK')
