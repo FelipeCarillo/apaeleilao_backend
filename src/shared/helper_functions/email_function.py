@@ -34,7 +34,7 @@ class Email:
         try:
             message = MIMEMultipart()
             message['From'] = self.__email
-            message['To'] = to
+            message['To'] = ", ".join(to) if isinstance(to, list) else f"{to}"
             message['Subject'] = subject
             message.attach(MIMEText(self.email_body, 'html'))
             self.__connect()
