@@ -16,16 +16,17 @@ default_footer = """
 
 class Email:
     def __init__(self):
-        self.email_body = None
+        self.__email_body = None
+        self.__server = None
         self.__email = os.environ.get('EMAIL_SENDER')
         self.__password = os.environ.get('EMAIL_PASSWORD')
         self.__host = os.environ.get('EMAIL_HOST')
         self.__port = int(os.environ.get('EMAIL_PORT'))
 
     def __connect(self):
-        self.__server = smtplib.SMTP(self.__host, self.__port)
-        self.__server.starttls()
-        self.__server.login(self.__email, self.__password)
+        server = smtplib.SMTP(self.__host, self.__port)
+        server.starttls()
+        self.__server = server.login(self.__email, self.__password)
 
     def __disconnect(self):
         self.__server.quit()
@@ -34,9 +35,9 @@ class Email:
         try:
             message = MIMEMultipart()
             message['From'] = self.__email
-            message['To'] = ", ".join(to) if isinstance(to, list) else f"{to}"
+            message['To'] = ", ".join(to) if isinstance(to, list) else to
             message['Subject'] = subject
-            message.attach(MIMEText(self.email_body, 'html'))
+            message.attach(MIMEText(self.__email_body, 'html'))
             self.__connect()
             self.__server.sendmail(self.__email, to, message.as_string())
             self.__disconnect()
@@ -47,7 +48,7 @@ class Email:
 
     def set_email_template(self, title, content: str,
                            footer: str = default_footer):
-        self.email_body = f"""
+        self.__email_body = f"""
         <html lang="pt-br" charset="UTF-8">
         <head>
         </head>
