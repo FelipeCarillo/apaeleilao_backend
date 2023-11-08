@@ -89,6 +89,8 @@ class DynamoDBStack(Construct):
 
         self.__auction_table = create_table(self, "Auction_Apae_Leilao", "PK", "SK",
                                             dynamodb.AttributeType.STRING)
+        create_global_secondary_index(self.__auction_table, "SK_PK-index", "SK", "PK",
+                                      dynamodb.AttributeType.STRING)
         create_global_secondary_index(self.__auction_table, "SK_created_at-index", "SK",
                                       "created_at", dynamodb.AttributeType.NUMBER)
         create_global_secondary_index(self.__auction_table, "SK-index", "SK")
