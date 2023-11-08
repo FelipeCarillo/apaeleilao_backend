@@ -112,7 +112,9 @@ class AuctionDynamodb(AuctionInterface):
     def get_auction_by_id(self, auction_id: str) -> Dict or None:
         try:
             query = self.__dynamodb.get_item(
-                KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').begins_with(AUCTION_TABLE_ENTITY.AUCTION.value),
+                Key={'PK': auction_id,
+                     'SK': AUCTION_TABLE_ENTITY.AUCTION.value
+                     }
             ).get('Item', None)
             print(query)
             item = query if query else None
@@ -247,7 +249,8 @@ class AuctionDynamodb(AuctionInterface):
     def get_payment_by_auction_id(self, auction_id: str) -> Dict or None:
         try:
             query = self.__dynamodb.query(
-                KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').begins_with(AUCTION_TABLE_ENTITY.PAYMENT.value),
+                KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').begins_with(
+                    AUCTION_TABLE_ENTITY.PAYMENT.value),
             )
             response = query.get('Items', None)
             if response:
