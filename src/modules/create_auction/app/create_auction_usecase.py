@@ -46,13 +46,22 @@ class CreateUserUseCase:
         if not body.get('start_amount'):
             raise MissingParameter('Lance inicial')
         if body.get('start_amount') < 0:
-            raise InvalidParameter('Lance inicial', 'não pode ser menor que zero.')
+            raise InvalidParameter('Lance inicial', 'não pode ser menor que zero')
 
         if body.get('start_date') < TimeManipulation.get_current_time():
-            raise InvalidParameter('Data de início', 'não pode ser menor que a data atual.')
+            raise InvalidParameter('Data de início', 'não pode ser menor que a data atual')
+
+        if body.get('end_date') < TimeManipulation.get_current_time():
+            raise InvalidParameter('Data de encerramento', 'não pode ser menor que a data atual')
+
+        if body.get('start_date') == body.get('end_date'):
+            raise InvalidParameter('Data de início e encerramento', 'não podem ser iguais')
+
+        if body.get('start_date') < TimeManipulation().plus_minute(2):
+            raise InvalidParameter('Data de início', 'deve ser pelo menos 2 minutos maior que a data atual')
 
         if body.get('start_date') > body.get('end_date'):
-            raise InvalidParameter('Data de início', 'não pode ser maior que a data de encerramento.')
+            raise InvalidParameter('Data de início', 'não pode ser maior que a data de encerramento')
 
         last_auction_id = self.__auction_interface.get_last_auction_id()
         auction_id = last_auction_id + 1 if last_auction_id else 1
