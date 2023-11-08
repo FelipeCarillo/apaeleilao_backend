@@ -1,5 +1,4 @@
 import os
-import datetime
 import mercadopago
 
 from src.shared.helper_functions.time_manipulation import TimeManipulation

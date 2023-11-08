@@ -160,7 +160,7 @@ class AuctionDynamodb(AuctionInterface):
                     ':start_amount': Decimal(str(auction_dict.get('start_amount'))),
                     ':current_amount': Decimal(str(auction_dict.get('current_amount'))),
                     ':images': auction_dict.get('images'),
-                    ':status_auction': auction_dict.get('status_auction').value
+                    ':status_auction': auction_dict.get('status_auction')
                 },
                 ReturnValues='ALL_NEW'
             )
@@ -180,7 +180,7 @@ class AuctionDynamodb(AuctionInterface):
                      'SK': AUCTION_TABLE_ENTITY.AUCTION.value},
                 UpdateExpression='SET current_amount = :current_amount',
                 ExpressionAttributeValues={
-                    ':current_amount': Decimal(str(current_amount))
+                    ':current_amount': Decimal(str(round(current_amount,2)))
                 },
                 ReturnValues='UPDATED_NEW'
             )
@@ -190,8 +190,9 @@ class AuctionDynamodb(AuctionInterface):
     def get_last_bid_id(self) -> Optional[int]:
         try:
             query = self.__dynamodb.query(
-                IndexName="SK_created_at-index",
+                IndexName="SK_PK-index",
                 KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.BID.value),
+                ScanIndexForward=False,
                 Limit=1
             )
             response = query.get('Items', None)
@@ -225,7 +226,12 @@ class AuctionDynamodb(AuctionInterface):
                 "PK": payment.auction_id,
                 "SK": AUCTION_TABLE_ENTITY.PAYMENT.value + "#" + payment.payment_id,
                 "user_id": payment.user_id,
+                "status_payment": payment.status_payment.value,
+                "amount": payment.amount,
+                "date_payment": payment.date_payment,
+                "payment_expires_at": payment.payment_expires_at,
                 "service": payment.payment_service.value,
+                "created_at": payment.created_at,
             }
             self.__dynamodb.put_item(Item=payload)
             return payload

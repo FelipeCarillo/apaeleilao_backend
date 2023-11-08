@@ -49,14 +49,9 @@ class GetAuctionUseCase:
             images=auction.get('images'),
             status_auction=auction.get('status_auction'),
             created_at=auction.get('created_at')
-        )
-        auction.check_time()
+        ).to_dict()
 
-        bid = self.__auction_interface.get_all_bids_by_auction_id(auction_id=auction.auction_id)
-        amount = bid[0].get('amount') if bid else auction.start_amount
-        auction.current_amount = amount if amount > auction.current_amount else auction.current_amount
-
-        if auction.status_auction.value != body.get('status_auction'):
-            self.__auction_interface.update_auction(auction=auction)
+        bids = self.__auction_interface.get_all_bids_by_auction_id(auction_id=auction['auction_id'])
+        auction['bids'] = bids if bids else []
 
         return auction.to_dict()

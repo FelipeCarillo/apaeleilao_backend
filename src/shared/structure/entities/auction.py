@@ -66,18 +66,6 @@ class Auction(ABC):
             "created_at": self.created_at
         }
 
-    def check_time(self):
-        """
-        Check if the auction is open or closed
-        """
-        time = TimeManipulation.get_current_time()
-        if self.status_auction == STATUS_AUCTION_ENUM.OPEN:
-            if self.end_date <= time:
-                self.status_auction = STATUS_AUCTION_ENUM.CLOSED
-        if self.status_auction == STATUS_AUCTION_ENUM.PENDING:
-            if self.start_date <= time:
-                self.status_auction = STATUS_AUCTION_ENUM.OPEN
-
     @staticmethod
     def validate_and_set_auction_id(auction_id: str) -> str:
         if auction_id is None:

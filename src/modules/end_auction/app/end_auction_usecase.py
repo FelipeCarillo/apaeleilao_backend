@@ -1,6 +1,8 @@
+import time
 from typing import Dict
 
 from src.shared.errors.modules_errors import *
+from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.structure.entities.payment import Payment
 from src.shared.structure.entities.auction import Auction
 from src.shared.helper_functions.email_function import Email
@@ -99,5 +101,7 @@ class EndAuctionUseCase:
             payment_created = self.__payment.create_payment()
 
             payment.payment_id = payment_created.get('response').get('id')
-            payment.payment_expires_at = payment_created.get('response').get('date_of_expiration')
+            date_of_expiration = payment_created.get('response').get('date_of_expiration').replace('T', ' ').replace('.000-04:00', '')
+            date_of_expiration = TimeManipulation(datetime_now=date_of_expiration).get_time()
+            payment.payment_expires_at = date_of_expiration
             self.__auction_interface.create_payment(payment=payment)
