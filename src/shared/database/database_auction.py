@@ -116,7 +116,7 @@ class AuctionDynamodb(AuctionInterface):
                      'SK': AUCTION_TABLE_ENTITY.AUCTION.value
                      }
             ).get('Item', None)
-            print(query)
+
             item = query if query else None
             if item:
                 item.pop('SK')

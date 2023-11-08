@@ -136,16 +136,11 @@ class UserDynamodb(UserInterface):
         try:
             query = self.__dynamodb.query(
                 IndexName='SK_type_account-index',
-                KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) &
-                                       Key('type_account').eq('USER'),
+                KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) & Key('type_account').eq('USER'),
                 FilterExpression=Key('status_account').eq('ACTIVE'),
                 ProjectionExpression='email',
             )
             response = query.get('Items', None)
-            if response:
-                for item in response:
-                    item['user_id'] = item.pop('PK')
-                    item.pop('SK')
             return response
         except ClientError as e:
             raise e
