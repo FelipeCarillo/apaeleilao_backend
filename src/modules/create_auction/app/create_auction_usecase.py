@@ -90,7 +90,7 @@ class CreateUserUseCase:
         payload = {
             'body': {
                 'auction_id': auction.auction_id,
-                'send_before': True
+                'send_before': 1
             }
         }
 
@@ -102,7 +102,7 @@ class CreateUserUseCase:
         payload = {
             'body': {
                 'auction_id': auction.auction_id,
-                'send_before': False
+                'send_before': 0
             }
         }
 

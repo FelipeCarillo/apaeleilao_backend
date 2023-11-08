@@ -34,7 +34,7 @@ class StartAuctionUseCase:
         else:
             to_email = [email for email in users]
 
-        if body.get("send_before"):
+        if body.get("send_before") == 1:
             email_body = f"""
             <h1>Leilão<span style="font-weight: bold;">{auction['title']} LOTE[{auction['auction_id']}]</span> Iniciará em 10 minutos!</h1><p>O leilão está prestes a começar.</p>
             <p>Para mais informações acesse o site.</p>
