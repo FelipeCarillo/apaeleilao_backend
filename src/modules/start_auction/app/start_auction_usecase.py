@@ -3,6 +3,7 @@ from typing import Any, Dict
 from src.shared.errors.modules_errors import *
 from src.shared.helper_functions.email_function import Email
 from src.shared.helper_functions.events_trigger import EventsTrigger
+from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.structure.entities.auction import Auction
 from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
 from src.shared.structure.interface.user_interface import UserInterface
@@ -51,6 +52,9 @@ class StartAuctionUseCase:
             to_email = [email for email in users]
 
         if body.get("send_before"):
+
+            minutes_before =int(auction.start_date - TimeManipulation.get_current_time() / 60)
+
             email_body = f"""
             <h1>Leilão<span style="font-weight: bold;">{auction.title} LOTE[{auction.auction_id}]</span> Iniciará em 10 minutos!</h1><p>O leilão está prestes a começar.</p>
             <p>Para mais informações acesse o site.</p>
@@ -58,19 +62,9 @@ class StartAuctionUseCase:
             self.__email.set_email_template(f"Leilão {auction.title} Iniciará em 10 minutos!",
                                             email_body)
             self.__email.send_email(to=to_email,
-                                    subject="Leilão iniciará em 10 minutos")
+                                    subject=f"Leilão iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!")
 
-            self.__trigger.delete_rule(rule_name=f"start_auction_{auction.auction_id}", lambda_function=f"start_auction")
-
-            payload = {
-                "body": {
-                    "auction_id": auction.auction_id
-                }
-            }
-            self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}",
-                                          lambda_function=f"start_auction",
-                                          payload=payload,
-                                          date=auction.start_date)
+            self.__trigger.delete_rule(rule_name=f"start_auction_{auction.auction_id}_1", lambda_function=f"start_auction")
 
         else:
             self.__auction_interface.update_auction(auction)
