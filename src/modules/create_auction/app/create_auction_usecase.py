@@ -95,7 +95,8 @@ class CreateUserUseCase:
         self.__auction_interface.create_auction(auction)
 
         notification_date = TimeManipulation(time_now=auction.start_date).plus_minute(-10)
-        if auction.start_date > TimeManipulation.get_current_time() > notification_date:
+        print(TimeManipulation.get_current_time(), notification_date)
+        if TimeManipulation.get_current_time() > notification_date:
             payload = {
                 'body': {
                     'auction_id': auction.auction_id,
