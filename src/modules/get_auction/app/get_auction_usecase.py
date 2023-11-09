@@ -42,13 +42,13 @@ class GetAuctionUseCase:
             created_by=auction.get('created_by'),
             title=auction.get('title'),
             description=auction.get('description'),
-            start_date=auction.get('start_date'),
-            end_date=auction.get('end_date'),
-            start_amount=auction.get('start_amount'),
-            current_amount=auction.get('current_amount'),
+            start_date=int(auction.get('start_date')),
+            end_date=int(auction.get('end_date')),
+            start_amount=float(auction.get('start_amount')),
+            current_amount=float(auction.get('current_amount')),
             images=auction.get('images'),
             status_auction=auction.get('status_auction'),
-            created_at=auction.get('created_at')
+            created_at=int(auction.get('created_at'))
         ).to_dict()
 
         bids = self.__auction_interface.get_all_bids_by_auction_id(auction_id=auction['auction_id'])
