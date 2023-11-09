@@ -1,8 +1,8 @@
 import os
 import mercadopago
 
-from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.structure.entities.payment import Payment
+from src.shared.helper_functions.time_manipulation import TimeManipulation
 
 
 class MercadoPago:

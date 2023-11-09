@@ -1,6 +1,6 @@
 from abc import ABC
-from typing import Dict, Optional
 from decimal import Decimal
+from typing import Dict, Optional
 
 from src.shared.errors.modules_errors import InvalidParameter
 from src.shared.structure.enums.auction_enum import STATUS_AUCTION_PAYMENT_ENUM, PAYMENT_SERVICES
