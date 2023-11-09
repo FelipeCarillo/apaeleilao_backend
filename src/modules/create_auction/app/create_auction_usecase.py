@@ -57,8 +57,8 @@ class CreateUserUseCase:
         if body.get('start_date') == body.get('end_date'):
             raise InvalidParameter('Data de início e encerramento', 'não podem ser iguais')
 
-        if body.get('start_date') < TimeManipulation().plus_minute(2):
-            raise InvalidParameter('Data de início', 'deve ser pelo menos 2 minutos maior que a data atual')
+        if body.get('start_date') < TimeManipulation().plus_minute(4):
+            raise InvalidParameter('Data de início', 'deve ser pelo menos 5 minutos maior que a data atual')
 
         if body.get('start_date') > body.get('end_date'):
             raise InvalidParameter('Data de início', 'não pode ser maior que a data de encerramento')
@@ -96,7 +96,7 @@ class CreateUserUseCase:
 
         notification_date = TimeManipulation(time_now=auction.start_date).plus_minute(-10)
         if TimeManipulation.get_current_time() > notification_date:
-            notification_date = TimeManipulation().plus_minute(1)
+            notification_date = TimeManipulation().plus_minute(2)
 
         payload = {
             'body': {
