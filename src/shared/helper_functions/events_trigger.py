@@ -84,6 +84,16 @@ class EventsTrigger:
         except Exception as e:
             raise e
 
+    def invoke_lambda(self, lambda_function: str, payload: Dict):
+        try:
+            self.__lambda.invoke(
+                FunctionName=lambda_function,
+                InvocationType='Event',
+                Payload=json.dumps(payload)
+            )
+        except Exception as e:
+            raise e
+
     @staticmethod
     def __format_date(date: int) -> str:
         date = datetime.fromtimestamp(date)

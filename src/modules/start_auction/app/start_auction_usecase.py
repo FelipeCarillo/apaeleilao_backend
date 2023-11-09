@@ -53,18 +53,19 @@ class StartAuctionUseCase:
 
         if body.get("send_before"):
 
-            minutes_before =int(auction.start_date - TimeManipulation.get_current_time() / 60)
+            minutes_before = int(auction.start_date - TimeManipulation.get_current_time() / 60)
 
             email_body = f"""
             <h1>Leilão<span style="font-weight: bold;">{auction.title} LOTE[{auction.auction_id}]</span> Iniciará em 10 minutos!</h1><p>O leilão está prestes a começar.</p>
             <p>Para mais informações acesse o site.</p>
             """
-            self.__email.set_email_template(f"Leilão {auction.title} Iniciará em 10 minutos!",
+            self.__email.set_email_template(f"Leilão {auction.title} Iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!",
                                             email_body)
             self.__email.send_email(to=to_email,
                                     subject=f"Leilão iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!")
 
-            self.__trigger.delete_rule(rule_name=f"start_auction_{auction.auction_id}_1", lambda_function=f"start_auction")
+            self.__trigger.delete_rule(rule_name=f"start_auction_{auction.auction_id}_1",
+                                       lambda_function=f"start_auction")
 
         else:
             self.__auction_interface.update_auction(auction)
@@ -78,7 +79,8 @@ class StartAuctionUseCase:
             self.__email.send_email(to=to_email,
                                     subject="Leilão começou!")
 
-            self.__trigger.delete_rule(rule_name=f"start_auction_{auction.auction_id}", lambda_function=f"start_auction")
+            self.__trigger.delete_rule(rule_name=f"start_auction_{auction.auction_id}",
+                                       lambda_function=f"start_auction")
 
             payload = {
                 "body": {
