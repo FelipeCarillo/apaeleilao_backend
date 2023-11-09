@@ -54,4 +54,4 @@ class GetAuctionUseCase:
         bids = self.__auction_interface.get_all_bids_by_auction_id(auction_id=auction['auction_id'])
         auction['bids'] = bids if bids else []
 
-        return auction.to_dict()
+        return auction
