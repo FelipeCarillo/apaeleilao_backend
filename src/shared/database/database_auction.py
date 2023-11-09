@@ -187,17 +187,16 @@ class AuctionDynamodb(AuctionInterface):
         except ClientError as e:
             raise e
 
-    def get_last_bid_id(self) -> Optional[int]:
+    def get_last_bid_id(self, auction_id: str) -> Optional[int]:
         try:
             query = self.__dynamodb.query(
-                IndexName="SK_PK-index",
-                KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.BID.value),
+                KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').begins_with(AUCTION_TABLE_ENTITY.BID.value),
                 ScanIndexForward=False,
                 Limit=1
             )
             response = query.get('Items', None)
             if response:
-                return int(response[0]['SK'].split('#')[1])
+                return int(response[0]['SK'].split('#')[-1])
             return None
         except ClientError as e:
             raise e
@@ -213,6 +212,7 @@ class AuctionDynamodb(AuctionInterface):
                     bid['bid_id'] = bid.pop('SK').split('#')[1]
                     bid['auction_id'] = bid.pop('PK')
                     bid['amount'] = round(float(bid['amount']), 2)
+                    bid['created_at'] = int(bid['created_at'])
             return response
         except ClientError as e:
             raise e
@@ -228,6 +228,7 @@ class AuctionDynamodb(AuctionInterface):
                 "created_at": bid.created_at,
             }
             self.__dynamodb.put_item(Item=payload)
+
             return payload
         except ClientError as e:
             raise e

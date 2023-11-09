@@ -74,5 +74,5 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
-    def get_last_bid_id(self) -> Optional[int]:
+    def get_last_bid_id(self, auction_id: str) -> Optional[int]:
         pass
