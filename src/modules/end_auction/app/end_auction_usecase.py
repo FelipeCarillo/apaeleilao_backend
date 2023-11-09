@@ -102,3 +102,5 @@ class EndAuctionUseCase:
             date_of_expiration = TimeManipulation(datetime_now=date_of_expiration).get_time()
             payment.payment_expires_at = date_of_expiration
             self.__auction_interface.create_payment(payment=payment)
+
+        return None
