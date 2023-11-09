@@ -86,9 +86,11 @@ class EventsTrigger:
 
     def invoke_lambda(self, lambda_function: str, payload: Dict):
         try:
+            lambda_function = lambda_function.title() + '_Apae_Leilao'
+
             self.__lambda.invoke(
                 FunctionName=lambda_function,
-                InvocationType='Event',
+                InvocationType='RequestResponse',
                 Payload=json.dumps(payload)
             )
         except Exception as e:
