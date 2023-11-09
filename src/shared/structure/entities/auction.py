@@ -131,7 +131,7 @@ class Auction(ABC):
         if amount is None:
             raise MissingParameter("amount")
         if type(amount) != float:
-            raise InvalidParameter("amount", "deve ser um número")
+            raise InvalidParameter("amount", "deve ser um número com casas decimais")
         amount = round(amount, 2)
         return amount
 

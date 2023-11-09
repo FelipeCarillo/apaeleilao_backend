@@ -73,8 +73,8 @@ class CreateUserUseCase:
             description=body.get('description'),
             start_date=body.get('start_date'),
             end_date=body.get('end_date'),
-            start_amount=float(body.get('start_amount')),
-            current_amount=float(body.get('start_amount')),
+            start_amount=body.get('start_amount'),
+            current_amount=body.get('start_amount'),
             images=body.get('images'),
             status_auction=STATUS_USER_ACCOUNT_ENUM.PENDING.value,
             created_at=TimeManipulation.get_current_time()
