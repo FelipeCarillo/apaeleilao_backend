@@ -55,7 +55,7 @@ class CreateUserUseCase:
         if auction.get("current_amount") + 1 > body.get("amount"):
             raise InvalidParameter("Lance", "deve ser pelo menos 1 real a mais que o valor atual do leilão")
 
-        last_bid_id = self.__auction_interface.get_last_bid_id()
+        last_bid_id = self.__auction_interface.get_last_bid_id(auction_id=body.get('auction_id'))
         bid_id = last_bid_id + 1 if last_bid_id else 1
 
         bid = Bid(
