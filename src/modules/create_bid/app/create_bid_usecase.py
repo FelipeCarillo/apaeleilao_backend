@@ -63,7 +63,7 @@ class CreateUserUseCase:
             user_id=user_id,
             first_name=user.get('first_name'),
             auction_id=body.get('auction_id'),
-            amount=body.get('amount'),
+            amount=float(body.get('amount')),
             created_at=TimeManipulation.get_current_time()
         )
 

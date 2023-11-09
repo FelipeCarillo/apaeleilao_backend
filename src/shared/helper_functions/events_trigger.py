@@ -90,7 +90,7 @@ class EventsTrigger:
 
             self.__lambda.invoke(
                 FunctionName=lambda_function,
-                InvocationType='RequestResponse',
+                InvocationType='Event',
                 Payload=json.dumps(payload)
             )
         except Exception as e:

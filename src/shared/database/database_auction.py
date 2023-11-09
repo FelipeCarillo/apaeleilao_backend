@@ -218,7 +218,19 @@ class AuctionDynamodb(AuctionInterface):
             raise e
 
     def create_bid(self, bid: Bid) -> Dict or None:
-        pass
+        try:
+            payload = {
+                "PK": bid.auction_id,
+                "SK": AUCTION_TABLE_ENTITY.BID.value + "#" + bid.bid_id,
+                "user_id": bid.user_id,
+                "first_name": bid.first_name,
+                "amount": bid.amount,
+                "created_at": bid.created_at,
+            }
+            self.__dynamodb.put_item(Item=payload)
+            return payload
+        except ClientError as e:
+            raise e
 
     def create_payment(self, payment) -> Dict or None:
         try:
