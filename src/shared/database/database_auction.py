@@ -224,7 +224,7 @@ class AuctionDynamodb(AuctionInterface):
                 "SK": AUCTION_TABLE_ENTITY.BID.value + "#" + bid.bid_id,
                 "user_id": bid.user_id,
                 "first_name": bid.first_name,
-                "amount": bid.amount,
+                "amount": Decimal(str(bid.amount)),
                 "created_at": bid.created_at,
             }
             self.__dynamodb.put_item(Item=payload)

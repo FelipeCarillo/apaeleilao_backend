@@ -16,7 +16,7 @@ class Bid(ABC):
         self.user_id = self.validated_and_set_user_id(user_id)
         self.first_name = first_name
         self.auction_id = self.validated_and_set_auction_id(auction_id)
-        self.amount = self.validated_and_set_amount(amount)
+        self.amount = self.validated_and_set_amount(float(amount))
         self.created_at = self.validated_and_set_created_at(created_at)
 
     def to_dict(self):
@@ -25,7 +25,7 @@ class Bid(ABC):
             'user_id': self.user_id,
             'first_name': self.first_name,
             'auction_id': self.auction_id,
-            'amount': float(self.amount),
+            'amount': self.amount,
             'create_at': self.created_at
         }
 
