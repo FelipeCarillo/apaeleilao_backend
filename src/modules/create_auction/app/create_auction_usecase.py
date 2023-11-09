@@ -94,12 +94,13 @@ class CreateUserUseCase:
 
         self.__auction_interface.create_auction(auction)
 
+        time_now = TimeManipulation().plus_hour(3)
         notification_date = TimeManipulation(time_now=auction.start_date).plus_minute(-10)
-        if TimeManipulation().plus_hour(3) > notification_date:
+        if time_now > notification_date:
             payload = {
                 'body': {
                     'auction_id': auction.auction_id,
-                    'send_before': 1
+                    'time_now': time_now
                 }
             }
             self.__trigger.invoke_lambda(lambda_function=f"start_auction", payload=payload)
@@ -108,11 +109,11 @@ class CreateUserUseCase:
             payload = {
                 'body': {
                     'auction_id': auction.auction_id,
-                    'send_before': 1
+                    'time_now': time_now
                 }
             }
 
-            self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_1",
+            self.__trigger.create_trigger(rule_name=f"start_auction_{auction.auction_id}_before",
                                           lambda_function=f"start_auction",
                                           payload=payload,
                                           date=notification_date)

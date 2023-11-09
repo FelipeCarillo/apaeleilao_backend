@@ -51,12 +51,13 @@ class StartAuctionUseCase:
         else:
             to_email = [email for email in users]
 
-        if body.get("send_before"):
+        time_now = body.get("time_now", None)
+        if time_now:
 
-            minutes_before = int(auction.start_date - TimeManipulation.get_current_time() / 60)
+            minutes_before = int((auction.start_date - time_now) / 60)
 
             email_body = f"""
-            <h1>Leilão<span style="font-weight: bold;">{auction.title} LOTE[{auction.auction_id}]</span> Iniciará em 10 minutos!</h1><p>O leilão está prestes a começar.</p>
+            <h1>Leilão<span style="font-weight: bold;">{auction.title} LOTE[{auction.auction_id}]</span> Iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!</h1><p>O leilão está prestes a começar.</p>
             <p>Para mais informações acesse o site.</p>
             """
             self.__email.set_email_template(f"Leilão {auction.title} Iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!",
@@ -64,7 +65,7 @@ class StartAuctionUseCase:
             self.__email.send_email(to=to_email,
                                     subject=f"Leilão iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!")
 
-            self.__trigger.delete_rule(rule_name=f"start_auction_{auction.auction_id}_1",
+            self.__trigger.delete_rule(rule_name=f"start_auction_{auction.auction_id}_before",
                                        lambda_function=f"start_auction")
 
         else:
