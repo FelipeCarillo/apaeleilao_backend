@@ -66,6 +66,7 @@ class CreateUserUseCase:
             amount=body.get('amount'),
             created_at=TimeManipulation.get_current_time()
         )
+
         self.__auction_interface.create_bid(bid=bid)
         self.__auction_interface.update_auction_current_amount(body.get('auction_id'), body.get('amount'))
 
