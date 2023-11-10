@@ -1,3 +1,4 @@
+import os
 from typing import Any, Dict
 
 from src.shared.errors.modules_errors import *
@@ -14,6 +15,7 @@ class StartAuctionUseCase:
 
     def __init__(self, auction_interface: AuctionInterface, user_interface: UserInterface):
         self.__email = Email()
+        self.__domain = os.environ.get('DOMAIN')
         self.__trigger = EventsTrigger()
         self.__user_interface = user_interface
         self.__auction_interface = auction_interface
@@ -65,7 +67,7 @@ class StartAuctionUseCase:
                         <p style="color:#000000">Data: {TimeManipulation().get_datetime(time_now=auction.start_date, datetime_format='%d-%m-%Y - %H:%M')}</p>
                         <label style="color: black; font-weight: bold; font-size: 24px;">Lance: R${auction.current_amount}</label>
                     </div>
-                    <a style="background-color: yellow; border: none; padding: 6px 12px; font-size: 16px; font-weight: bold; border-radius: 25px; margin: 8px; color: black;" href="https://dev.techimtgroup.net%22%3Edar/ lance"> Ir para o Leilão </a>
+                    <a style="background-color: yellow; border: none; padding: 6px 12px; font-size: 16px; font-weight: bold; border-radius: 25px; margin: 8px; color: black;" href="https://{self.__domain}"> Ir para o Leilão </a>
                 </div>
             </div>
             """
@@ -89,7 +91,7 @@ class StartAuctionUseCase:
                         <p style="color:#000000">Data: {TimeManipulation().get_datetime(time_now=auction.start_date, datetime_format='%d-%m-%Y - %H:%M')}</p>
                         <label style="color: black; font-weight: bold; font-size: 24px;">Lance: R${auction.current_amount}</label>
                     </div>
-                    <a style="background-color: yellow; border: none; padding: 6px 12px; font-size: 16px; font-weight: bold; border-radius: 25px; margin: 8px; color: black;" href="https://dev.techimtgroup.net%22%3Edar/ lance"> Ir para o Leilão </a>
+                    <a style="background-color: yellow; border: none; padding: 6px 12px; font-size: 16px; font-weight: bold; border-radius: 25px; margin: 8px; color: black;" href="https://{self.__domain}"> Ir para o Leilão </a>
                 </div>
             </div>
             """
