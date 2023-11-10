@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 
 
 default_footer = """
-    <div class="TextsBox" style="color: #949393; word-wrap: break-word;">'
+    <div class="TextsBox" style="color: #949393; word-wrap: break-word;">
       <h2>Atenciosamente,</h2>
       <h2>
         <b>IMT</b>

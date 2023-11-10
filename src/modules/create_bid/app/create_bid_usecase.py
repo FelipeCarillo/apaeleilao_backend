@@ -61,6 +61,7 @@ class CreateUserUseCase:
         bid = Bid(
             bid_id=str(bid_id),
             user_id=user_id,
+            email=user.get('email'),
             first_name=user.get('first_name'),
             auction_id=body.get('auction_id'),
             amount=body.get('amount'),

@@ -142,13 +142,6 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
-        # self.get_bids_by_auction = self.create_lambda(
-        #     function_name="get_bids_by_auction",
-        #     method="GET",
-        #     restapi_resource=restapi_resource,
-        #     environment_variables=environment_variables,
-        # )
-
         self.get_all_auctions_menu = self.create_lambda(
             function_name="get_all_auctions_menu",
             method="GET",
@@ -177,7 +170,6 @@ class LambdaStack(Construct):
             self.create_user_by_admin,
             self.get_auction,
             self.create_bid,
-            # self.get_bids_by_auction,
             self.get_all_auctions_menu,
             self.create_feedback
         )
@@ -188,7 +180,6 @@ class LambdaStack(Construct):
             self.create_auction,
             self.get_auction,
             self.create_bid,
-            # self.get_bids_by_auction,
             self.get_all_auctions_menu,
         )
 

@@ -57,10 +57,19 @@ class StartAuctionUseCase:
             minutes_before = int((auction.start_date - time_now) / 60)
 
             email_body = f"""
-            <h1>Leilão<span style="font-weight: bold;">{auction.title} LOTE[{auction.auction_id}]</span> Iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!</h1><p>O leilão está prestes a começar.</p>
-            <p>Para mais informações acesse o site.</p>
+            <div class="TextsBox" style="display: flex; justify-content: center; align-items: center;">
+                <div style="border: 1px solid black; border-radius: 10px; padding-bottom: 16px;">
+                    <img style="border-radius: 10px 10px 0 0;" width="250" src="http://via.placeholder.com/500x500" alt="">
+                    <div style="color: #949393; text-align: center; margin-bottom: 16px;">
+                        <h2 style="color:#000000;">{auction.title}</h2>
+                        <p style="color:#000000">Data: {TimeManipulation().get_datetime(time_now=auction.start_date, datetime_format='%d-%m-%Y - %H:%M')}</p>
+                        <label style="color: black; font-weight: bold; font-size: 24px;">Lance: R${auction.current_amount}</label>
+                    </div>
+                    <a style="background-color: yellow; border: none; padding: 6px 12px; font-size: 16px; font-weight: bold; border-radius: 25px; margin: 8px; color: black;" href="https://dev.techimtgroup.net%22%3Edar/ lance"> Ir para o Leilão </a>
+                </div>
+            </div>
             """
-            self.__email.set_email_template(f"Leilão {auction.title} Iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!",
+            self.__email.set_email_template(f"Leilão {auction.title} - LOTE[{auction_id}] iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!",
                                             email_body)
             self.__email.send_email(to=to_email,
                                     subject=f"Leilão iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!")
@@ -72,10 +81,19 @@ class StartAuctionUseCase:
             self.__auction_interface.update_auction(auction)
 
             email_body = f"""
-            <h1>Leilão<span style="font-weight: bold;">{auction.title} LOTE[{auction.auction_id}]</span> Começou!</h1><p>O leilão está aberto.</p>
-            <p>Para mais informações acesse o site.</p>
+            <div class="TextsBox" style="display: flex; justify-content: center; align-items: center;">
+                <div style="border: 1px solid black; border-radius: 10px; padding-bottom: 16px;">
+                    <img style="border-radius: 10px 10px 0 0;" width="250" src="http://via.placeholder.com/500x500" alt="">
+                    <div style="color: #949393; text-align: center; margin-bottom: 16px;">
+                        <h2 style="color:#000000;">{auction.title}</h2>
+                        <p style="color:#000000">Data: {TimeManipulation().get_datetime(time_now=auction.start_date, datetime_format='%d-%m-%Y - %H:%M')}</p>
+                        <label style="color: black; font-weight: bold; font-size: 24px;">Lance: R${auction.current_amount}</label>
+                    </div>
+                    <a style="background-color: yellow; border: none; padding: 6px 12px; font-size: 16px; font-weight: bold; border-radius: 25px; margin: 8px; color: black;" href="https://dev.techimtgroup.net%22%3Edar/ lance"> Ir para o Leilão </a>
+                </div>
+            </div>
             """
-            self.__email.set_email_template(f"Leilão {auction.title} Começou!",
+            self.__email.set_email_template(f"Leilão {auction.title} - LOTE[{auction_id}] começou!",
                                             email_body)
             self.__email.send_email(to=to_email,
                                     subject="Leilão começou!")
