@@ -36,7 +36,8 @@ class EndAuctionUseCase:
 
         auction = Auction(
             auction_id=auction["auction_id"],
-            created_by=auction["user_id"],
+            created_by=auction["created_by"],
+            images=auction["images"],
             title=auction["title"],
             description=auction["description"],
             start_date=auction["start_date"],
