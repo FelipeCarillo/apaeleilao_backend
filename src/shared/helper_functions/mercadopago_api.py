@@ -1,6 +1,5 @@
 import os
 import mercadopago
-from mercadopago import
 
 from src.shared.structure.entities.payment import Payment
 from src.shared.helper_functions.time_manipulation import TimeManipulation
