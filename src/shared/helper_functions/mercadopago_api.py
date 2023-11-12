@@ -9,14 +9,14 @@ class MercadoPago:
     def __init__(self):
         self.__payment_preference = None
         self.__access_token = os.environ.get('MERCADO_PAGO_ACCESS_TOKEN')
-        self.__mp = mercadopago.SDK(os.environ.get('MERCADO_PAGO_ACCESS_TOKEN'))
+        self.__mp = mercadopago.SDK(self.__access_token)
 
     def create_payment(self):
         payment = self.__mp.payment().create(self.__payment_preference)
         if payment['status'] == 201:
             return payment['response']
         else:
-            raise Exception
+            return None
 
     def get_payment(self, payment_id):
         payment = self.__mp.payment().get(payment_id)
@@ -57,6 +57,6 @@ class MercadoPago:
                 },
             },
             "payment_method_id": "pix",
-            "transaction_amount": 10.0,
+            "transaction_amount": payment.amount,
             "date_of_expiration": date_of_expiration,
         }
