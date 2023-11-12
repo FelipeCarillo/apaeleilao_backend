@@ -52,8 +52,8 @@ class MercadoPago:
                     "number": payment.cpf,
                 },
                 "phone": {
-                    "area_code": "+55",
-                    "number": payment.phone,
+                    "area_code": payment.phone[:2],
+                    "number": payment.phone[2:],
                 },
             },
             "payment_method_id": "pix",
