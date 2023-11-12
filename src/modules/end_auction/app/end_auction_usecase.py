@@ -40,12 +40,12 @@ class EndAuctionUseCase:
             images=auction["images"],
             title=auction["title"],
             description=auction["description"],
-            start_date=auction["start_date"],
-            end_date=auction["end_date"],
+            start_date=int(auction["start_date"]),
+            end_date=int(auction["end_date"]),
             start_amount=auction["start_amount"],
             current_amount=auction["current_amount"],
             status_auction=auction["status_auction"],
-            created_at=auction["created_at"],
+            created_at=int(auction["created_at"]),
         )
         bids = self.__auction_interface.get_all_bids_by_auction_id(auction_id=auction_id)
 

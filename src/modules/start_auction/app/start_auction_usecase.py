@@ -53,6 +53,8 @@ class StartAuctionUseCase:
         else:
             to_email = [email for email in users]
 
+        auction_start_date = TimeManipulation(auction.start_date).plus_hour(-3)
+
         time_now = body.get("time_now", None)
         if time_now:
 
@@ -64,7 +66,7 @@ class StartAuctionUseCase:
                     <img style="border-radius: 10px 10px 0 0;" width="250" src="http://via.placeholder.com/500x500" alt="">
                     <div style="color: #949393; text-align: center; margin-bottom: 16px;">
                         <h2 style="color:#000000;">{auction.title}</h2>
-                        <p style="color:#000000">Data: {TimeManipulation().get_datetime(time_now=auction.start_date, datetime_format='%d-%m-%Y - %H:%M')}</p>
+                        <p style="color:#000000">Data: {TimeManipulation(auction_start_date).get_datetime(datetime_format='%d-%m-%Y - %H:%M')}</p>
                         <label style="color: black; font-weight: bold; font-size: 24px;">Lance: R${auction.current_amount}</label>
                     </div>
                     <a style="background-color: yellow; border: none; padding: 6px 12px; font-size: 16px; font-weight: bold; border-radius: 25px; margin: 8px; color: black;" href="https://{self.__domain}"> Ir para o Leilão </a>
@@ -88,7 +90,7 @@ class StartAuctionUseCase:
                     <img style="border-radius: 10px 10px 0 0;" width="250" src="http://via.placeholder.com/500x500" alt="">
                     <div style="color: #949393; text-align: center; margin-bottom: 16px;">
                         <h2 style="color:#000000;">{auction.title}</h2>
-                        <p style="color:#000000">Data: {TimeManipulation().get_datetime(time_now=auction.start_date, datetime_format='%d-%m-%Y - %H:%M')}</p>
+                        <p style="color:#000000">Data: {TimeManipulation(auction_start_date).get_datetime(datetime_format='%d-%m-%Y - %H:%M')}</p>
                         <label style="color: black; font-weight: bold; font-size: 24px;">Lance: R${auction.current_amount}</label>
                     </div>
                     <a style="background-color: yellow; border: none; padding: 6px 12px; font-size: 16px; font-weight: bold; border-radius: 25px; margin: 8px; color: black;" href="https://{self.__domain}"> Ir para o Leilão </a>
