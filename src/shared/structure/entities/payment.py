@@ -95,15 +95,13 @@ class Payment(ABC):
         return user_id
 
     @staticmethod
-    def validate_and_set_amount(amount: str) -> Decimal:
+    def validated_and_set_amount(amount: float) -> float:
         if not amount:
             raise InvalidParameter('amount', 'is required')
-        if not isinstance(amount, str):
-            raise InvalidParameter('amount', 'must be a str')
-        amount = amount.replace(',', '.')
-        if len(amount.split('.')[-1]) > 2:
-            raise InvalidParameter('amount', 'must have 2 decimal places')
-        return Decimal(amount)
+        if not isinstance(amount, float):
+            raise InvalidParameter('amount', 'must be a float')
+        amount = round(amount, 2)
+        return amount
 
     @staticmethod
     def validate_and_set_created_at(created_at: Optional[int]) -> Optional[int]:

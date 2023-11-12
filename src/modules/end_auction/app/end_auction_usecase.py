@@ -1,15 +1,15 @@
 from typing import Dict
 
 from src.shared.errors.modules_errors import *
-from src.shared.structure.entities.payment import Payment
 from src.shared.structure.entities.auction import Auction
+from src.shared.structure.entities.payment import Payment
 from src.shared.helper_functions.email_function import Email
 from src.shared.helper_functions.mercadopago_api import MercadoPago
 from src.shared.helper_functions.events_trigger import EventsTrigger
+from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.structure.interface.auction_interface import AuctionInterface
 from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM, PAYMENT_SERVICES, STATUS_AUCTION_PAYMENT_ENUM
-from src.shared.structure.interface.user_interface import UserInterface
 
 
 class EndAuctionUseCase:
