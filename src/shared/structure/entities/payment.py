@@ -17,7 +17,7 @@ class Payment(ABC):
     cpf: str
     phone: str
     email: str
-    amount: Decimal
+    amount: float
     created_at: int
     date_payment: int or None
     payment_expires_at: int or None
@@ -34,7 +34,7 @@ class Payment(ABC):
                  cpf: str = None,
                  phone: str = None,
                  email: str = None,
-                 amount: str = None,
+                 amount: float = None,
                  created_at: Optional[int] = None,
                  date_payment: Optional[int] = None,
                  payment_expires_at: Optional[int] = None,
@@ -51,7 +51,7 @@ class Payment(ABC):
         self.cpf = cpf
         self.phone = phone
         self.email = email
-        self.amount = self.validate_and_set_amount(amount)
+        self.amount = self.validated_and_set_amount(amount)
         self.created_at = self.validate_and_set_created_at(created_at)
         self.date_payment = self.validate_and_set_date_payment(date_payment)
         self.payment_expires_at = self.validate_and_set_payment_expires_at(payment_expires_at)
