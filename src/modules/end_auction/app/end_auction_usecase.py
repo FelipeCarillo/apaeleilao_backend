@@ -62,7 +62,6 @@ class EndAuctionUseCase:
             winner = bids_sorted[0]
             winner_email = winner.get('email')
             to_emails = list(set([item.get('email') for item in bids_sorted][1:]))
-            to_emails.remove(winner_email)
 
             email_body = f"""
             <h1>Leilão<span style="font-weight: bold;">{auction.title} LOTE[{auction.auction_id}]</span> Finalizado!</h1>
@@ -95,7 +94,7 @@ class EndAuctionUseCase:
                 cpf=user.get('cpf'),
                 phone=user.get('phone'),
                 email=user.get('email'),
-                amount=user.get('amount'),
+                amount=winner.get('amount'),
                 status_payment=STATUS_AUCTION_PAYMENT_ENUM.PENDING,
                 payment_service=PAYMENT_SERVICES.MERCADO_PAGO
             )
