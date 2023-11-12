@@ -101,8 +101,6 @@ class EndAuctionUseCase:
 
             self.__payment.set_payment_preference(payment=payment)
             payment_created = self.__payment.create_payment()
-            if not payment_created:
-                raise PaymentNotCreated()
 
             payment.payment_id = payment_created.get('response').get('id')
             date_of_expiration = payment_created.get('response').get('date_of_expiration').replace('T', ' ').replace('.000-04:00', '')

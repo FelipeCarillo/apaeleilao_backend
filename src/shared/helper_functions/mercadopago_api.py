@@ -1,5 +1,6 @@
 import os
 import mercadopago
+from mercadopago import
 
 from src.shared.structure.entities.payment import Payment
 from src.shared.helper_functions.time_manipulation import TimeManipulation
@@ -16,14 +17,14 @@ class MercadoPago:
         if payment['status'] == 201:
             return payment['response']
         else:
-            return None
+            raise Exception(payment['response'])
 
     def get_payment(self, payment_id):
         payment = self.__mp.payment().get(payment_id)
         if payment['status'] == 200:
             return payment['response']
         else:
-            return None
+            raise Exception(payment['response'])
 
     def set_payment_preference(self, payment: Payment):
         time = TimeManipulation()
