@@ -241,7 +241,7 @@ class AuctionDynamodb(AuctionInterface):
                 "SK": AUCTION_TABLE_ENTITY.PAYMENT.value + "#" + payment.payment_id,
                 "user_id": payment.user_id,
                 "status_payment": payment.status_payment.value,
-                "amount": payment.amount,
+                "amount": Decimal(str(payment.amount)),
                 "date_payment": payment.date_payment,
                 "payment_expires_at": payment.payment_expires_at,
                 "service": payment.payment_service.value,
