@@ -40,7 +40,7 @@ class ConfirmVerificationEmailCodeUseCase:
         if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) != TYPE_ACCOUNT_USER_ENUM.USER:
             raise UserNotAuthenticated(message='Você não tem permissão para validar uma conta de usuário.')
 
-        current_time = TimeManipulation().get_current_time()
+        current_time = TimeManipulation.get_current_time()
 
         if current_time > user.get('verification_email_code_expires_at'):
             raise InvalidParameter(parameter='Código de validação', body='expirado')
