@@ -298,7 +298,7 @@ class AuctionDynamodb(AuctionInterface):
         except ClientError as e:
             raise e
 
-    def get_payment_by_auction(self, auction_id: str) -> Dict | None:
+    def get_payment_by_auction(self, auction_id: str) -> Optional[Dict]:
         try:
             query = self.__dynamodb.query(
                 KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').begins_with(
@@ -314,7 +314,7 @@ class AuctionDynamodb(AuctionInterface):
             raise e
 
     def update_status_payment(self, auction_id: str = None, payment_id: str = None, status_payment: str = None) -> \
-    Optional[Dict]:
+            Optional[Dict]:
         try:
             response = self.__dynamodb.update_item(
                 Key={'PK': auction_id,
