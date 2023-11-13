@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 from aws_cdk import (
     aws_lambda as _lambda,
     aws_apigateway as apigw,
@@ -13,6 +13,7 @@ class LambdaStack(Construct):
                       environment_variables: Dict[str, str],
                       method: str = None,
                       restapi_resource: apigw.Resource = None,
+                      origins: List = apigw.Cors.ALL_ORIGINS
                       ) -> _lambda.Function:
         function = _lambda.Function(
             self, (function_name + "_apae_leilao").title(),
@@ -29,7 +30,7 @@ class LambdaStack(Construct):
         restapi_resource.add_resource(function_name.replace("_", "-"),
                                       default_cors_preflight_options=
                                       {
-                                          "allow_origins": apigw.Cors.ALL_ORIGINS,
+                                          "allow_origins": origins,
                                           "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                                           "allow_headers": ["*"]
                                       }
@@ -168,6 +169,7 @@ class LambdaStack(Construct):
             method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
+            origins=["https://www.mercadopago.com.ar"]
         )
 
     @property
