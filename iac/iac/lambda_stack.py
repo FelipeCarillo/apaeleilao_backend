@@ -156,6 +156,13 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
+        self.get_payment = self.create_lambda(
+            function_name="get_payment",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
@@ -171,7 +178,8 @@ class LambdaStack(Construct):
             self.get_auction,
             self.create_bid,
             self.get_all_auctions_menu,
-            self.create_feedback
+            self.create_feedback,
+            self.get_payment,
         )
 
     @property
@@ -181,6 +189,7 @@ class LambdaStack(Construct):
             self.get_auction,
             self.create_bid,
             self.get_all_auctions_menu,
+            self.get_payment,
         )
 
     @property
