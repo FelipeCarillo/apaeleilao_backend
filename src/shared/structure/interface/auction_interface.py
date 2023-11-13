@@ -89,9 +89,5 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
-    def update_payment(self, payment: Payment = None, payment_dict: Dict = None) -> Optional[Dict]:
-        pass
-
-    @abstractmethod
     def update_status_payment(self, auction_id: str = None, payment_id: str = None, status_payment: str = None) -> Optional[Dict]:
         pass
