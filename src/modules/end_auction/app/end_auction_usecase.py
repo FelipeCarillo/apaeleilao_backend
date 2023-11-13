@@ -109,4 +109,20 @@ class EndAuctionUseCase:
             payment.payment_expires_at = date_of_expiration
             self.__auction_interface.create_payment(payment=payment)
 
+            payload = {
+                "body": {
+                    "payment_id": payment.payment_id
+                }
+            }
+            self.__trigger.create_trigger("end_payment", f"end_payment_{payment.payment_id}",
+                                          payment.payment_expires_at, payload)
+
+            payload['body']['send_before'] = 0
+            self.__trigger.create_trigger("end_payment", f"end_payment_{payment.payment_id}",
+                                          payment.payment_expires_at, payload)
+
+            payload['body']['send_before'] = 1
+            self.__trigger.create_trigger("end_payment", f"end_payment_{payment.payment_id}",
+                                          payment.payment_expires_at, payload)
+
         return None
