@@ -13,8 +13,13 @@ class LambdaStack(Construct):
                       environment_variables: Dict[str, str],
                       method: str = None,
                       restapi_resource: apigw.Resource = None,
-                      origins: List = apigw.Cors.ALL_ORIGINS
+                      origins: List = apigw.Cors.ALL_ORIGINS,
+                      mercadopago: bool = False
                       ) -> _lambda.Function:
+
+        layers = [self.shared_layer, self.jwt_layer, self.bcrypt_layer] if not mercadopago else\
+            [self.shared_layer, self.jwt_layer, self.bcrypt_layer, self.mercadopago]
+
         function = _lambda.Function(
             self, (function_name + "_apae_leilao").title(),
             function_name=(function_name + "_apae_leilao").title(),
@@ -169,7 +174,8 @@ class LambdaStack(Construct):
             method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
-            origins=["https://www.mercadopago.com.ar"]
+            origins=["https://www.mercadopago.com.ar"],
+            mercadopago=True
         )
 
     @property
