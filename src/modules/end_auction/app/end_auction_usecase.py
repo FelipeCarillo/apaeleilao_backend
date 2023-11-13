@@ -95,6 +95,7 @@ class EndAuctionUseCase:
                 phone=user.get('phone'),
                 email=user.get('email'),
                 amount=winner.get('amount'),
+                created_at=TimeManipulation.get_current_time(),
                 status_payment=STATUS_AUCTION_PAYMENT_ENUM.PENDING,
                 payment_service=PAYMENT_SERVICES.MERCADO_PAGO
             )
