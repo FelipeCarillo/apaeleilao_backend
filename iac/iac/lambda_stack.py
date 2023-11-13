@@ -27,7 +27,7 @@ class LambdaStack(Construct):
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
             handler=f"app.{function_name}_presenter.lambda_handler",
-            layers=[self.shared_layer, self.jwt_layer, self.bcrypt_layer],
+            layers=layers,
             timeout=Duration.seconds(15),
             memory_size=512,
         )
