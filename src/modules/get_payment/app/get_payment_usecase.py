@@ -1,10 +1,8 @@
 from typing import Dict
 
 from src.shared.errors.modules_errors import *
-from src.shared.structure.entities.auction import Auction
-from src.shared.structure.entities.payment import Payment
 from src.shared.helper_functions.mercadopago_api import MercadoPago
-# from src.shared.helper_functions.events_trigger import EventsTrigger
+from src.shared.helper_functions.events_trigger import EventsTrigger
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.structure.interface.auction_interface import AuctionInterface
 from src.shared.structure.enums.user_enum import *
@@ -13,6 +11,7 @@ from src.shared.structure.enums.user_enum import *
 class GetPaymentUseCase:
 
     def __init__(self, auction_interface: AuctionInterface, user_interface: UserInterface):
+        self.__trigger = EventsTrigger()
         self.__payment = MercadoPago()
         self.__user_interface = user_interface
         self.__auction_interface = auction_interface
@@ -40,6 +39,17 @@ class GetPaymentUseCase:
         payment = self.__auction_interface.get_payment_by_auction(auction_id=body.get('auction_id'))
         if not payment:
             raise DataNotFound('Pagamento')
+        
+        if payment.get("status_payment") == "approved":
+            if self.__trigger.check_rule(f"end_payment_{payment.get('payment_id')}"):
+                self.__trigger.delete_rule(f"end_payment_{payment.get('payment_id')}")
+
+            if self.__trigger.check_rule(f"end_payment_{payment.get('payment_id')}_0"):
+                self.__trigger.delete_rule(f"end_payment_{payment.get('payment_id')}_0")
+
+            if self.__trigger.check_rule(f"end_payment_{payment.get('payment_id')}_1"):
+                self.__trigger.delete_rule(f"end_payment_{payment.get('payment_id')}_1")
+
         accounts_permitted = [TYPE_ACCOUNT_USER_ENUM.ADMIN, TYPE_ACCOUNT_USER_ENUM.MODERATOR]
         if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) != STATUS_USER_ACCOUNT_ENUM.ACTIVE:
             raise UserNotAuthenticated("Sua conta está suspensa.")
@@ -51,9 +61,3 @@ class GetPaymentUseCase:
             raise UserNotAuthenticated("Você não tem permissão para acessar este recurso.")
         
         return payment
-        
-
-        
-        
-
-        
