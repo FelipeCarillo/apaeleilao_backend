@@ -297,3 +297,19 @@ class AuctionDynamodb(AuctionInterface):
             return response
         except ClientError as e:
             raise e
+
+    def get_payment_by_auction(self, auction_id: str) -> Dict | None:
+        try:
+            query = self.__dynamodb.query(
+                KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').begins_with(
+                    AUCTION_TABLE_ENTITY.PAYMENT.value),
+            )
+            response = query.get('Items', None)
+            if response:
+                response = response[0]
+                response['payment_id'] = response.pop('SK').split('#')[1]
+                response['auction_id'] = response.pop('PK')
+            return response
+        except ClientError as e:
+            raise e
+        
