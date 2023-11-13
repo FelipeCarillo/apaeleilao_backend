@@ -44,7 +44,7 @@ class MercadoPago:
                 ]
             },
             "payer": {
-                "email": "carillofelipe345@gmail.com",
+                "email": payment.email,
                 "first_name": payment.first_name,
                 "last_name": payment.last_name,
                 "identification": {
