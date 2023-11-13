@@ -84,6 +84,19 @@ class EventsTrigger:
         except Exception as e:
             raise e
 
+    def check_rule(self, rule_name: str) -> bool:
+        """
+        Check if rule exists
+        """
+        rule_name = rule_name.title()
+        try:
+            self.__events.describe_rule(
+                Name=rule_name
+            )
+            return True
+        except:
+            return False
+
     def invoke_lambda(self, lambda_function: str, payload: Dict):
         try:
             lambda_function = lambda_function.title() + '_Apae_Leilao'
