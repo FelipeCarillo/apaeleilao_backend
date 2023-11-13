@@ -14,11 +14,11 @@ class LambdaStack(Construct):
                       method: str = None,
                       restapi_resource: apigw.Resource = None,
                       origins: List = apigw.Cors.ALL_ORIGINS,
-                      mercadopago: bool = False
+                      more_layers: List[_lambda.LayerVersion] = None,
                       ) -> _lambda.Function:
 
-        layers = [self.shared_layer, self.jwt_layer, self.bcrypt_layer] if not mercadopago else\
-            [self.shared_layer, self.jwt_layer, self.bcrypt_layer, self.mercadopago]
+        layers = [self.shared_layer, self.jwt_layer, self.bcrypt_layer]
+        layers.extend(more_layers) if more_layers else None
 
         function = _lambda.Function(
             self, (function_name + "_apae_leilao").title(),
@@ -68,6 +68,12 @@ class LambdaStack(Construct):
         self.mercadopago = _lambda.LayerVersion(
             self, "MercadoPago_Layer",
             code=_lambda.Code.from_asset("./mercadopago_layer"),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
+        )
+
+        self.urllib3 = _lambda.LayerVersion(
+            self, "Urllib3_Layer",
+            code=_lambda.Code.from_asset("./urllib3_layer"),
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
         )
 
@@ -175,7 +181,7 @@ class LambdaStack(Construct):
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
             origins=["https://www.mercadopago.com.ar"],
-            mercadopago=True
+            more_layers=[self.mercadopago, self.urllib3],
         )
 
     @property
