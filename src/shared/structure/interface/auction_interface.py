@@ -15,6 +15,13 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
+    def get_payment_by_id(self, payment_id: str) -> Optional[Dict]:
+        """
+        Get a payment by id
+        """
+        pass
+
+    @abstractmethod
     def create_bid(self, bid: Bid) -> Dict or None:
         """
         Create a new bid
@@ -79,4 +86,12 @@ class AuctionInterface(ABC):
 
     @abstractmethod
     def get_payment_by_auction(self, auction_id: str) -> Optional[Dict]:
+        pass
+
+    @abstractmethod
+    def update_payment(self, payment: Payment = None, payment_dict: Dict = None) -> Optional[Dict]:
+        pass
+
+    @abstractmethod
+    def update_status_payment(self, auction_id: str = None, payment_id: str = None, status_payment: str = None) -> Optional[Dict]:
         pass

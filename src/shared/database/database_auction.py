@@ -180,7 +180,7 @@ class AuctionDynamodb(AuctionInterface):
                      'SK': AUCTION_TABLE_ENTITY.AUCTION.value},
                 UpdateExpression='SET current_amount = :current_amount',
                 ExpressionAttributeValues={
-                    ':current_amount': Decimal(str(round(current_amount,2)))
+                    ':current_amount': Decimal(str(round(current_amount, 2)))
                 },
                 ReturnValues='UPDATED_NEW'
             )
@@ -312,4 +312,21 @@ class AuctionDynamodb(AuctionInterface):
             return response
         except ClientError as e:
             raise e
-        
+
+    def update_status_payment(self, auction_id: str = None, payment_id: str = None, status_payment: str = None) -> \
+    Optional[Dict]:
+        try:
+            response = self.__dynamodb.update_item(
+                Key={'PK': auction_id,
+                     'SK': AUCTION_TABLE_ENTITY.PAYMENT.value + "#" + payment_id},
+                UpdateExpression='SET status_payment = :status_payment',
+                ExpressionAttributeValues={
+                    ':status_payment': status_payment
+                },
+                ReturnValues='ALL_NEW'
+            )
+            response['Attributes']['payment_id'] = response['Attributes'].pop('SK').split('#')[-1]
+            response['Attributes']['auction_id'] = response['Attributes'].pop('PK')
+            return response['Attributes']
+        except ClientError as e:
+            raise e
