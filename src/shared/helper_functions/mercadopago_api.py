@@ -51,10 +51,6 @@ class MercadoPago:
                     "type": "CPF",
                     "number": payment.cpf,
                 },
-                "phone": {
-                    "area_code": payment.phone[:2],
-                    "number": payment.phone[2:],
-                },
             },
             "payment_method_id": "pix",
             "transaction_amount": payment.amount,
