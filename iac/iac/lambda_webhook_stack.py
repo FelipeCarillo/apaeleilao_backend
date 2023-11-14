@@ -45,7 +45,7 @@ class LambdaWebhookStack(Construct):
 
     def __init__(self, scope: Construct, restapi_resource: apigw.Resource,
                  environment_variables: Dict[str, str]) -> None:
-        super().__init__(scope, "ApaeLeilao_Lambdas")
+        super().__init__(scope, "ApaeLeilao_Lambdas_Webhook")
 
         self.bcrypt_layer = _lambda.LayerVersion(
             self, "Bcrypt_Layer",
