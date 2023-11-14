@@ -13,4 +13,4 @@ def lambda_handler(event, context):
     response = controller(request=request())
     http_response = HttpResponse(status_code=response.status_code, body=response.body)
 
-    return http_response.to_dict()
+    return http_response.to_dict("https://www.mercadopago.com.ar")

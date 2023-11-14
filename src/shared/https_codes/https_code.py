@@ -28,12 +28,12 @@ class HttpResponse:
         self.status_code = status_code
         self.body = body
 
-    def to_dict(self):
+    def to_dict(self, origin: str = '*'):
         return {
             "statusCode": self.status_code,
             "headers": {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': origin,
             },
             "body": json.dumps(self.body),
             'isBase64Encoded': False
