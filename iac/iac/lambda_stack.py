@@ -184,6 +184,13 @@ class LambdaStack(Construct):
             more_layers=[self.mercadopago, self.urllib3],
         )
 
+        self.delete_auction = self.create_lambda(
+            function_name="delete_auction",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
@@ -201,6 +208,7 @@ class LambdaStack(Construct):
             self.get_all_auctions_menu,
             self.create_feedback,
             # self.get_payment,
+            self.delete_auction
         )
 
     @property
@@ -212,16 +220,19 @@ class LambdaStack(Construct):
             self.get_all_auctions_menu,
             # self.get_payment,
             self.update_payment,
+            self.delete_auction,
         )
 
     @property
     def functions_need_events_permission(self) -> Tuple[_lambda.Function] or None:
         return (
             self.create_auction,
+            self.delete_auction,
         )
 
     @property
     def functions_need_lambda_permission(self) -> Tuple[_lambda.Function] or None:
         return (
             self.create_auction,
+            self.delete_auction,
         )
