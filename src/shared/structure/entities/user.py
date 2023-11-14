@@ -219,7 +219,7 @@ class UserValidator(ABC):
             raise InvalidParameter("cpf", "deve ter 11 caracteres")
 
         numbers = [int(digit) for digit in cpf]
-        if any(a != b for a, b in zip(numbers, numbers[1:])):
+        if all(number == numbers[0] for number in numbers):
             raise InvalidParameter("CPF", "inválido")
         sum_of_products = sum(a * b for a, b in zip(numbers[0:9], range(10, 1, -1)))
         expected_digit = 11 - (sum_of_products % 11)
