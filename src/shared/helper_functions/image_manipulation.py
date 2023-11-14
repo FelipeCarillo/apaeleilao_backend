@@ -11,7 +11,7 @@ class ImageManipulation:
 
     def create_auction_folder(self, auction_id: str):
         try:
-            Object = self.__s3.Object(self.__bucket)
+            Object = self.__s3.Object(self.__bucket, self.__auction_folder)
             self.__auction_folder = self.__auction_folder + auction_id + "/"
             Object.put(self.__auction_folder)
         except Exception as e:

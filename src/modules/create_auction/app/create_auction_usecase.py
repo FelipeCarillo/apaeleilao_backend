@@ -17,6 +17,7 @@ class CreateUserUseCase:
         self.__trigger = EventsTrigger()
         self.__user_interface = user_interface
         self.__auction_interface = auction_interface
+        self.__image_manipulation = ImageManipulation()
 
     def __call__(self, auth: Dict, body: Dict) -> None:
 
@@ -32,6 +33,9 @@ class CreateUserUseCase:
             raise UserNotAuthenticated()
         AUTHORIZED_TYPE_ACCOUNT = [TYPE_ACCOUNT_USER_ENUM.ADMIN, TYPE_ACCOUNT_USER_ENUM.MODERATOR]
         if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) not in AUTHORIZED_TYPE_ACCOUNT:
+            raise UserNotAuthenticated()
+
+        if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) != STATUS_USER_ACCOUNT_ENUM.ACTIVE:
             raise UserNotAuthenticated()
 
         if not body.get('title'):
@@ -91,11 +95,11 @@ class CreateUserUseCase:
             raise DataAlreadyUsed('Já existe um leilão cadastrado para esse período.')
 
         if auction.images:
-            ImageManipulation().create_auction_folder(auction_id=auction.auction_id)
+            self.__image_manipulation.create_auction_folder(auction_id=auction.auction_id)
             for image in body.get('images'):
                 image_id = image.get('image_id').split(".")
                 image_body = image.get('image_body')
-                response = ImageManipulation().upload_auction_image(image_id=image_id[0], image_body=image_body,
+                response = self.__image_manipulation.upload_auction_image(image_id=image_id[0], image_body=image_body,
                                                                     content_type=image_id[-1])
                 image['image_body'] = response
 
