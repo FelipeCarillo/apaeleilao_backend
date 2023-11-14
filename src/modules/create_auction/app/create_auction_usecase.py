@@ -99,7 +99,9 @@ class CreateUserUseCase:
             for image in body.get('images'):
                 image_id = image.get('image_id').split(".")
                 image_body = image.get('image_body')
-                response = self.__image_manipulation.upload_auction_image(image_id=image_id[0], image_body=image_body,
+                response = self.__image_manipulation.upload_auction_image(auction_id=auction.auction_id,
+                                                                          image_id=image_id[0],
+                                                                          image_body=image_body,
                                                                           content_type=image_id[-1])
                 image['image_body'] = response
 
