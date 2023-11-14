@@ -49,7 +49,7 @@ class CreateUserUseCase:
         if not body.get('images'):
             raise MissingParameter('Imagens')
 
-        if not isinstance(body.get('start_amount'), int) or not isinstance(body.get('start_amount'), float):
+        if not isinstance(body.get('start_amount'), int) and not isinstance(body.get('start_amount'), float):
             raise InvalidParameter('Lance inicial', 'deve ser um número')
 
         if body.get('start_amount') < 0:

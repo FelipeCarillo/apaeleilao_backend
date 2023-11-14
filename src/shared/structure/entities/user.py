@@ -17,8 +17,8 @@ class User(ABC):
     status_account: STATUS_USER_ACCOUNT_ENUM
     type_account: TYPE_ACCOUNT_USER_ENUM
     created_at: int
-    verification_code: str
-    verification_code_expires_at: int
+    verification_code: str or None
+    verification_code_expires_at: int or None
 
     def __init__(self, user_id: str = None,
                  first_name: str = None,
@@ -31,8 +31,8 @@ class User(ABC):
                  status_account: str = None,
                  type_account: str = None,
                  created_at: int = None,
-                 verification_email_code: str = None,
-                 verification_email_code_expires_at: int = None,
+                 verification_email_code: str or None = None,
+                 verification_email_code_expires_at: int or None = None,
                  ):
         self.user_id = UserValidator.validate_and_set_user_id(user_id)
         self.first_name = UserValidator.validate_and_set_name(first_name)
@@ -299,7 +299,7 @@ class UserValidator(ABC):
         return type_account
 
     @staticmethod
-    def validate_and_set_verification_email_code(verification_email_code: str) -> str or None:
+    def validate_and_set_verification_email_code(verification_email_code: str or None) -> str or None:
         if verification_email_code is None:
             return None
         if isinstance(verification_email_code, str) is False:
@@ -307,7 +307,7 @@ class UserValidator(ABC):
         return verification_email_code
 
     @staticmethod
-    def validate_and_set_verification_email_code_expires_at(verification_email_code_expires_at: int) -> int or None:
+    def validate_and_set_verification_email_code_expires_at(verification_email_code_expires_at: int or None) -> int or None:
         if verification_email_code_expires_at is None:
             return None
         if type(verification_email_code_expires_at) != int:
