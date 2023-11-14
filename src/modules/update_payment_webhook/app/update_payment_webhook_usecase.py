@@ -7,7 +7,7 @@ from src.shared.structure.interface.auction_interface import AuctionInterface
 from src.shared.structure.enums.auction_enum import STATUS_AUCTION_PAYMENT_ENUM
 
 
-class UpdatePaymentUseCase:
+class UpdatePaymentWebhookUseCase:
 
     def __init__(self, auction_interface: AuctionInterface):
         self.__token = TokenAuthy()

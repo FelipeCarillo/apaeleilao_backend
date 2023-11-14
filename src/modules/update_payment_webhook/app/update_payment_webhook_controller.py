@@ -1,11 +1,11 @@
-from .update_payment_webhook_usecase import UpdatePaymentUseCase
+from .update_payment_webhook_usecase import UpdatePaymentWebhookUseCase
 
 from src.shared.errors.modules_errors import *
 from src.shared.https_codes.https_code import *
 
 
-class UpdatePaymentController:
-    def __init__(self, usecase: UpdatePaymentUseCase):
+class UpdatePaymentWebhookController:
+    def __init__(self, usecase: UpdatePaymentWebhookUseCase):
         self.__usecase = usecase
 
     def __call__(self, request: Dict):

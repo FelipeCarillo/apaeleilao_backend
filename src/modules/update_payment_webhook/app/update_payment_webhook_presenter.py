@@ -1,11 +1,11 @@
-from .update_payment_webhook_usecase import UpdatePaymentUseCase
-from .update_payment_webhook_controller import UpdatePaymentController
+from .update_payment_webhook_usecase import UpdatePaymentWebhookUseCase
+from .update_payment_webhook_controller import UpdatePaymentWebhookController
 
 from src.shared.database.database_auction import AuctionDynamodb
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 
-usecase = UpdatePaymentUseCase(AuctionDynamodb())
-controller = UpdatePaymentController(usecase)
+usecase = UpdatePaymentWebhookUseCase(AuctionDynamodb())
+controller = UpdatePaymentWebhookController(usecase)
 
 
 def lambda_handler(event, context):
