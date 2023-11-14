@@ -1,5 +1,5 @@
-from .update_payment_usecase import UpdatePaymentUseCase
-from .update_payment_controller import UpdatePaymentController
+from .update_payment_webhook_usecase import UpdatePaymentUseCase
+from .update_payment_webhook_controller import UpdatePaymentController
 
 from src.shared.database.database_auction import AuctionDynamodb
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest

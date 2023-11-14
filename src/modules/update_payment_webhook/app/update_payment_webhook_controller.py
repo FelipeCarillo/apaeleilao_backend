@@ -1,4 +1,4 @@
-from .update_payment_usecase import UpdatePaymentUseCase
+from .update_payment_webhook_usecase import UpdatePaymentUseCase
 
 from src.shared.errors.modules_errors import *
 from src.shared.https_codes.https_code import *
