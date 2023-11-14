@@ -8,6 +8,7 @@ from constructs import Construct
 from .lambda_stack import LambdaStack
 from .dynamodb_stack import DynamoDBStack
 from .lambda_events_stack import LambdaEventsStack
+from .lambda_webhook_stack import LambdaWebhookStack
 
 
 def add_lambda_policies(lambda_stack):
@@ -90,6 +91,17 @@ class IACStack(Stack):
         self.lambda_events_function = LambdaEventsStack(self, environment_variables=ENVIRONMENT_VARIABLES)
         self.add_lambda_database_permissions(self.lambda_events_function)
         add_lambda_policies(self.lambda_events_function)
+
+        restapi_resourse_webhook = self.__restapi.root.add_resource("apae-leilao-webhook", default_cors_preflight_options=
+        {
+            "allow_origins": ["https://www.mercadopago.com.ar"],
+            "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["*"]
+        })
+        self.lambda_webhook = LambdaWebhookStack(self, restapi_resource=restapi_resourse_webhook,
+                                                 environment_variables=ENVIRONMENT_VARIABLES)
+        self.add_lambda_database_permissions(self.lambda_webhook)
+        add_lambda_policies(self.lambda_webhook)
 
         self.lambda_function = LambdaStack(self, restapi_resource=restapi_resourse,
                                            environment_variables=ENVIRONMENT_VARIABLES)
