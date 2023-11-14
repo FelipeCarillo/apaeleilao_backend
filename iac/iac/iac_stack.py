@@ -97,17 +97,19 @@ class IACStack(Stack):
         self.add_lambda_database_permissions(self.lambda_function)
         add_lambda_policies(self.lambda_function)
 
-        restapi_resourse_webhook = self.__restapi.root.add_resource("apae-leilao-webhook", default_cors_preflight_options=
-        {
-            "allow_origins": ["https://www.mercadopago.com.ar"],
-            "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-            "allow_headers": ["*"]
-        })
+        restapi_resourse_webhook = self.__restapi.root.add_resource("apae-leilao-webhook",
+                                                                    default_cors_preflight_options=
+                                                                    {
+                                                                        "allow_origins": [
+                                                                            "https://www.mercadopago.com.ar"],
+                                                                        "allow_methods": ["GET", "POST", "PUT",
+                                                                                          "DELETE", "OPTIONS"],
+                                                                        "allow_headers": ["*"]
+                                                                    })
         self.lambda_webhook = LambdaWebhookStack(self, restapi_resource=restapi_resourse_webhook,
                                                  environment_variables=ENVIRONMENT_VARIABLES)
         self.add_lambda_database_permissions(self.lambda_webhook)
         add_lambda_policies(self.lambda_webhook)
-
 
     def add_lambda_database_permissions(self, lambda_stack):
         for lambda_function in lambda_stack.functions_need_user_table_permission:

@@ -78,7 +78,7 @@ class LambdaWebhookStack(Construct):
         )
 
         self.update_payment = self.create_lambda(
-            function_name="update_payment",
+            function_name="update_payment_webhook",
             method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
