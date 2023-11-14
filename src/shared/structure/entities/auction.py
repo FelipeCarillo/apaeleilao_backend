@@ -155,10 +155,13 @@ class Auction(ABC):
                 raise InvalidParameter("image_body", "deve ser uma str")
             file_type_permitted = ['png', 'jpg', 'jpeg']
             image_description = image.get('image_body').split(',')[0]
+            image_body = image.get('image_body').split(',')[1]
             content_type = image_description.split(':')[1].split(";")[0]
             if content_type.split("/")[-1] not in file_type_permitted:
                 raise InvalidParameter("image_body", "deve ser uma imagem png, jpg ou jpeg")
+            image['image_body'] = image_body
             image['content_type'] = content_type
+
         return images
 
     @staticmethod
