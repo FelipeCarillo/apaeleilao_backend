@@ -4,6 +4,7 @@ from typing import Optional, Dict, List
 from src.shared.structure.entities.feedback import Feedback
 from src.shared.structure.entities.suspension import Suspension
 from src.shared.structure.entities.user import User, UserModerator
+from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 
 
 class UserInterface(ABC):
@@ -56,7 +57,15 @@ class UserInterface(ABC):
         pass
 
     @abstractmethod
+    def update_user_status(self, user_id: str, status: STATUS_USER_ACCOUNT_ENUM) -> Optional[Dict]:
+        pass
+
+    @abstractmethod
     def create_suspension(self, suspension: Suspension) -> Optional[Dict]:
+        pass
+
+    @abstractmethod
+    def get_all_suspensions_by_user_id(self, user_id: str) -> Optional[Dict]:
         pass
 
     @abstractmethod

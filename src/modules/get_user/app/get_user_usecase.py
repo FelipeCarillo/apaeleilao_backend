@@ -49,4 +49,9 @@ class GetUserUseCase:
                 'verification_email_code_expires_at') else None,
         )
 
-        return user.to_dict()
+        user = user.to_dict()
+
+        if user.status_account == STATUS_USER_ACCOUNT_ENUM.BANED or user.status_account == STATUS_USER_ACCOUNT_ENUM.SUSPENDED:
+            user['suspensions'] = self.__user_interface.get_all_suspensions_by_user_id(user_id=user_id)
+
+        return user
