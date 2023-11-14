@@ -16,9 +16,6 @@ class UpdatePaymentUseCase:
 
     def __call__(self, auth: Dict, body: Dict):
 
-        # if not auth.get("referer"):
-        #     raise UserNotAuthenticated("não encontrado.")
-
         if not body:
             raise MissingParameter('body')
 
