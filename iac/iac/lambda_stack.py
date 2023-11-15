@@ -172,6 +172,13 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
+        self.get_all_auctions_user = self.create_lambda(
+            function_name="get_all_auctions_user",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
         # self.get_payment = self.create_lambda(
         #     function_name="get_payment",
         #     method="GET",
@@ -196,6 +203,7 @@ class LambdaStack(Construct):
             self.get_all_auctions_menu,
             self.create_feedback,
             # self.get_payment,
+            self.get_all_auctions_user,
         )
 
     @property
@@ -206,6 +214,7 @@ class LambdaStack(Construct):
             self.create_bid,
             self.get_all_auctions_menu,
             # self.get_payment,
+            self.get_all_auctions_user,
         )
 
     @property

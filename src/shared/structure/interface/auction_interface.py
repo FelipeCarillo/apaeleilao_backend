@@ -22,6 +22,13 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
+    def get_all_auctions_user(self, user_id: str) -> List[Optional[Dict]]:
+        """
+        Get all auctions by user
+        """
+        pass
+
+    @abstractmethod
     def create_bid(self, bid: Bid) -> Dict or None:
         """
         Create a new bid
