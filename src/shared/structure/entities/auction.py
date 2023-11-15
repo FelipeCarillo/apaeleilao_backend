@@ -158,7 +158,7 @@ class Auction(ABC):
             image_body = image.get('image_body').split(',')[1]
             content_type = image_description.split(':')[1].split(";")[0]
             if content_type.split("/")[-1] not in file_type_permitted:
-                raise InvalidParameter("image_body", "deve ser uma imagem png, jpg ou jpeg")
+                raise InvalidParameter("Imagens", "devem ser uma em formato PNG, JPG ou JPEG")
             image['image_body'] = image_body
             image['content_type'] = content_type
 
