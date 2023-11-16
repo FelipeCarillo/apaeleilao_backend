@@ -68,7 +68,7 @@ class IACStack(Stack):
             default_cors_preflight_options=
             {
                 "allow_origins": apigw.Cors.ALL_ORIGINS,
-                "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+                "allow_methods": ["GET", "POST", "PUT", "DELETE"],
                 "allow_headers": ["*"]
             },
             deploy_options=apigw.StageOptions(
@@ -79,7 +79,7 @@ class IACStack(Stack):
         restapi_resourse = self.__restapi.root.add_resource("apae-leilao", default_cors_preflight_options=
         {
             "allow_origins": apigw.Cors.ALL_ORIGINS,
-            "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_methods": ["GET", "POST", "PUT", "DELETE"],
             "allow_headers": ["*"]
         })
 
@@ -103,7 +103,7 @@ class IACStack(Stack):
                                                                         "allow_origins": [
                                                                             "https://www.mercadopago.com.ar"],
                                                                         "allow_methods": ["GET", "POST", "PUT",
-                                                                                          "DELETE", "OPTIONS"],
+                                                                                          "DELETE"],
                                                                         "allow_headers": ["*"]
                                                                     })
         self.lambda_webhook = LambdaWebhookStack(self, restapi_resource=restapi_resourse_webhook,

@@ -35,7 +35,7 @@ class LambdaStack(Construct):
                                       default_cors_preflight_options=
                                       {
                                           "allow_origins": origins,
-                                          "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+                                          "allow_methods": ["GET", "POST", "PUT", "DELETE"],
                                           "allow_headers": ["*"]
                                       }
                                       ).add_method(method, integration=apigw.LambdaIntegration(function))
@@ -209,7 +209,7 @@ class LambdaStack(Construct):
             self.create_bid,
             self.get_all_auctions_menu,
             self.create_feedback,
-            self.delete_auction
+            self.delete_auction,
             self.get_payment,
             self.get_all_auctions_user,
         )
