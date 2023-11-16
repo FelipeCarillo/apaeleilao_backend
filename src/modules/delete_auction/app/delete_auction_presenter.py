@@ -5,7 +5,7 @@ from src.shared.database.database_user import UserDynamodb
 from src.shared.database.database_auction import AuctionDynamodb
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 
-usecase = DeleteAuctionUseCase(UserDynamodb(), AuctionDynamodb())
+usecase = DeleteAuctionUseCase(AuctionDynamodb(), UserDynamodb())
 controller = DeleteAuctionController(usecase)
 
 
