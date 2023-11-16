@@ -14,10 +14,13 @@ class GetPaymentController:
             if not request:
                 raise InvalidRequest()
 
-            if not request["body"]:
+            if not request.get("auth"):
+                raise MissingParameter("auth")
+
+            if not request.get("body"):
                 raise MissingParameter("body")
 
-            usecase = self.__usecase(body=request["body"])
+            usecase = self.__usecase(auth=request['auth'], body=request["body"])
 
             return OK(body=usecase, message="Pagamento encontrado com sucesso!")
         

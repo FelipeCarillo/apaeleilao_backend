@@ -5,7 +5,6 @@ from src.shared.errors.modules_errors import *
 from src.shared.structure.entities.bid import Bid
 from src.shared.structure.entities.payment import Payment
 from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
-from src.shared.helper_functions.time_manipulation import TimeManipulation
 
 
 class Auction(ABC):
@@ -154,6 +153,15 @@ class Auction(ABC):
                 raise MissingParameter("image_body")
             if type(image.get('image_body')) != str:
                 raise InvalidParameter("image_body", "deve ser uma str")
+            file_type_permitted = ['png', 'jpg', 'jpeg']
+            image_description = image.get('image_body').split(',')[0]
+            image_body = image.get('image_body').split(',')[1]
+            content_type = image_description.split(':')[1].split(";")[0]
+            if content_type.split("/")[-1] not in file_type_permitted:
+                raise InvalidParameter("Imagens", "devem ser uma em formato PNG, JPG ou JPEG")
+            image['image_body'] = image_body
+            image['content_type'] = content_type
+
         return images
 
     @staticmethod

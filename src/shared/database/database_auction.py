@@ -267,6 +267,38 @@ class AuctionDynamodb(AuctionInterface):
         except ClientError as e:
             raise e
 
+    def get_all_auctions_user(self, user_id: str) -> List[Optional[Dict]]:
+        try:
+            payments = self.__dynamodb.query(
+                IndexName="user_id-index",
+                KeyConditionExpression=Key('user_id').eq(user_id),
+                FilterExpression=Attr('SK').begins_with("PAYMENT"),
+            ).get('Items', None)
+            if not payments:
+                return []
+            auctions_id = [auction.get("PK") for auction in payments]
+            auctions = [
+                self.__dynamodb.query(KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').begins_with("AUCTION"),
+                                      FilterExpression=Attr('status_auction').eq(
+                                          "CLOSED")
+                                      ).get('Items')[0]
+                for auction_id in auctions_id]
+            merged_list = [{**auction, **payment} for auction, payment in zip(auctions, payments)]
+            for auction in merged_list:
+                auction['auction_id'] = auction.pop('PK')
+                auction['payment_id'] = auction.pop('SK').split('#')[1]
+                auction['amount'] = round(float(auction['amount']), 2)
+                auction['end_date'] = int(auction['end_date'])
+                auction['start_date'] = int(auction['start_date'])
+                auction['current_amount'] = round(float(auction['current_amount']), 2)
+                auction.pop("created_by")
+                auction['created_at'] = int(auction['created_at'])
+                auction['date_payment'] = int(auction['date_payment']) if auction['date_payment'] else None
+                auction['payment_expires_at'] = int(auction['payment_expires_at'])
+            return merged_list
+        except ClientError as e:
+            raise e
+
     def get_payment_by_auction_id(self, auction_id: str) -> Dict or None:
         try:
             query = self.__dynamodb.query(

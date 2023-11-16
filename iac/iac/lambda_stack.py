@@ -2,7 +2,7 @@ from typing import Dict, Tuple, List
 from aws_cdk import (
     aws_lambda as _lambda,
     aws_apigateway as apigw,
-    Duration,
+    Duration, aws_iam as iam
 )
 from constructs import Construct
 
@@ -16,7 +16,6 @@ class LambdaStack(Construct):
                       origins: List = apigw.Cors.ALL_ORIGINS,
                       more_layers: List[_lambda.LayerVersion] = None,
                       ) -> _lambda.Function:
-
         layers = [self.shared_layer, self.jwt_layer, self.bcrypt_layer]
         layers.extend(more_layers) if more_layers else None
 
@@ -132,6 +131,11 @@ class LambdaStack(Construct):
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
+        s3_policy = iam.PolicyStatement(
+            actions=["s3:*"],
+            resources=["*"]
+        )
+        self.create_auction.add_to_role_policy(statement=s3_policy)
 
         self.create_user_by_admin = self.create_lambda(
             function_name="create_user_by_admin",
@@ -168,20 +172,18 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
-        # self.get_payment = self.create_lambda(
-        #     function_name="get_payment",
-        #     method="GET",
-        #     restapi_resource=restapi_resource,
-        #     environment_variables=environment_variables,
-        # )
-
-        self.update_payment = self.create_lambda(
-            function_name="update_payment",
-            method="POST",
+        self.get_all_auctions_user = self.create_lambda(
+            function_name="get_all_auctions_user",
+            method="GET",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
-            origins=["https://www.mercadopago.com.ar"],
-            more_layers=[self.mercadopago, self.urllib3],
+        )
+
+        self.get_payment = self.create_lambda(
+            function_name="get_payment",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
         )
 
         self.delete_auction = self.create_lambda(
@@ -207,8 +209,9 @@ class LambdaStack(Construct):
             self.create_bid,
             self.get_all_auctions_menu,
             self.create_feedback,
-            # self.get_payment,
             self.delete_auction
+            self.get_payment,
+            self.get_all_auctions_user,
         )
 
     @property
@@ -218,9 +221,9 @@ class LambdaStack(Construct):
             self.get_auction,
             self.create_bid,
             self.get_all_auctions_menu,
-            # self.get_payment,
-            self.update_payment,
             self.delete_auction,
+            self.get_payment,
+            self.get_all_auctions_user,
         )
 
     @property

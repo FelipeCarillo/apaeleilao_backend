@@ -17,6 +17,7 @@ class CreateUserUseCase:
         self.__trigger = EventsTrigger()
         self.__user_interface = user_interface
         self.__auction_interface = auction_interface
+        self.__image_manipulation = ImageManipulation()
 
     def __call__(self, auth: Dict, body: Dict) -> None:
 
@@ -34,6 +35,9 @@ class CreateUserUseCase:
         if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) not in AUTHORIZED_TYPE_ACCOUNT:
             raise UserNotAuthenticated()
 
+        if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) != STATUS_USER_ACCOUNT_ENUM.ACTIVE:
+            raise UserNotAuthenticated()
+
         if not body.get('title'):
             raise MissingParameter('Título')
 
@@ -49,7 +53,7 @@ class CreateUserUseCase:
         if not body.get('images'):
             raise MissingParameter('Imagens')
 
-        if not isinstance(body.get('start_amount'), int) or not isinstance(body.get('start_amount'), float):
+        if not isinstance(body.get('start_amount'), int) and not isinstance(body.get('start_amount'), float):
             raise InvalidParameter('Lance inicial', 'deve ser um número')
 
         if body.get('start_amount') < 0:
@@ -91,12 +95,12 @@ class CreateUserUseCase:
             raise DataAlreadyUsed('Já existe um leilão cadastrado para esse período.')
 
         if auction.images:
-            ImageManipulation().create_auction_folder(auction_id=auction.auction_id)
+            self.__image_manipulation.create_auction_folder(auction_id=auction.auction_id)
             for image in body.get('images'):
-                image_id = image.get('image_id').split(".")
-                image_body = image.get('image_body')
-                response = ImageManipulation().upload_auction_image(image_id=image_id[0], image_body=image_body,
-                                                                    content_type=image_id[-1])
+                response = self.__image_manipulation.upload_auction_image(auction_id=auction.auction_id,
+                                                                          image_id=image.get('image_id'),
+                                                                          image_body=image.get('image_body'),
+                                                                          content_type=image.get('content_type'))
                 image['image_body'] = response
 
         self.__auction_interface.create_auction(auction)

@@ -230,6 +230,41 @@ class UserDynamodb(UserInterface):
         except ClientError as e:
             raise e
 
+    def update_user_status(self, user_id: str, status: str) -> Dict or None:
+        try:
+            response = self.__dynamodb.update_item(
+                Key={
+                    'PK': user_id,
+                    'SK': USER_TABLE_ENTITY.USER.value
+                },
+                UpdateExpression='SET status_account = :status_account',
+                ExpressionAttributeValues={
+                    ':status_account': status,
+                },
+                ReturnValues='ALL_NEW'
+            )['Attributes']
+            if response:
+                response.pop('SK')
+                response['user_id'] = response.pop('PK')
+                response['created_at'] = int(response['created_at'])
+            return response if response else None
+        except ClientError as e:
+            raise e
+
+    def get_all_suspensions_by_user_id(self, user_id: str) -> Dict or None:
+        try:
+            query = self.__dynamodb.query(
+                KeyConditionExpression=Key('PK').eq(user_id) & Key('SK').begins_with(USER_TABLE_ENTITY.SUSPENSION.value)
+            )
+            response = query.get('Items', None)
+            if response:
+                for item in response:
+                    item['user_id'] = item.pop('PK')
+                    item['suspension_id'] = item.pop('SK').split('#')[1]
+            return response if response else None
+        except ClientError as e:
+            raise e
+
     def create_suspension(self, suspension) -> Dict or None:
         try:
             suspension = suspension.to_dict()

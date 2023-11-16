@@ -17,8 +17,8 @@ class User(ABC):
     status_account: STATUS_USER_ACCOUNT_ENUM
     type_account: TYPE_ACCOUNT_USER_ENUM
     created_at: int
-    verification_code: str
-    verification_code_expires_at: int
+    verification_code: str or None
+    verification_code_expires_at: int or None
 
     def __init__(self, user_id: str = None,
                  first_name: str = None,
@@ -31,8 +31,8 @@ class User(ABC):
                  status_account: str = None,
                  type_account: str = None,
                  created_at: int = None,
-                 verification_email_code: str = None,
-                 verification_email_code_expires_at: int = None,
+                 verification_email_code: str or None = None,
+                 verification_email_code_expires_at: int or None = None,
                  ):
         self.user_id = UserValidator.validate_and_set_user_id(user_id)
         self.first_name = UserValidator.validate_and_set_name(first_name)
@@ -219,13 +219,13 @@ class UserValidator(ABC):
             raise InvalidParameter("cpf", "deve ter 11 caracteres")
 
         numbers = [int(digit) for digit in cpf]
-
+        if all(number == numbers[0] for number in numbers):
+            raise InvalidParameter("CPF", "inválido")
         sum_of_products = sum(a * b for a, b in zip(numbers[0:9], range(10, 1, -1)))
         expected_digit = 11 - (sum_of_products % 11)
         expected_digit = expected_digit if expected_digit < 10 else 0
         if numbers[9] != expected_digit:
             raise InvalidParameter("CPF", "inválido")
-
         sum_of_products = sum(a * b for a, b in zip(numbers[0:10], range(11, 1, -1)))
         expected_digit = 11 - (sum_of_products % 11)
         expected_digit = expected_digit if expected_digit < 10 else 0
@@ -299,7 +299,7 @@ class UserValidator(ABC):
         return type_account
 
     @staticmethod
-    def validate_and_set_verification_email_code(verification_email_code: str) -> str or None:
+    def validate_and_set_verification_email_code(verification_email_code: str or None) -> str or None:
         if verification_email_code is None:
             return None
         if isinstance(verification_email_code, str) is False:
@@ -307,7 +307,7 @@ class UserValidator(ABC):
         return verification_email_code
 
     @staticmethod
-    def validate_and_set_verification_email_code_expires_at(verification_email_code_expires_at: int) -> int or None:
+    def validate_and_set_verification_email_code_expires_at(verification_email_code_expires_at: int or None) -> int or None:
         if verification_email_code_expires_at is None:
             return None
         if type(verification_email_code_expires_at) != int:

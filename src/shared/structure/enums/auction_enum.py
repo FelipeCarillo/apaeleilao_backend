@@ -7,12 +7,13 @@ class STATUS_AUCTION_ENUM(Enum):
     OPEN: The auction is open
     CLOSED: The auction is closed
     AVAILABLE: The auction is available to reopen
+    SUSPENDED: The auction is suspended
     """
 
+    AVAILABLE = 'AVAILABLE'
     PENDING = 'PENDING'
     OPEN = 'OPEN'
     CLOSED = 'CLOSED'
-    AVAILABLE = 'AVAILABLE'
     SUSPENDED = 'SUSPENDED'
 
 

@@ -5,27 +5,30 @@ import base64
 
 class ImageManipulation:
     def __init__(self):
-        self.__bucket = os.environ.get('BUCKET_NAME')
-        self.__s3 = boto3.resource('s3')
+        self.__s3 = boto3.client('s3')
         self.__auction_folder = 'auctions/'
+        self.__bucket = os.environ.get('BUCKET_NAME')
 
     def create_auction_folder(self, auction_id: str):
         try:
-            Object = self.__s3.Object(self.__bucket)
-            self.__auction_folder = self.__auction_folder+auction_id+"/"
-            Object.put(self.__auction_folder)
+            auction_folder_key = f'{self.__auction_folder}{auction_id}/'
+            self.__s3.put_object(ACL='public-read', Bucket=self.__bucket, Key=auction_folder_key, Body='')
         except Exception as e:
             raise e
 
-    def upload_auction_image(self, image_id: str, image_body: str, content_type: str):
+    def upload_auction_image(self, auction_id: str, image_id: str, image_body: str, content_type: str):
         try:
-            Bucket = self.__s3.Object(self.__bucket, self.__auction_folder+image_id+"."+content_type)
-            Bucket.put(Body=base64.b64decode(image_body))
+            image_key = f'{self.__auction_folder}{auction_id}/{image_id}'
+            self.__s3.put_object(ACL='public-read', Bucket=self.__bucket, Key=image_key, Body=base64.b64decode(image_body),
+                                 ContentType=content_type)
             return self.get_image_url(image_id)
         except Exception as e:
             raise e
 
     def delete_auction_image(self, image_name):
+        pass
+
+    def delete_auction_folder(self, auction_id):
         pass
 
     def get_image_url(self, image_id):
