@@ -27,6 +27,6 @@ class GetAllAuctionsMenuUseCase:
             images=auction.get("images"),
             status_auction=auction.get("status_auction"),
             created_at=int(auction.get("created_at"))
-        ) for auction in auctions]
+        ).to_dict() for auction in auctions]
 
-        return {"auctions": [auction.to_dict() for auction in auctions]}
+        return {"auctions": auctions}

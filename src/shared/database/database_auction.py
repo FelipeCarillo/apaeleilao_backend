@@ -67,7 +67,7 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_all_auctions_menu(self) -> Optional[List[Dict]]:
         try:
-            permission_to_search = STATUS_AUCTION_ENUM.OPEN.value or STATUS_AUCTION_ENUM.PENDING.value
+            permission_to_search = [STATUS_AUCTION_ENUM.OPEN.value, STATUS_AUCTION_ENUM.PENDING.value]
             query = self.__dynamodb.query(
                 IndexName="SK_created_at-index",
                 KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
@@ -90,7 +90,7 @@ class AuctionDynamodb(AuctionInterface):
 
     def get_auction_between_dates(self, start_date: int, end_date: int) -> List[Dict] or None:
         try:
-            permission_to_search = STATUS_AUCTION_ENUM.OPEN.value or STATUS_AUCTION_ENUM.PENDING.value
+            permission_to_search = [STATUS_AUCTION_ENUM.OPEN.value, STATUS_AUCTION_ENUM.PENDING.value]
             query = self.__dynamodb.query(
                 IndexName="SK_created_at-index",
                 KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
