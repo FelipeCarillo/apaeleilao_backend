@@ -68,31 +68,27 @@ class DeleteAuctionUseCase:
         self.__trigger.delete_rule(rule_name=f"start_auction_{auction.auction_id}_before",  lambda_function="start_auction")
         self.__trigger.delete_rule(rule_name=f"start_auction_{auction.auction_id}", lambda_function="start_auction")
 
-        users = self.__user_interface.get_all_users_to_send_email()
-        if not users:
-            to_email = []
-        else:
-            to_email = [email for email in users]
+        emails = self.__user_interface.get_all_users_to_send_email()
+        if emails:
+            time_now = TimeManipulation.get_current_time()
 
-        time_now = TimeManipulation.get_current_time()
-
-        email_body = f"""
-            <div class="TextsBox" style="display: flex; justify-content: center; align-items: center;">
-                <div style="border: 1px solid black; border-radius: 10px; padding-bottom: 16px;">
-                    <img style="border-radius: 10px 10px 0 0;" width="250" src="http://via.placeholder.com/500x500" alt="">
-                    <div style="color: #949393; text-align: center; margin-bottom: 16px;">
-                        <h2 style="color:#000000;">{auction.title}</h2>
-                        <p style="color:#000000">
-                            Data: {TimeManipulation(time_now).get_datetime(datetime_format='%d-%m-%Y - %H:%M')}
-                        </p>
-                        <label style="color: red; font-weight: bold; font-size: 24px;">Suspenso</label>
+            email_body = f"""
+                <div class="TextsBox" style="display: flex; justify-content: center; align-items: center;">
+                    <div style="border: 1px solid black; border-radius: 10px; padding-bottom: 16px;">
+                        <img style="border-radius: 10px 10px 0 0;" width="250" src="{auction.images[0]['image_body']}" alt="Imagem do {auction.title}">
+                        <div style="color: #949393; text-align: center; margin-bottom: 16px;">
+                            <h2 style="color:#000000;">{auction.title}</h2>
+                            <p style="color:#000000">
+                                Data: {TimeManipulation(time_now).get_datetime(datetime_format='%d-%m-%Y - %H:%M')}
+                            </p>
+                            <label style="color: red; font-weight: bold; font-size: 24px;">Suspenso</label>
+                        </div>
                     </div>
                 </div>
-            </div>
-            """
-        self.__email.set_email_template(f"Leilão {auction.title} - LOTE[{auction_id}] cancelado.", email_body)
+                """
+            self.__email.set_email_template(f"Leilão {auction.title} - LOTE[{auction_id}] cancelado.", email_body)
 
-        self.__email.send_email(to=to_email,
-                                subject=f"Leilão {auction.title} cancelado.")
+            self.__email.send_email(to=emails,
+                                    subject=f"Leilão {auction.title} cancelado.")
        
         return None
