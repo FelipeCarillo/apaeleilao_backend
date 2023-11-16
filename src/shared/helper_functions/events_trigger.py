@@ -66,6 +66,9 @@ class EventsTrigger:
         rule_name = rule_name.title()
         lambda_function = lambda_function.title() + '_Apae_Leilao'
 
+        check_rule = self.check_rule(rule_name=rule_name)
+        if not check_rule:
+            return True
         try:
             self.__lambda.remove_permission(
                 FunctionName=lambda_function,

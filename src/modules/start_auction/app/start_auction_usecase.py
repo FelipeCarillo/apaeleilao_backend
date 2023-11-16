@@ -47,60 +47,55 @@ class StartAuctionUseCase:
             created_at=int(auction['created_at'])
         )
 
-        users = self.__user_interface.get_all_users_to_send_email()
-        if not users:
-            to_email = []
-        else:
-            to_email = [email for email in users]
-
+        emails = self.__user_interface.get_all_users_to_send_email()
         auction_start_date = TimeManipulation(auction.start_date).plus_hour(-3)
 
         time_now = body.get("time_now", None)
         if time_now:
+            if emails:
+                minutes_before = int((auction.start_date - time_now) / 60)
 
-            minutes_before = int((auction.start_date - time_now) / 60)
-
-            email_body = f"""
-            <div class="TextsBox" style="display: flex; justify-content: center; align-items: center;">
-                <div style="border: 1px solid black; border-radius: 10px; padding-bottom: 16px;">
-                    <img style="border-radius: 10px 10px 0 0;" width="250" src="http://via.placeholder.com/500x500" alt="">
-                    <div style="color: #949393; text-align: center; margin-bottom: 16px;">
-                        <h2 style="color:#000000;">{auction.title}</h2>
-                        <p style="color:#000000">Data: {TimeManipulation(auction_start_date).get_datetime(datetime_format='%d-%m-%Y - %H:%M')}</p>
-                        <label style="color: black; font-weight: bold; font-size: 24px;">Lance: R${auction.current_amount}</label>
+                email_body = f"""
+                <div class="TextsBox" style="display: flex; justify-content: center; align-items: center;">
+                    <div style="border: 1px solid black; border-radius: 10px; padding-bottom: 16px;">
+                        <img style="border-radius: 10px 10px 0 0;" width="250" src="http://via.placeholder.com/500x500" alt="">
+                        <div style="color: #949393; text-align: center; margin-bottom: 16px;">
+                            <h2 style="color:#000000;">{auction.title}</h2>
+                            <p style="color:#000000">Data: {TimeManipulation(auction_start_date).get_datetime(datetime_format='%d-%m-%Y - %H:%M')}</p>
+                            <label style="color: black; font-weight: bold; font-size: 24px;">Lance: R${auction.current_amount}</label>
+                        </div>
+                        <a style="background-color: yellow; border: none; padding: 6px 12px; font-size: 16px; font-weight: bold; border-radius: 25px; margin: 8px; color: black;" href="https://{self.__domain}"> Ir para o Leilão </a>
                     </div>
-                    <a style="background-color: yellow; border: none; padding: 6px 12px; font-size: 16px; font-weight: bold; border-radius: 25px; margin: 8px; color: black;" href="https://{self.__domain}"> Ir para o Leilão </a>
                 </div>
-            </div>
-            """
-            self.__email.set_email_template(f"Leilão {auction.title} - LOTE[{auction_id}] iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!",
-                                            email_body)
-            self.__email.send_email(to=to_email,
-                                    subject=f"Leilão iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!")
+                """
+                self.__email.set_email_template(f"Leilão {auction.title} - LOTE[{auction_id}] iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!",
+                                                email_body)
+                self.__email.send_email(to=emails,
+                                        subject=f"Leilão iniciará em {minutes_before} minuto{'s' if minutes_before > 1 else ''}!")
 
             self.__trigger.delete_rule(rule_name=f"start_auction_{auction.auction_id}_before",
                                        lambda_function=f"start_auction")
 
         else:
             self.__auction_interface.update_auction(auction)
-
-            email_body = f"""
-            <div class="TextsBox" style="display: flex; justify-content: center; align-items: center;">
-                <div style="border: 1px solid black; border-radius: 10px; padding-bottom: 16px;">
-                    <img style="border-radius: 10px 10px 0 0;" width="250" src="http://via.placeholder.com/500x500" alt="">
-                    <div style="color: #949393; text-align: center; margin-bottom: 16px;">
-                        <h2 style="color:#000000;">{auction.title}</h2>
-                        <p style="color:#000000">Data: {TimeManipulation(auction_start_date).get_datetime(datetime_format='%d-%m-%Y - %H:%M')}</p>
-                        <label style="color: black; font-weight: bold; font-size: 24px;">Lance: R${auction.current_amount}</label>
+            if emails:
+                email_body = f"""
+                <div class="TextsBox" style="display: flex; justify-content: center; align-items: center;">
+                    <div style="border: 1px solid black; border-radius: 10px; padding-bottom: 16px;">
+                        <img style="border-radius: 10px 10px 0 0;" width="250" src="http://via.placeholder.com/500x500" alt="">
+                        <div style="color: #949393; text-align: center; margin-bottom: 16px;">
+                            <h2 style="color:#000000;">{auction.title}</h2>
+                            <p style="color:#000000">Data: {TimeManipulation(auction_start_date).get_datetime(datetime_format='%d-%m-%Y - %H:%M')}</p>
+                            <label style="color: black; font-weight: bold; font-size: 24px;">Lance: R${auction.current_amount}</label>
+                        </div>
+                        <a style="background-color: yellow; border: none; padding: 6px 12px; font-size: 16px; font-weight: bold; border-radius: 25px; margin: 8px; color: black;" href="https://{self.__domain}"> Ir para o Leilão </a>
                     </div>
-                    <a style="background-color: yellow; border: none; padding: 6px 12px; font-size: 16px; font-weight: bold; border-radius: 25px; margin: 8px; color: black;" href="https://{self.__domain}"> Ir para o Leilão </a>
                 </div>
-            </div>
-            """
-            self.__email.set_email_template(f"Leilão {auction.title} - LOTE[{auction_id}] começou!",
-                                            email_body)
-            self.__email.send_email(to=to_email,
-                                    subject="Leilão começou!")
+                """
+                self.__email.set_email_template(f"Leilão {auction.title} - LOTE[{auction_id}] começou!",
+                                                email_body)
+                self.__email.send_email(to=emails,
+                                        subject="Leilão começou!")
 
             self.__trigger.delete_rule(rule_name=f"start_auction_{auction.auction_id}",
                                        lambda_function=f"start_auction")
