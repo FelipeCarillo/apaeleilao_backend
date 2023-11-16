@@ -61,7 +61,7 @@ class ConfirmVerificationEmailCodeUseCase:
             accepted_terms=user.get('accepted_terms'),
             status_account=status_account,
             type_account=user.get('type_account'),
-            created_at=user.get('created_at'),
+            created_at=user.get('created_at') if isinstance(user.get('created_at'), int) else int(user.get('created_at')),
             verification_email_code=None,
             verification_email_code_expires_at=None,
         )
