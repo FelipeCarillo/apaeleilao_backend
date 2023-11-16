@@ -48,6 +48,8 @@ class DeleteAuctionUseCase:
             raise MissingParameter('auction_id')
         
         auction = self.__auction_interface.get_auction_by_id(auction_id=auction_id)
+        if not auction:
+            raise DataNotFound(f"Leilão - Lote[{auction_id}] não encontrado.")
 
         auction = Auction(
             auction_id=auction_id,
