@@ -23,9 +23,6 @@ class CreateUserUseCase:
         if not auth.get('Authorization'):
             raise UserNotAuthenticated('Token de acesso não encontrado.')
 
-        if not body.get('email'):
-            raise MissingParameter('Email')
-
         if not body.get('cpf'):
             raise MissingParameter('CPF')
 
