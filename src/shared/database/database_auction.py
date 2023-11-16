@@ -294,6 +294,7 @@ class AuctionDynamodb(AuctionInterface):
                 auction['amount'] = round(float(auction['amount']), 2)
                 auction['end_date'] = int(auction['end_date'])
                 auction['start_date'] = int(auction['start_date'])
+                auction['start_amount'] = round(float(auction['start_amount']), 2)
                 auction['current_amount'] = round(float(auction['current_amount']), 2)
                 auction.pop("created_by")
                 auction['created_at'] = int(auction['created_at'])
