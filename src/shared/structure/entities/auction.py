@@ -153,14 +153,15 @@ class Auction(ABC):
                 raise MissingParameter("image_body")
             if type(image.get('image_body')) != str:
                 raise InvalidParameter("image_body", "deve ser uma str")
-            file_type_permitted = ['png', 'jpg', 'jpeg']
-            image_description = image.get('image_body').split(',')[0]
-            image_body = image.get('image_body').split(',')[1]
-            content_type = image_description.split(':')[1].split(";")[0]
-            if content_type.split("/")[-1] not in file_type_permitted:
-                raise InvalidParameter("Imagens", "devem ser uma em formato PNG, JPG ou JPEG")
-            image['image_body'] = image_body
-            image['content_type'] = content_type
+            if "https" not in image.get('image_body'):
+                file_type_permitted = ['png', 'jpg', 'jpeg']
+                image_description = image.get('image_body').split(',')[0]
+                image_body = image.get('image_body').split(',')[1]
+                content_type = image_description.split(':')[1].split(";")[0]
+                if content_type.split("/")[-1] not in file_type_permitted:
+                    raise InvalidParameter("Imagens", "devem ser uma em formato PNG, JPG ou JPEG")
+                image['image_body'] = image_body
+                image['content_type'] = content_type
 
         return images
 

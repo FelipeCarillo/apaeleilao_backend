@@ -16,7 +16,7 @@ class GetAllAuctionsMenuUseCase:
             return {"auctions": []}
 
         auctions = [Auction(
-            auction_id=auction["auction_id"],
+            auction_id=auction.get("auction_id"),
             created_by=auction.get("created_by"),
             title=auction.get("title"),
             description=auction.get("description"),
