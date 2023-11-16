@@ -2,14 +2,14 @@ import os
 from typing import Any, Dict
 
 from src.shared.errors.modules_errors import *
+from src.shared.structure.entities.auction import Auction
 from src.shared.helper_functions.email_function import Email
 from src.shared.helper_functions.events_trigger import EventsTrigger
-from src.shared.helper_functions.time_manipulation import TimeManipulation
-from src.shared.structure.entities.auction import Auction
-from src.shared.structure.enums.user_enum import TYPE_ACCOUNT_USER_ENUM
-from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
 from src.shared.structure.interface.user_interface import UserInterface
+from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
+from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.structure.interface.auction_interface import AuctionInterface
+from src.shared.structure.enums.user_enum import TYPE_ACCOUNT_USER_ENUM, STATUS_USER_ACCOUNT_ENUM
 
 
 class DeleteAuctionUseCase:
@@ -23,6 +23,8 @@ class DeleteAuctionUseCase:
 
         if not auth.get('Authorization'):
             raise UserNotAuthenticated('Token de acesso não encontrado.')
+        if not body:
+            raise MissingParameter('body')
         
         decoded_token = self.__token.decode_token(auth.get('Authorization'))
         if not decoded_token:
@@ -36,10 +38,9 @@ class DeleteAuctionUseCase:
         AUTHORIZED_TYPE_ACCOUNT = [TYPE_ACCOUNT_USER_ENUM.ADMIN, TYPE_ACCOUNT_USER_ENUM.MODERATOR]
         if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) not in AUTHORIZED_TYPE_ACCOUNT:
             raise UserNotAuthenticated()
+        if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) != STATUS_USER_ACCOUNT_ENUM.ACTIVE:
+            raise UserNotAuthenticated()
 
-        if not body:
-            raise MissingParameter('body')
-        
         auction_id = body.get("auction_id")
         if not auction_id:
             raise MissingParameter('auction_id')
