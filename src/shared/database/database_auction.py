@@ -152,11 +152,11 @@ class AuctionDynamodb(AuctionInterface):
             response = self.__dynamodb.update_item(
                 Key={'PK': auction_dict.get('auction_id'),
                      'SK': AUCTION_TABLE_ENTITY.AUCTION.value},
-                UpdateExpression='SET tittle = :tittle, description = :description, start_date = :start_date, '
+                UpdateExpression='SET title = :title, description = :description, start_date = :start_date, '
                                  'end_date = :end_date, start_amount = :start_amount, current_amount = :current_amount,'
                                  'images = :images, status_auction = :status_auction',
                 ExpressionAttributeValues={
-                    ':tittle': auction_dict.get('tittle'),
+                    ':title': auction_dict.get('title'),
                     ':description': auction_dict.get('description'),
                     ':start_date': auction_dict.get('start_date'),
                     ':end_date': auction_dict.get('end_date'),
