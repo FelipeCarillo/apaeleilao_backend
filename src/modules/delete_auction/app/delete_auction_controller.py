@@ -16,6 +16,9 @@ class DeleteAuctionController:
             if not request:
                 raise InvalidRequest()
 
+            if not request.get('auth'):
+                raise MissingParameter('auth')
+                
             if not request.get('body'):
                 raise MissingParameter('body')
 
