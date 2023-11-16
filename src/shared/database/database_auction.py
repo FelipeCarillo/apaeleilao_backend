@@ -94,14 +94,16 @@ class AuctionDynamodb(AuctionInterface):
             query = self.__dynamodb.query(
                 IndexName="SK_created_at-index",
                 KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
-                FilterExpression=Attr('status_auction').eq(permission_to_search) &
-                                 Attr('start_date').between(start_date, end_date),
+                FilterExpression=Attr('start_date').between(start_date, end_date),
                 ScanIndexForward=False,
             )
 
             response = query.get('Items', None)
             if response:
                 for auction in response:
+                    if auction.get('status_auction') not in permission_to_search:
+                        response.remove(auction)
+                        continue
                     auction.pop('SK')
                     auction['auction_id'] = auction.pop('PK')
                     auction['start_amount'] = round(float(auction['start_amount']), 2)
@@ -279,10 +281,11 @@ class AuctionDynamodb(AuctionInterface):
                 return []
             auctions_id = [auction.get("PK") for auction in payments]
             auctions = [
-                self.__dynamodb.query(KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').begins_with("AUCTION"),
-                                      FilterExpression=Attr('status_auction').eq(
-                                          "CLOSED")
-                                      ).get('Items')[0]
+                self.__dynamodb.query(
+                    KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').begins_with("AUCTION"),
+                    FilterExpression=Attr('status_auction').eq(
+                        "CLOSED")
+                    ).get('Items')[0]
                 for auction_id in auctions_id]
             merged_list = [{**auction, **payment} for auction, payment in zip(auctions, payments)]
             for auction in merged_list:
