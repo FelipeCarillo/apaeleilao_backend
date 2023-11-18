@@ -31,6 +31,9 @@ class CreateFeedbackUseCase:
         
         if not body.get('content'):
             raise MissingParameter("Texto")
+
+        if not body.get("grade"):
+            raise MissingParameter("Nota")
         
         feedback_id = self.__user_interface.get_last_feedback_id()+1
         email = body.get('email', user.get('email'))
@@ -40,6 +43,7 @@ class CreateFeedbackUseCase:
             feedback_id=str(feedback_id),
             email=email,
             created_at=created_at,
+            grade=body.get('grade'),
             content=body.get('content')
         )
 

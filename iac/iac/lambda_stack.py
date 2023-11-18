@@ -184,6 +184,7 @@ class LambdaStack(Construct):
             method="GET",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
+            more_layers=[self.mercadopago, self.urllib3]
         )
 
         self.delete_auction = self.create_lambda(
