@@ -59,4 +59,9 @@ class GetPaymentUseCase:
         payment['pix_code'] = payment_mercadopago['point_of_interaction']['transaction_data']['qr_code']
         payment['pix_base64'] = payment_mercadopago['point_of_interaction']['transaction_data']['qr_code_base64']
 
-        return payment
+        return {
+            "payment_id": payment['payment_id'],
+            "status_payment": payment['status_payment'],
+            "pix_code": payment['pix_code'],
+            "pix_base64": payment['pix_base64'],
+        }
