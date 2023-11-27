@@ -13,13 +13,10 @@ class UpdatePaymentWebhookController:
             if not request:
                 raise InvalidRequest()
 
-            if not request.get("auth"):
-                raise MissingParameter("auth")
-
             if not request.get("body"):
                 raise MissingParameter("body")
 
-            update_user_usecase = self.__usecase(auth=request["auth"], body=request["body"])
+            update_user_usecase = self.__usecase(body=request["body"])
 
             return OK(body=update_user_usecase, message="Dados alterados com sucesso.")
 

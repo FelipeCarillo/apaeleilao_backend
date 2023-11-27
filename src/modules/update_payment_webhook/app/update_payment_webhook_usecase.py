@@ -25,7 +25,7 @@ class UpdatePaymentWebhookUseCase:
         self.__user_interface = user_interface
         self.__auction_interface = auction_interface
 
-    def __call__(self, auth: Dict, body: Dict):
+    def __call__(self, body: Dict):
 
         if not body:
             raise MissingParameter('body')
@@ -91,4 +91,4 @@ class UpdatePaymentWebhookUseCase:
 
         return self.__auction_interface.update_status_payment(auction_id=payment.get('auction_id'),
                                                               payment_id=payment.get('payment_id'),
-                                                              status_payment=payment.get('status_payment'))
+                                                              status_payment=payment.get('status_payment').value)

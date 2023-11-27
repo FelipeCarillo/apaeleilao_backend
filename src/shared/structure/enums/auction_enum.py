@@ -10,11 +10,11 @@ class STATUS_AUCTION_ENUM(Enum):
     SUSPENDED: The auction is suspended
     """
 
-    AVAILABLE = 'AVAILABLE'
-    PENDING = 'PENDING'
-    OPEN = 'OPEN'
-    CLOSED = 'CLOSED'
-    SUSPENDED = 'SUSPENDED'
+    AVAILABLE = "AVAILABLE"
+    PENDING = "PENDING"
+    OPEN = "OPEN"
+    CLOSED = "CLOSED"
+    SUSPENDED = "SUSPENDED"
 
 
 class STATUS_AUCTION_PAYMENT_ENUM(Enum):
@@ -24,13 +24,13 @@ class STATUS_AUCTION_PAYMENT_ENUM(Enum):
     EXPIRED: The auction is closed and the payment is expired
     """
 
-    PENDING = 'PENDING'
-    PAID = 'PAID'
-    EXPIRED = 'EXPIRED'
+    PENDING = "PENDING"
+    PAID = "PAID"
+    EXPIRED = "EXPIRED"
 
 
 class PAYMENT_SERVICES(Enum):
     """
     MERCADO_PAGO: Mercado Pago API
     """
-    MERCADO_PAGO = 'MERCADO_PAGO'
+    MERCADO_PAGO = "MERCADO_PAGO"
