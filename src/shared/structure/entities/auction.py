@@ -91,7 +91,7 @@ class Auction(ABC):
             raise MissingParameter("title")
         if Auction.TITTLE_MIN_LENGTH > len(title) or len(title) > Auction.TITTLE_MAX_LENGTH:
             raise InvalidParameter(
-                "title",
+                "Título",
                 f"deve ter no mínimo {Auction.TITTLE_MIN_LENGTH} caracteres e no máximo {Auction.TITTLE_MAX_LENGTH}")
         if isinstance(title, str) is False:
             raise InvalidParameter("title", "deve ser uma str")
@@ -103,7 +103,7 @@ class Auction(ABC):
             return None
         if Auction.DESCRIPTION_MIN_LENGTH >= len(description) or len(description) >= Auction.DESCRIPTION_MAX_LENGTH:
             raise InvalidParameter(
-                "description",
+                "Descrição",
                 f"deve ter no mínimo {Auction.DESCRIPTION_MIN_LENGTH} caracteres e no máximo {Auction.DESCRIPTION_MAX_LENGTH}")
         if type(description) != str:
             raise InvalidParameter("description", "deve ser uma str")
