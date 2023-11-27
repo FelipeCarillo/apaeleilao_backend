@@ -2,6 +2,7 @@ from uuid import uuid4
 from typing import Dict
 
 from src.shared.errors.modules_errors import *
+from src.shared.helper_functions.email_function import Email
 from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.entities.suspension import Suspension
 from src.shared.helper_functions.mercadopago_api import MercadoPago
@@ -17,6 +18,7 @@ from src.shared.structure.enums.auction_enum import STATUS_AUCTION_PAYMENT_ENUM
 class UpdatePaymentWebhookUseCase:
 
     def __init__(self, auction_interface: AuctionInterface, user_interface: UserInterface):
+        self.__email = Email()
         self.__token = TokenAuthy()
         self.__payment = MercadoPago()
         self.__trigger = EventsTrigger()
@@ -79,6 +81,13 @@ class UpdatePaymentWebhookUseCase:
             else:
                 self.__user_interface.update_user_status(user_id=payment.get('user_id'),
                                                          status=STATUS_USER_ACCOUNT_ENUM.BANED)
+
+            datetime = TimeManipulation(time_now=date_reactivation).get_datetime(datetime_format="%d/%m/%Y %H:%M:%S")
+            self.__email.set_email_template(title="Pagamento não efetuado", content=f"Pagamento do Leilão {auction.get('title')} - Lote[{auction.get('auction_id')}] não foi efetuado no prazo de 5 dias."
+                                                                                    f"O usuário {payment.get('first_name')} {payment.get('last_name')} foi suspenso até {datetime}.",
+                                            footer="Por favor, não responda este e-mail. Entre em contato com o "
+                                                   "suporte.")
+            self.__email.send_email(to=payment.get('email'), subject="Pagamento não efetuado")
 
         return self.__auction_interface.update_status_payment(auction_id=payment.get('auction_id'),
                                                               payment_id=payment.get('payment_id'),
