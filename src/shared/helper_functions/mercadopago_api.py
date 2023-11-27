@@ -47,10 +47,6 @@ class MercadoPago:
                 "email": payment.email,
                 "first_name": payment.first_name,
                 "last_name": payment.last_name,
-                "identification": {
-                    "type": "CPF",
-                    "number": payment.cpf,
-                },
             },
             "payment_method_id": "pix",
             "transaction_amount": payment.amount,
