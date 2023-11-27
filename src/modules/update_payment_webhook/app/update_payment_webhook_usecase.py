@@ -89,6 +89,8 @@ class UpdatePaymentWebhookUseCase:
                                                    "suporte.")
             self.__email.send_email(to=payment.get('email'), subject="Pagamento não efetuado")
 
-        return self.__auction_interface.update_status_payment(auction_id=payment.get('auction_id'),
-                                                              payment_id=payment.get('payment_id'),
-                                                              status_payment=payment.get('status_payment').value)
+        self.__auction_interface.update_status_payment(auction_id=payment.get('auction_id'),
+                                                       payment_id=payment.get('payment_id'),
+                                                       status_payment=payment.get('status_payment').value)
+
+        return None
