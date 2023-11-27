@@ -216,6 +216,7 @@ class AuctionDynamodb(AuctionInterface):
                     bid['auction_id'] = bid.pop('PK')
                     bid['amount'] = round(float(bid['amount']), 2)
                     bid['created_at'] = int(bid['created_at'])
+                response = sorted(response, key=lambda k: k['amount'], reverse=True)
             return response
         except ClientError as e:
             raise e

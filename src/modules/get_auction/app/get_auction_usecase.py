@@ -53,5 +53,7 @@ class GetAuctionUseCase:
 
         bids = self.__auction_interface.get_all_bids_by_auction_id(auction_id=auction['auction_id'])
         auction['bids'] = bids if bids else []
+        if len(auction['bids']) > 5:
+            auction['bids'] = auction['bids'][:5]
 
         return auction
