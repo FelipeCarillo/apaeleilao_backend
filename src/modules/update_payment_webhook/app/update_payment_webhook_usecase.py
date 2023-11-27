@@ -1,17 +1,17 @@
-from typing import Dict
 from uuid import uuid4
+from typing import Dict
 
 from src.shared.errors.modules_errors import *
 from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.structure.entities.suspension import Suspension
 from src.shared.helper_functions.mercadopago_api import MercadoPago
 from src.shared.helper_functions.events_trigger import EventsTrigger
-from src.shared.helper_functions.time_manipulation import TimeManipulation
-from src.shared.structure.enums.suspension_enum import STATUS_SUSPENSION_ENUM
-from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
-from src.shared.structure.interface.auction_interface import AuctionInterface
-from src.shared.structure.enums.auction_enum import STATUS_AUCTION_PAYMENT_ENUM
 from src.shared.structure.interface.user_interface import UserInterface
+from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
+from src.shared.helper_functions.time_manipulation import TimeManipulation
+from src.shared.structure.interface.auction_interface import AuctionInterface
+from src.shared.structure.enums.suspension_enum import STATUS_SUSPENSION_ENUM
+from src.shared.structure.enums.auction_enum import STATUS_AUCTION_PAYMENT_ENUM
 
 
 class UpdatePaymentWebhookUseCase:

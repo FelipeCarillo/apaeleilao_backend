@@ -1,10 +1,11 @@
 from .update_payment_webhook_usecase import UpdatePaymentWebhookUseCase
 from .update_payment_webhook_controller import UpdatePaymentWebhookController
 
+from src.shared.database.database_user import UserDynamodb
 from src.shared.database.database_auction import AuctionDynamodb
 from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 
-usecase = UpdatePaymentWebhookUseCase(AuctionDynamodb())
+usecase = UpdatePaymentWebhookUseCase(AuctionDynamodb(), UserDynamodb())
 controller = UpdatePaymentWebhookController(usecase)
 
 
