@@ -69,7 +69,7 @@ class AuctionDynamodb(AuctionInterface):
         try:
             permission_to_search = [STATUS_AUCTION_ENUM.OPEN.value, STATUS_AUCTION_ENUM.PENDING.value]
             query = self.__dynamodb.query(
-                IndexName="SK_created_at-index",
+                IndexName="SK_start_date-index",
                 KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
                 FilterExpression=Attr('status_auction').eq(permission_to_search[0]) | Attr('status_auction').eq(
                     permission_to_search[1]),
