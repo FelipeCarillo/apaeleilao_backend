@@ -29,6 +29,4 @@ class GetAllAuctionsMenuUseCase:
             created_at=int(auction.get("created_at"))
         ).to_dict() for auction in auctions]
 
-        auctions = sorted(auctions, key=lambda k: k['created_at'], reverse=False)
-
         return {"auctions": auctions}
