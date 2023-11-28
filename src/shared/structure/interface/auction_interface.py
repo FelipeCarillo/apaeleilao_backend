@@ -22,7 +22,7 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
-    def get_all_auctions_user(self, user_id: str) -> List[Optional[Dict]]:
+    def get_all_auctions_user(self, user_id: str, status_auction: str = None) -> List[Optional[Dict]]:
         """
         Get all auctions by user
         """

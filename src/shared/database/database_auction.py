@@ -271,12 +271,14 @@ class AuctionDynamodb(AuctionInterface):
         except ClientError as e:
             raise e
 
-    def get_all_auctions_user(self, user_id: str) -> List[Optional[Dict]]:
+    def get_all_auctions_user(self, user_id: str, status_auction: str = None) -> List[Optional[Dict]]:
         try:
+            FilterExpression = Attr('SK').begins_with("PAYMENT") & Attr('status_auction').eq(status_auction) if status_auction else Attr('SK').begins_with("PAYMENT")
+
             payments = self.__dynamodb.query(
                 IndexName="user_id-index",
                 KeyConditionExpression=Key('user_id').eq(user_id),
-                FilterExpression=Attr('SK').begins_with("PAYMENT"),
+                FilterExpression=FilterExpression,
             ).get('Items', None)
             if not payments:
                 return []
