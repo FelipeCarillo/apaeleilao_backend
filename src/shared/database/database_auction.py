@@ -94,7 +94,7 @@ class AuctionDynamodb(AuctionInterface):
             query = self.__dynamodb.query(
                 IndexName="SK_created_at-index",
                 KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
-                FilterExpression=Attr('start_date').between(start_date, end_date),
+                FilterExpression=Attr('start_date').between(start_date, end_date) | Attr('end_date').between(start_date, end_date),
                 ScanIndexForward=False,
             )
 

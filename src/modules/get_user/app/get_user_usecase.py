@@ -54,4 +54,5 @@ class GetUserUseCase:
         if user.status_account == STATUS_USER_ACCOUNT_ENUM.BANED or user.status_account == STATUS_USER_ACCOUNT_ENUM.SUSPENDED:
             user_dict['suspensions'] = self.__user_interface.get_all_suspensions_by_user_id(user_id=user_id)
 
+        user_dict.pop('password')
         return user_dict
