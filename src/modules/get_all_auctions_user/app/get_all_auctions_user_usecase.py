@@ -28,6 +28,10 @@ class GetAllAuctionsUserUseCase:
         if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) != STATUS_USER_ACCOUNT_ENUM.ACTIVE:
             raise UserNotAuthenticated()
 
+        auctions = self.__auction_interface.get_all_auctions_user(user_id=user_id, status_auction=body.get('status_auction'))
+
+        auctions = sorted(auctions, key=lambda auction: auction.get('start_date'), reverse=True)
+
         return {
-            "auctions": self.__auction_interface.get_all_auctions_user(user_id=user_id, status_auction=body.get('status_auction'))
+            "auctions": auctions
         }
