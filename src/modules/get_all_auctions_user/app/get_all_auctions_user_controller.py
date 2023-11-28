@@ -16,7 +16,10 @@ class GetAllAuctionsUserController:
             if not request.get('auth'):
                 raise MissingParameter('auth')
 
-            usecase = self.__usecase(auth=request.get('auth'))
+            if not request.get('body'):
+                raise MissingParameter('body')
+
+            usecase = self.__usecase(auth=request.get('auth'), body=request.get('body'))
 
             return OK(body=usecase, message="Leilões encontrados com sucesso.")
 

@@ -13,7 +13,7 @@ class GetAllAuctionsUserUseCase:
         self.__user_interface = user_interface
         self.__auction_interface = auction_interface
 
-    def __call__(self, auth: Dict) -> Dict[str, List[Dict]]:
+    def __call__(self, auth: Dict, body: Dict) -> Dict[str, List[Dict]]:
         if not auth.get('Authorization'):
             raise UserNotAuthenticated('Token de acesso não encontrado.')
         decoded_token = self.__token.decode_token(auth.get('Authorization'))
@@ -29,5 +29,5 @@ class GetAllAuctionsUserUseCase:
             raise UserNotAuthenticated()
 
         return {
-            "auctions": self.__auction_interface.get_all_auctions_user(user_id=user_id)
+            "auctions": self.__auction_interface.get_all_auctions_user(user_id=user_id, status_auction=body.get('status_auction'))
         }
