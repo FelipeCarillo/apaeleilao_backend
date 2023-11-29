@@ -81,20 +81,35 @@ class AuctionInterface(ABC):
 
     @abstractmethod
     def get_auction_between_dates(self, start_date: int, end_date: int) -> Optional[Dict]:
+        """
+        Get all auctions between dates
+        """
         pass
 
     @abstractmethod
     def get_last_auction_id(self) -> Optional[int]:
+        """
+        Get the last auction id
+        """
         pass
 
     @abstractmethod
     def get_last_bid_id(self, auction_id: str) -> Optional[int]:
+        """
+        Get the last bid id
+        """
         pass
 
     @abstractmethod
     def get_payment_by_auction(self, auction_id: str) -> Optional[Dict]:
+        """
+        Get a payment by auction
+        """
         pass
 
     @abstractmethod
     def update_status_payment(self, auction_id: str = None, payment_id: str = None, status_payment: str = None) -> Optional[Dict]:
+        """
+        Update the status of the payment
+        """
         pass

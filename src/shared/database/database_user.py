@@ -5,6 +5,7 @@ from botocore.exceptions import ClientError
 from src.shared.database.database import Database
 from src.shared.structure.entities.feedback import Feedback
 from src.shared.structure.entities.user import User, UserModerator
+from src.shared.structure.enums.suspension_enum import STATUS_SUSPENSION_ENUM
 from src.shared.structure.enums.table_entities import USER_TABLE_ENTITY
 from src.shared.structure.interface.user_interface import UserInterface
 
@@ -281,3 +282,25 @@ class UserDynamodb(UserInterface):
             return suspension
         except ClientError as e:
             raise e
+
+    def update_suspension_status(self, user_id: str, status: STATUS_SUSPENSION_ENUM) -> Dict or None:
+        try:
+            response = self.__dynamodb.update_item(
+                Key={
+                    'PK': user_id,
+                    'SK': USER_TABLE_ENTITY.SUSPENSION.value
+                },
+                UpdateExpression='SET status_suspension = :status_suspension',
+                ExpressionAttributeValues={
+                    ':status_suspension': status.value,
+                },
+                ReturnValues='ALL_NEW'
+            )['Attributes']
+            if response:
+                response.pop('SK')
+                response['user_id'] = response.pop('PK')
+                response['created_at'] = int(response['created_at'])
+            return response if response else None
+        except ClientError as e:
+            raise e
+

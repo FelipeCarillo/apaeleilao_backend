@@ -1,5 +1,4 @@
-import os
-from typing import Any, Dict
+from typing import Dict
 
 from src.shared.errors.modules_errors import *
 from src.shared.structure.entities.auction import Auction
