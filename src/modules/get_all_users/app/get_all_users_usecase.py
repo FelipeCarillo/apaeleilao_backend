@@ -26,10 +26,7 @@ class GetAllUsersUseCase:
         if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) != STATUS_USER_ACCOUNT_ENUM.ACTIVE:
             raise UserNotAuthenticated()
 
-        if not body:
-            users = self.__user_interface.get_all_users()
-        else:
-            users = self.__user_interface.get_all_users(type_account=body.get('type_account'))
+        users = self.__user_interface.get_all_users(type_account=TYPE_ACCOUNT_USER_ENUM(body.get('type_account')) if body.get('type_account') else None)
 
         return {
             "users": users
