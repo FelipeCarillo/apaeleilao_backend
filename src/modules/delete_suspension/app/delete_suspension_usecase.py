@@ -50,7 +50,7 @@ class DeleteSuspensionUseCase:
             raise DataNotFound(f"Suspensão")
         
         if suspension.get("status_suspension") != STATUS_SUSPENSION_ENUM.ACTIVE.value:
-            raise DataNotFound(f"Suspensão")
+            raise InvalidParameter(f"Suspensão")
  
         self.__user_interface.update_suspension_status(user_id=suspension.user_id, status_suspension=STATUS_SUSPENSION_ENUM.CANCEL.value)
 
@@ -72,7 +72,7 @@ class DeleteSuspensionUseCase:
             to=suspension.get('email'),
             subject='Suspensão finalizada')
                 
-        self.__trigger.delete_rule(rule_name=f"delete_suspension_{suspension.suspension_id}",  lambda_function="delete_suspension")
+        self.__trigger.delete_rule(rule_name=f"end_suspension_{suspension.suspension_id}",  lambda_function="end_suspension")
         
         return None
 
