@@ -253,6 +253,9 @@ class UserDynamodb(UserInterface):
             if response:
                 for item in response:
                     item['user_id'] = item.pop('PK')
+                    item['created_at'] = int(item['created_at'])
+                    item['date_suspension'] = int(item['date_suspension'])
+                    item['date_reactivation'] = int(item['date_reactivation']) if item.get('date_reactivation') else None
                     item['suspension_id'] = item.pop('SK').split('#')[1]
             return response if response else None
         except ClientError as e:
