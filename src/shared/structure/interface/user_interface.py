@@ -4,7 +4,7 @@ from typing import Optional, Dict, List
 from src.shared.structure.entities.feedback import Feedback
 from src.shared.structure.entities.suspension import Suspension
 from src.shared.structure.entities.user import User, UserModerator
-from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
+from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM, TYPE_ACCOUNT_USER_ENUM
 from src.shared.structure.enums.suspension_enum import STATUS_SUSPENSION_ENUM
 
 
@@ -25,8 +25,7 @@ class UserInterface(ABC):
         pass
 
     @abstractmethod
-    def get_all_users(self, exclusive_start_key: str = None, limit: int = None,
-                      type_account: List[str] = 'USER') -> Optional[Dict]:
+    def get_all_users(self, type_account: TYPE_ACCOUNT_USER_ENUM = None) -> Optional[Dict]:
         """
         Get all users
         """

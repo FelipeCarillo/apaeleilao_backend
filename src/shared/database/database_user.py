@@ -5,9 +5,10 @@ from botocore.exceptions import ClientError
 from src.shared.database.database import Database
 from src.shared.structure.entities.feedback import Feedback
 from src.shared.structure.entities.user import User, UserModerator
-from src.shared.structure.enums.suspension_enum import STATUS_SUSPENSION_ENUM
-from src.shared.structure.enums.table_entities import USER_TABLE_ENTITY
 from src.shared.structure.interface.user_interface import UserInterface
+from src.shared.structure.enums.table_entities import USER_TABLE_ENTITY
+from src.shared.structure.enums.user_enum import TYPE_ACCOUNT_USER_ENUM
+from src.shared.structure.enums.suspension_enum import STATUS_SUSPENSION_ENUM
 
 
 class UserDynamodb(UserInterface):
@@ -31,7 +32,7 @@ class UserDynamodb(UserInterface):
             return user
         except ClientError as e:
             raise e
-        
+
     def create_feedback(self, feedback: Feedback) -> Dict:
         try:
             feedback = feedback.to_dict()
@@ -103,33 +104,24 @@ class UserDynamodb(UserInterface):
         except ClientError as e:
             raise e
 
-    def get_all_users(self, exclusive_start_key: str = None, limit: int = None,
-                      type_account=None, status_account: str = None) -> Dict or None:
+    def get_all_users(self, type_account: TYPE_ACCOUNT_USER_ENUM = None) -> Dict or None:
         try:
-            if not exclusive_start_key:
-                query = self.__dynamodb.query(
-                    IndexName='SK-index',
-                    KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value),
-                    FilterExpression=Key('type_account').is_in(type_account) &
-                                     Key('status_account').eq(status_account) if status_account else
-                                     Key('type_account').is_in(type_account),
-                    Limit=limit
-                )
-            else:
-                query = self.__dynamodb.query(
-                    IndexName='SK_type_account-index',
-                    KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) &
-                                           Key('type_account').eq(type_account),
-
-                    ExclusiveStartKey=exclusive_start_key,
-                    Limit=limit
-                )
+            query = self.__dynamodb.query(
+                IndexName='SK_type_account-index',
+                KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) &
+                                       Key('type_account').eq(type_account.value)
+                if type_account else Key('SK').eq(USER_TABLE_ENTITY.USER.value),
+            )
             response = query.get('Items', None)
             if response:
-                for item in response:
-                    item['user_id'] = item.pop('PK')
-                    item.pop('SK')
-            return response
+                for user in response:
+                    user['user_id'] = user.pop('PK')
+                    user.pop('SK')
+                    user['created_at'] = int(user['created_at'])
+                    suspensions = self.get_all_suspensions_by_user_id(user['user_id'])
+                    user['suspensions'] = suspensions if suspensions else None
+            return response if response else None
+
         except ClientError as e:
             raise e
 
@@ -303,4 +295,3 @@ class UserDynamodb(UserInterface):
             return response if response else None
         except ClientError as e:
             raise e
-
