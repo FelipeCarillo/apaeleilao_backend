@@ -78,7 +78,6 @@ class AuctionDynamodb(AuctionInterface):
                             auction['bids'] = bids
                             payment = self.get_payment_by_auction(auction_id=auction.get('auction_id'))
                             auction['payment'] = payment
-                            auction´[]
             return response if response else []
         except ClientError as e:
             raise e
