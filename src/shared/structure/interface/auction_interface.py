@@ -61,10 +61,6 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
-    def get_all_auctions(self, exclusive_start_key: str, amount: int) -> Optional[Dict]:
-        pass
-
-    @abstractmethod
     def get_all_auctions_menu(self) -> Optional[List[Dict]]:
         """
         Get all auctions for menu
