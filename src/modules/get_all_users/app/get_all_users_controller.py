@@ -18,7 +18,7 @@ class GetAllUsersController:
 
             usecase = self.__usecase(auth=request.get('auth'), body=request.get('body'))
 
-            return OK(body=usecase, message="Leilões encontrados com sucesso.")
+            return OK(body=usecase, message="Usuários encontrados com sucesso.")
 
         except DataNotFound as e:
             return NotFound(message=e.message)
