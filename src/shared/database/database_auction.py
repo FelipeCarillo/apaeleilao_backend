@@ -78,6 +78,7 @@ class AuctionDynamodb(AuctionInterface):
                             auction['bids'] = bids
                             payment = self.get_payment_by_auction(auction_id=auction.get('auction_id'))
                             auction['payment'] = payment
+                            auction´[]
             return response if response else []
         except ClientError as e:
             raise e
@@ -366,6 +367,10 @@ class AuctionDynamodb(AuctionInterface):
                 response = response[0]
                 response['payment_id'] = response.pop('SK').split('#')[1]
                 response['auction_id'] = response.pop('PK')
+                response['amount'] = round(float(response['amount']), 2)
+                response['date_payment'] = int(response['date_payment']) if response['date_payment'] else None
+                response['payment_expires_at'] = int(response['payment_expires_at'])
+                response['created_at'] = int(response['created_at'])
             return response
         except ClientError as e:
             raise e
