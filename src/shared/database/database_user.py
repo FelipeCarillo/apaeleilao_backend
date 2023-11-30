@@ -108,9 +108,10 @@ class UserDynamodb(UserInterface):
         try:
             query = self.__dynamodb.query(
                 IndexName='SK_type_account-index',
-                KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) &
-                                       Key('type_account').eq(type_account.value)
-                if type_account else Key('SK').eq(USER_TABLE_ENTITY.USER.value),
+                KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value),
+            ) if not type_account else self.__dynamodb.query(
+                IndexName='SK_type_account-index',
+                KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) & Key('type_account').eq(type_account.value),
             )
             response = query.get('Items', None)
             if response:
