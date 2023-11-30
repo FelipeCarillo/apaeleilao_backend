@@ -116,3 +116,10 @@ class UserInterface(ABC):
         Get last feedback id
         """
         pass 
+
+    @abstractmethod
+    def get_suspension_by_id(self, suspension_id: str) -> Optional[Dict]:
+        """
+        Get a suspension by id
+        """
+        pass
