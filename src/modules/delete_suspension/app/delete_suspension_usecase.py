@@ -71,8 +71,6 @@ class DeleteSuspensionUseCase:
         self.__email.send_email(
             to=suspension.get('email'),
             subject='Suspensão finalizada')
-                
-        self.__trigger.delete_rule(rule_name=f"end_suspension_{suspension.suspension_id}",  lambda_function="end_suspension")
         
         return None
 
