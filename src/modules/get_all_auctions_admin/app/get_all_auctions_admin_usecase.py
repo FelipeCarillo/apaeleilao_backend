@@ -31,10 +31,9 @@ class GetAllAuctionsAdminUseCase:
         if not body.get('auctions_closed'):
             body['auctions_closed'] = False
 
-        if not isinstance(body.get('auctions_closed'), bool):
-            raise InvalidParameter('O parâmetro auctions_closed deve ser um booleano.')
+        auctions_closed = False if body.get('auctions_closed') == 'false' else True
 
-        auctions = self.__auction_interface.get_all_auctions_admin(auctions_closed=body.get('auctions_closed'))
+        auctions = self.__auction_interface.get_all_auctions_admin(auctions_closed=auctions_closed)
 
         return {
             "auctions": auctions
