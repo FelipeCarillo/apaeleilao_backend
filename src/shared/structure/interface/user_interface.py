@@ -8,7 +8,6 @@ from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
 from src.shared.structure.enums.suspension_enum import STATUS_SUSPENSION_ENUM
 
 
-
 class UserInterface(ABC):
 
     @abstractmethod
@@ -19,7 +18,7 @@ class UserInterface(ABC):
         pass
 
     @abstractmethod
-    def create_feedback(self,feedback: Feedback) -> Dict or None:
+    def create_feedback(self, feedback: Feedback) -> Dict or None:
         """
         Create a new feedback
         """
@@ -115,4 +114,4 @@ class UserInterface(ABC):
         """
         Get last feedback id
         """
-        pass 
+        pass

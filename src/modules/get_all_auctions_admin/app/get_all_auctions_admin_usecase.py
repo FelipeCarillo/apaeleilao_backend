@@ -1,9 +1,9 @@
 from typing import Dict, List
 
 from src.shared.helper_functions.token_authy import TokenAuthy
-from src.shared.errors.modules_errors import UserNotAuthenticated
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.structure.interface.auction_interface import AuctionInterface
+from src.shared.errors.modules_errors import UserNotAuthenticated, InvalidParameter
 from src.shared.structure.enums.user_enum import TYPE_ACCOUNT_USER_ENUM, STATUS_USER_ACCOUNT_ENUM
 
 
@@ -23,22 +23,19 @@ class GetAllAuctionsAdminUseCase:
         user = self.__user_interface.get_user_by_id(user_id=user_id)
         if not user:
             raise UserNotAuthenticated()
-        if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) != TYPE_ACCOUNT_USER_ENUM.ADMIN:
+        if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) not in [TYPE_ACCOUNT_USER_ENUM.ADMIN, TYPE_ACCOUNT_USER_ENUM.MODERATOR]:
             raise UserNotAuthenticated()
         if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) != STATUS_USER_ACCOUNT_ENUM.ACTIVE:
             raise UserNotAuthenticated()
 
-        if not body:
-            auctions = self.__auction_interface.get_all_auctions_user(user_id=user_id)
-        else:
-            auctions = self.__auction_interface.get_all_auctions_user(user_id=user_id, status_auction=body.get('status_auction'))
+        if not body.get('auctions_closed'):
+            body['auctions_closed'] = False
 
-        if not auctions:
-            return {
-                "auctions": []
-            }
+        if not isinstance(body.get('auctions_closed'), bool):
+            raise InvalidParameter('O parâmetro auctions_closed deve ser um booleano.')
 
-        auctions = sorted(auctions, key=lambda auction: auction.get('start_date'), reverse=True)
+        auctions = self.__auction_interface.get_all_auctions_admin(auctions_closed=body.get('auctions_closed'))
+
         return {
             "auctions": auctions
         }
