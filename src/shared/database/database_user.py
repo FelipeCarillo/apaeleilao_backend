@@ -119,8 +119,8 @@ class UserDynamodb(UserInterface):
                     user['user_id'] = user.pop('PK')
                     user.pop('SK')
                     user['created_at'] = int(user['created_at'])
-                    suspensions = self.get_all_suspensions_by_user_id(user['user_id'])
-                    user['suspensions'] = suspensions if suspensions else None
+                    # suspensions = self.get_all_suspensions_by_user_id(user['user_id'])
+                    # user['suspensions'] = suspensions if suspensions else None
             return response if response else None
 
         except ClientError as e:

@@ -70,9 +70,9 @@ class Suspension(ABC):
     @staticmethod
     def validate_and_set_status_suspension(status: STATUS_SUSPENSION_ENUM) -> STATUS_SUSPENSION_ENUM:
         if not status:
-            raise InvalidParameter('status is required')
+            raise InvalidParameter('status', 'is required')
         if not isinstance(status, STATUS_SUSPENSION_ENUM):
-            raise InvalidParameter('status must be a STATUS_SUSPENSION_ENUM')
+            raise InvalidParameter('status', 'must be a STATUS_SUSPENSION_ENUM')
         return status
 
     @staticmethod
