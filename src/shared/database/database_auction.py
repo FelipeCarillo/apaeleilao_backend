@@ -68,6 +68,9 @@ class AuctionDynamodb(AuctionInterface):
                     for auction in response:
                         auction.pop('SK')
                         auction['auction_id'] = auction.pop('PK')
+                        auction['created_at'] = int(auction['created_at'])
+                        auction['start_date'] = int(auction['start_date'])
+                        auction['end_date'] = int(auction['end_date'])
                         auction['start_amount'] = round(float(auction['start_amount']), 2)
                         auction['current_amount'] = round(float(auction['current_amount']), 2)
                         if auction.get('status_auction') == STATUS_AUCTION_ENUM.CLOSED.value:
