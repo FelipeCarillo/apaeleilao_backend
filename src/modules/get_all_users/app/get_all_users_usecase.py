@@ -11,7 +11,7 @@ class GetAllUsersUseCase:
         self.__token = TokenAuthy()
         self.__user_interface = user_interface
 
-    def __call__(self, auth: Dict, body: Dict) -> dict[str, dict | None]:
+    def __call__(self, auth: Dict, body: Dict):
         if not auth.get('Authorization'):
             raise UserNotAuthenticated('Token de acesso não encontrado.')
         decoded_token = self.__token.decode_token(auth.get('Authorization'))
