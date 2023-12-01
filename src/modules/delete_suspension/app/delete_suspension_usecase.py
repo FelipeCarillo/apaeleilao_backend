@@ -52,18 +52,18 @@ class DeleteSuspensionUseCase:
         if suspension.get("status_suspension") != STATUS_SUSPENSION_ENUM.ACTIVE.value:
             raise InvalidParameter(f"Suspensão", "não está ativa")
  
-        self.__user_interface.update_suspension_status(user_id=suspension.user_id, status_suspension=STATUS_SUSPENSION_ENUM.CANCEL.value)
+        self.__user_interface.update_suspension_status(user_id=suspension.get('user_id'), status=STATUS_SUSPENSION_ENUM.CANCEL.value)
 
-        self.__user_interface.update_user_status(user_id=suspension.get('user_id'), status_account=STATUS_USER_ACCOUNT_ENUM.ACTIVE.value)
+        self.__user_interface.update_user_status(user_id=suspension.get('user_id'), status=STATUS_USER_ACCOUNT_ENUM.ACTIVE.value)
 
-        self.__trigger.delete_rule(rule_name=f"end_suspension_{suspension.suspension_id}",  lambda_function="end_suspension")
+        self.__trigger.delete_rule(rule_name=f"end_suspension_{suspension.get('user_id')}",  lambda_function="end_suspension")
 
         email_body = f"""
             <h1>Suspensão<span style="font-weight: bold;"></span> Finalizada!</h1>
             <p>Sua suspensão foi cumprida.</p>
-            <p>Data de início: {suspension.date_suspension}</p>
-            <p>Data de término: {suspension.date_reactivation}</p>
-            <p>Motivo da suspensão: {suspension.reason}</p>
+            <p>Data de início: {suspension.get("date_suspension")}</p>
+            <p>Data de término: {suspension.get("date_reactivation")}</p>
+            <p>Motivo da suspensão: {suspension.get("reason")}</p>
             <p>Para mais informações acesse o site.</p>
             """
                 
