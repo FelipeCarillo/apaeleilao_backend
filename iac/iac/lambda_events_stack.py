@@ -57,11 +57,17 @@ class LambdaEventsStack(Construct):
             environment_variables=environment_variables,
         )
 
+        self.end_suspension = self.create_lambda(
+            function_name="end_suspension",
+            environment_variables=environment_variables,
+        )
+
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
             self.start_auction,
             self.end_auction,
+            self.end_suspension,
         )
 
     @property
@@ -75,12 +81,14 @@ class LambdaEventsStack(Construct):
     def functions_need_events_permission(self) -> Tuple[_lambda.Function] or None:
         return (
             self.start_auction,
-            self.end_auction
+            self.end_auction,
+            self.end_suspension,
         )
 
     @property
     def functions_need_lambda_permission(self) -> Tuple[_lambda.Function] or None:
         return (
             self.start_auction,
-            self.end_auction
+            self.end_auction,
+            self.end_suspension,
         )
