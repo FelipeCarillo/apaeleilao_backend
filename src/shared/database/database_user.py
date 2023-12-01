@@ -119,7 +119,7 @@ class UserDynamodb(UserInterface):
                     user['user_id'] = user.pop('PK')
                     user.pop('SK')
                     user['created_at'] = int(user['created_at']) if user.get("created_at") else None
-                    user['verification_email_code_expires_at'] = int(user['verification_email_code_expires_at']) if user['verification_email_code_expires_at'] else None
+                    user['verification_email_code_expires_at'] = int(user['verification_email_code_expires_at']) if user.get("verification_email_code_expires_at") else None
                     suspensions = self.get_all_suspensions_by_user_id(user['user_id'])
                     user['suspensions'] = suspensions if suspensions else None
             return response if response else None
