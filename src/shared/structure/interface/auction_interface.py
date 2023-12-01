@@ -29,6 +29,13 @@ class AuctionInterface(ABC):
         pass
 
     @abstractmethod
+    def get_all_auctions_admin(self, auctions_closed: bool) -> List[Optional[Dict]]:
+        """
+        Get all auctions by admin
+        """
+        pass
+
+    @abstractmethod
     def create_bid(self, bid: Bid) -> Dict or None:
         """
         Create a new bid
@@ -51,10 +58,6 @@ class AuctionInterface(ABC):
 
     @abstractmethod
     def get_all_bids_by_auction_id(self, auction_id: str) -> List[Dict]:
-        pass
-
-    @abstractmethod
-    def get_all_auctions(self, exclusive_start_key: str, amount: int) -> Optional[Dict]:
         pass
 
     @abstractmethod

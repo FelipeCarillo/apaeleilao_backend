@@ -30,40 +30,57 @@ class AuctionDynamodb(AuctionInterface):
         except ClientError as e:
             raise e
 
-    def get_all_auctions(self, exclusive_start_key: str = None, amount: int = 6, scan_forward: bool = False,
-                         status_to_search: STATUS_AUCTION_ENUM = None) -> List[Dict] or None:
-        pass
-
-    #     try:
-    #         exclusive_start_key = "AUCTION#" + exclusive_start_key if exclusive_start_key else None
-    #         get_auction_expression = Key('_id').begins_with('AUCTION#')
-    #         get_status_auction_expression = Attr('status_auction').eq(
-    #             status_to_search.value) if status_to_search else None
-    #         if get_status_auction_expression:
-    #             get_auction_expression = get_auction_expression & get_status_auction_expression
-    #
-    #         if not exclusive_start_key:
-    #             query = self.__dynamodb.query(
-    #                 KeyConditionExpression=get_auction_expression,
-    #                 Limit=amount,
-    #                 ScanIndexForward=scan_forward
-    #             )
-    #         else:
-    #             query = self.__dynamodb.query(
-    #                 KeyConditionExpression=get_auction_expression,
-    #                 Limit=amount,
-    #                 ScanIndexForward=scan_forward,
-    #                 ExclusiveStartKey={'_id': exclusive_start_key}
-    #             )
-    #         response = query.get('Items', None)
-    #         if response:
-    #             for auction in response:
-    #                 auction['auction_id'] = auction.pop('_id').replace('AUCTION#', '')
-    #                 auction['start_amount'] = round(float(auction['start_amount']), 2)
-    #                 auction['current_amount'] = round(float(auction['current_amount']), 2)
-    #         return response
-    #     except ClientError as e:
-    #         raise e
+    def get_all_auctions_admin(self, auctions_closed: bool = False) -> List[Optional[Dict]]:
+        try:
+            if not auctions_closed:
+                permission_to_search = [STATUS_AUCTION_ENUM.OPEN.value, STATUS_AUCTION_ENUM.PENDING.value]
+                query = self.__dynamodb.query(
+                    IndexName="SK_start_date-index",
+                    KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
+                    FilterExpression=Attr('status_auction').eq(permission_to_search[0]) | Attr('status_auction').eq(
+                        permission_to_search[1]),
+                    ScanIndexForward=True,
+                )
+                response = query.get('Items', None)
+                if response:
+                    for auction in response:
+                        auction.pop('SK')
+                        auction['auction_id'] = auction.pop('PK')
+                        auction['created_at'] = int(auction['created_at'])
+                        auction['start_date'] = int(auction['start_date'])
+                        auction['end_date'] = int(auction['end_date'])
+                        auction['start_amount'] = round(float(auction['start_amount']), 2)
+                        auction['current_amount'] = round(float(auction['current_amount']), 2)
+                        if auction.get('status_auction') == STATUS_AUCTION_ENUM.OPEN.value:
+                            bids = self.get_all_bids_by_auction_id(auction_id=auction.get('auction_id'))
+                            auction['bids'] = bids
+            else:
+                permission_to_search = [STATUS_AUCTION_ENUM.CLOSED.value, STATUS_AUCTION_ENUM.AVAILABLE.value]
+                query = self.__dynamodb.query(
+                    IndexName="SK_start_date-index",
+                    KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
+                    FilterExpression=Attr('status_auction').eq(permission_to_search[0]) | Attr('status_auction').eq(
+                        permission_to_search[1]),
+                    ScanIndexForward=True,
+                )
+                response = query.get('Items', None)
+                if response:
+                    for auction in response:
+                        auction.pop('SK')
+                        auction['auction_id'] = auction.pop('PK')
+                        auction['created_at'] = int(auction['created_at'])
+                        auction['start_date'] = int(auction['start_date'])
+                        auction['end_date'] = int(auction['end_date'])
+                        auction['start_amount'] = round(float(auction['start_amount']), 2)
+                        auction['current_amount'] = round(float(auction['current_amount']), 2)
+                        if auction.get('status_auction') == STATUS_AUCTION_ENUM.CLOSED.value:
+                            bids = self.get_all_bids_by_auction_id(auction_id=auction.get('auction_id'))
+                            auction['bids'] = bids
+                            payment = self.get_payment_by_auction(auction_id=auction.get('auction_id'))
+                            auction['payment'] = payment
+            return response if response else []
+        except ClientError as e:
+            raise e
 
     def get_all_auctions_menu(self) -> Optional[List[Dict]]:
         try:
@@ -209,7 +226,7 @@ class AuctionDynamodb(AuctionInterface):
             query = self.__dynamodb.query(
                 KeyConditionExpression=Key('PK').eq(auction_id) & Key('SK').begins_with(AUCTION_TABLE_ENTITY.BID.value),
             )
-            response = query.get('Items', None)
+            response = query.get('Items', [])
             if response:
                 for bid in response:
                     bid['bid_id'] = bid.pop('SK').split('#')[1]
@@ -349,6 +366,10 @@ class AuctionDynamodb(AuctionInterface):
                 response = response[0]
                 response['payment_id'] = response.pop('SK').split('#')[1]
                 response['auction_id'] = response.pop('PK')
+                response['amount'] = round(float(response['amount']), 2)
+                response['date_payment'] = int(response['date_payment']) if response['date_payment'] else None
+                response['payment_expires_at'] = int(response['payment_expires_at'])
+                response['created_at'] = int(response['created_at'])
             return response
         except ClientError as e:
             raise e
