@@ -73,12 +73,3 @@ class DeleteSuspensionUseCase:
             subject='Suspensão finalizada')
         
         return None
-
-
-
-
-
-
-        
-
-    
