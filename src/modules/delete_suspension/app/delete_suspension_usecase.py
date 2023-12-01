@@ -50,7 +50,7 @@ class DeleteSuspensionUseCase:
             raise DataNotFound(f"Suspensão")
         
         if suspension.get("status_suspension") != STATUS_SUSPENSION_ENUM.ACTIVE.value:
-            raise InvalidParameter(f"Suspensão")
+            raise InvalidParameter(f"Suspensão", "não está ativa.")
  
         self.__user_interface.update_suspension_status(user_id=suspension.user_id, status_suspension=STATUS_SUSPENSION_ENUM.CANCEL.value)
 

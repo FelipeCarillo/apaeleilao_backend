@@ -31,7 +31,7 @@ class EndSuspensionUseCase:
         
 
         if suspension.get("status_suspension") != STATUS_SUSPENSION_ENUM.ACTIVE.value:
-            raise InvalidParameter('Suspensão')
+            raise InvalidParameter('Suspensão', 'não está ativa')
 
         self.__user_interface.update_suspension_status(user_id=suspension.user_id, status_suspension=STATUS_SUSPENSION_ENUM.ENDED.value)
 
