@@ -18,9 +18,11 @@ Este repositório contém o código-fonte do backend do site de Leilão da Apae,
 
 - [Amazon S3 (Simple Storage Service)](https://aws.amazon.com/s3/): O Amazon S3 é usado para armazenar ativos estáticos, como imagens e documentos relacionados ao leilão.
 
+- [AWS EventBridge](https://aws.amazon.com/eventbridge/): O AWS EventBridge é integrado ao projeto para facilitar a comunicação assíncrona entre diferentes serviços na nuvem da AWS. Ele permite a orquestração de eventos e simplifica a arquitetura orientada a eventos.
+
 - [Mercado Pago API](https://www.mercadopago.com.br/developers/pt/reference): O Mercado Pago API é usado para realizar o pagamento dos leilões.
 
-- Python: A linguagem de programação Python é usada para escrever o código das funções Lambda e para automatizar o provisionamento de recursos por meio do AWS CDK.
+- [Python](https://www.python.org/): A linguagem de programação Python é usada para escrever o código das funções Lambda e para automatizar o provisionamento de recursos por meio do AWS CDK.
 
 - Diagrama de Infraestrutura de nosso Produto em Nuvem AWS:
 
