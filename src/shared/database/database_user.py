@@ -304,6 +304,23 @@ class UserDynamodb(UserInterface):
         except ClientError as e:
             raise e
 
+    def get_all_feedbacks(self) -> Dict or None:
+        try:
+            query = self.__dynamodb.query(
+                IndexName='SK_created_at-index',
+                KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.FEEDBACK.value),
+            )
+            response = query.get('Items', None)
+            if response:
+                for item in response:
+                    item['email'] = item.pop('SK')
+                    item['feedback_id'] = item.pop('PK')
+                    item['created_at'] = int(item['created_at'])
+                    item['grade'] = int(item['grade'])
+            return response if response else None
+        except ClientError as e:
+            raise e
+
     def get_suspension_by_id(self, suspension_id: str) -> Dict or None:
         try:
             query = self.__dynamodb.query(
@@ -314,7 +331,7 @@ class UserDynamodb(UserInterface):
             if response:
                 response[0]['user_id'] = response[0].pop('PK')
                 response[0]['suspension_id'] = response[0].pop('SK').split('#')[1]
-                response[0]['created_at'] = int(response[0]['created_at'])
+                response[0]['created_at'] = int(response[0]['created_at']) if response[0].get('created_at') else None
                 response[0]['date_suspension'] = int(response[0]['date_suspension'])
                 response[0]['date_reactivation'] = int(response[0]['date_reactivation']) if response[0].get('date_reactivation') else None
             return response[0] if response else None

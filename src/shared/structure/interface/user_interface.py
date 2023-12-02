@@ -121,3 +121,10 @@ class UserInterface(ABC):
         Get a suspension by id
         """
         pass
+
+    @abstractmethod
+    def get_all_feedbacks(self) -> Optional[Dict]:
+        """
+        Get all feedbacks
+        """
+        pass
