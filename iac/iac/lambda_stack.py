@@ -208,6 +208,13 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
+        self.delete_suspension = self.create_lambda(
+            function_name="delete_suspension",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
         return (
