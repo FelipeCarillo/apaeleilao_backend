@@ -52,9 +52,9 @@ class DeleteSuspensionUseCase:
         if suspension.get("status_suspension") != STATUS_SUSPENSION_ENUM.ACTIVE.value:
             raise InvalidParameter(f"Suspensão", "não está ativa")
  
-        self.__user_interface.update_suspension_status(user_id=suspension.get('user_id'), status=STATUS_SUSPENSION_ENUM.CANCEL.value)
+        self.__user_interface.update_suspension_status(user_id=suspension.get('user_id'), status=STATUS_SUSPENSION_ENUM.CANCEL)
 
-        self.__user_interface.update_user_status(user_id=suspension.get('user_id'), status=STATUS_USER_ACCOUNT_ENUM.ACTIVE.value)
+        self.__user_interface.update_user_status(user_id=suspension.get('user_id'), status=STATUS_USER_ACCOUNT_ENUM.ACTIVE)
 
         self.__trigger.delete_rule(rule_name=f"end_suspension_{suspension.get('user_id')}",  lambda_function="end_suspension")
 
