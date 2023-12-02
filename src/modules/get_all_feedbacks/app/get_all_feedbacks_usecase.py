@@ -28,8 +28,10 @@ class GetAllFeedbacksUseCase:
 
         feedbacks = self.__user_interface.get_all_feedbacks()
 
-        return {
+        response = {
             "feedbacks": feedbacks,
-            "total_feedbacks": len(feedbacks),
-            "mean_feedback": sum([feedback.get('rating') for feedback in feedbacks]) / len(feedbacks) if len(feedbacks) > 0 else "Sem avaliações",
+            "total_feedbacks": len(feedbacks) if feedbacks else "Sem avaliações",
+            "mean_feedback": sum([feedback.get('rating') for feedback in feedbacks]) / len(feedbacks) if feedbacks else "Sem avaliações",
         }
+
+        return response
