@@ -116,7 +116,7 @@ class UserDynamodb(UserInterface):
                 KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) & Key('type_account').eq(type_account.value),
             )
             response = query.get('Items', None)
-            if response:
+            if response or response != []:
                 response = [user for user in response if user.get('type_account') != TYPE_ACCOUNT_USER_ENUM.ADMIN.value]
                 for user in response:
                     user['user_id'] = user.pop('PK')
@@ -255,7 +255,7 @@ class UserDynamodb(UserInterface):
                 KeyConditionExpression=Key('PK').eq(user_id) & Key('SK').begins_with(USER_TABLE_ENTITY.SUSPENSION.value)
             )
             response = query.get('Items', None)
-            if response:
+            if response or response != []:
                 for item in response:
                     item['user_id'] = item.pop('PK')
                     item['created_at'] = int(item['created_at']) if item.get('created_at') else None
