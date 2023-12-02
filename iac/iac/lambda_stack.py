@@ -236,6 +236,7 @@ class LambdaStack(Construct):
             self.get_all_auctions_user,
             self.get_all_auctions_admin,
             self.get_all_users,
+            self.delete_suspension,
         )
 
     @property
@@ -256,6 +257,7 @@ class LambdaStack(Construct):
         return (
             self.create_auction,
             self.delete_auction,
+            self.delete_suspension,
         )
 
     @property
@@ -263,4 +265,5 @@ class LambdaStack(Construct):
         return (
             self.create_auction,
             self.delete_auction,
+            self.delete_suspension,
         )
