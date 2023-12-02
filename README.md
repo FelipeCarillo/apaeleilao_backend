@@ -24,7 +24,7 @@ Este repositório contém o código-fonte do backend do site de Leilão da Apae,
 
 - Diagrama de Infraestrutura de nosso Produto em Nuvem AWS:
 
-![image](https://github.com/FelipeCarillo/apaeleilao_mss/assets/63021830/3177a46c-ada9-481c-b5e5-92daf1f40db7)
+![image](https://github.com/FelipeCarillo/apaeleilao_backend/assets/63021830/0fb160f0-77bc-4440-93cb-2e6fa02fba13)
 
 ## Estrutura do Projeto
 
