@@ -28,6 +28,10 @@ class GetAllUsersUseCase:
 
         users = self.__user_interface.get_all_users(type_account=TYPE_ACCOUNT_USER_ENUM(body.get('type_account')) if body else None)
 
+        for user in users:
+            if isinstance(user.get('created_at'), int) is False:
+                user['created_at'] = int(user.get('created_at'))
+
         return {
             "users": users
         }
