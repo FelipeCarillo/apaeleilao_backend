@@ -1,5 +1,5 @@
 from typing import Dict, Optional
-from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
 
 from src.shared.database.database import Database
@@ -92,11 +92,14 @@ class UserDynamodb(UserInterface):
 
     def get_user_by_id(self, user_id: str) -> Dict or None:
         try:
-            query = self.__dynamodb.query(
-                KeyConditionExpression=Key('PK').eq(user_id) & Key('SK').eq(USER_TABLE_ENTITY.USER.value),
-            ).get('Items', [])
-            item = None
-            if len(query) > 0:
+            query = self.__dynamodb.get_item(
+                Key={
+                    'PK': user_id,
+                    'SK': USER_TABLE_ENTITY.USER.value
+                },
+            )
+            item = query.get('Item', None)
+            if item:
                 item = query[0]
                 item['user_id'] = item.pop('PK')
                 item.pop('SK')
@@ -151,7 +154,7 @@ class UserDynamodb(UserInterface):
         try:
             query = self.__dynamodb.query(
                 IndexName='email-index',
-                KeyConditionExpression=Key('email').eq(email),
+                KeyConditionExpression=Key('email').eq(email) & Attr('SK').eq(USER_TABLE_ENTITY.USER.value),
             )
             response = query.get('Items', None)
             if response:
