@@ -41,8 +41,8 @@ class EndSuspensionUseCase:
 
         self.__trigger.delete_rule(rule_name=f"end_suspension_{suspension.get('suspension_id')}",  lambda_function="end_suspension")
 
-        date_suspension = datetime.strptime(suspension.get("date_suspension"), '%d/%m/%Y %H:%M:%S')
-        date_reactivation = datetime.strptime(suspension.get("date_reactivation"), '%d/%m/%Y %H:%M:%S')
+        date_suspension = datetime.fromtimestamp(suspension.get("date_suspension")).strftime('%d/%m/%Y %H:%M:%S')
+        date_reactivation = datetime.fromtimestamp(suspension.get("date_reactivation")).strftime('%d/%m/%Y %H:%M:%S')
 
         email_body = f"""
             <h1>Suspensão<span style="font-weight: bold;"></span> Finalizada!</h1>
