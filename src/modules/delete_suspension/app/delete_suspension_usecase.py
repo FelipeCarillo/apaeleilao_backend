@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Any
 
 from src.shared.errors.modules_errors import *
 from src.shared.helper_functions.email_function import Email
@@ -19,7 +19,7 @@ class DeleteSuspensionUseCase:
         self.__trigger = EventsTrigger()
         self.__user_interface = user_interface
 
-    def __call__(self, auth: Dict, body: Dict) -> None:
+    def __call__(self, auth: Dict, body: Dict) -> Dict:
 
         if not auth.get('Authorization'):
             raise UserNotAuthenticated('Token de acesso não encontrado.')
@@ -73,4 +73,6 @@ class DeleteSuspensionUseCase:
             subject='Suspensão finalizada',
         )
         
-        return None
+        return {
+            "suspension_id": suspension_id,
+        }

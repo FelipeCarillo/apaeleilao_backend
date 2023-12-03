@@ -22,9 +22,9 @@ class DeleteSuspensionController:
             if not request.get('body'):
                 raise MissingParameter('body')
 
-            self.__usecase(auth=request.get('auth'), body=request.get('body'))
+            usecase = self.__usecase(auth=request.get('auth'), body=request.get('body'))
 
-            return OK(message='Suspensão removida com sucesso.')
+            return OK(body=usecase, message='Suspensão removida com sucesso.')
 
         except DataAlreadyUsed as e:
             return ParameterError(message=e.message)
