@@ -94,10 +94,10 @@ class UserDynamodb(UserInterface):
         try:
             query = self.__dynamodb.query(
                 KeyConditionExpression=Key('PK').eq(user_id) & Key('SK').eq(USER_TABLE_ENTITY.USER.value),
-            ).get('Items', None)
-
-            item = query[0] if query else None
-            if item:
+            ).get('Items', [])
+            item = None
+            if len(query) > 0:
+                item = query[0]
                 item['user_id'] = item.pop('PK')
                 item.pop('SK')
             return item
@@ -116,7 +116,7 @@ class UserDynamodb(UserInterface):
                 KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) & Key('type_account').eq(type_account.value),
             )
             response = query.get('Items', [])
-            if response:
+            if len(response) > 0:
                 for user in response:
                     if user.get('type_account') == TYPE_ACCOUNT_USER_ENUM.ADMIN.value:
                         response.remove(user)
@@ -256,8 +256,8 @@ class UserDynamodb(UserInterface):
             query = self.__dynamodb.query(
                 KeyConditionExpression=Key('PK').eq(user_id) & Key('SK').begins_with(USER_TABLE_ENTITY.SUSPENSION.value)
             )
-            response = query.get('Items', None)
-            if response or response != []:
+            response = query.get('Items', [])
+            if len(response) > 0:
                 for item in response:
                     item['user_id'] = item.pop('PK')
                     item['created_at'] = int(item['created_at']) if item.get('created_at') else None

@@ -1,11 +1,10 @@
-
 from typing import Dict
 
 from src.shared.structure.entities.user import User
 from src.shared.helper_functions.token_authy import TokenAuthy
+from src.shared.errors.modules_errors import UserNotAuthenticated
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
-from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated
 
 
 class GetUserUseCase:
