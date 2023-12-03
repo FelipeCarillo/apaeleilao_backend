@@ -115,8 +115,8 @@ class UserDynamodb(UserInterface):
                 IndexName='SK_type_account-index',
                 KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) & Key('type_account').eq(type_account.value),
             )
-            response = query.get('Items', None)
-            if response or response != []:
+            response = query.get('Items', [])
+            if response:
                 response = [user for user in response if user.get('type_account') != TYPE_ACCOUNT_USER_ENUM.ADMIN.value]
                 for user in response:
                     user['user_id'] = user.pop('PK')
