@@ -97,7 +97,7 @@ class UserDynamodb(UserInterface):
             )
             item = query.get('Items', None)
             if item:
-                item = query[0]
+                item = item[0]
                 item['user_id'] = item.pop('PK')
                 item.pop('SK')
             return item
