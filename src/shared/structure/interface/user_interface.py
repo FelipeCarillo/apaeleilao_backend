@@ -88,7 +88,7 @@ class UserInterface(ABC):
         pass
 
     @abstractmethod
-    def update_suspension_status(self, user_id: str, status: STATUS_SUSPENSION_ENUM) -> Optional[Dict]:
+    def update_suspension_status(self, user_id: str, suspension_id: str, status: STATUS_SUSPENSION_ENUM) -> Optional[Dict]:
         """
         Update suspension status
         """

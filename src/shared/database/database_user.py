@@ -285,12 +285,12 @@ class UserDynamodb(UserInterface):
         except ClientError as e:
             raise e
 
-    def update_suspension_status(self, user_id: str, status: STATUS_SUSPENSION_ENUM) -> Dict or None:
+    def update_suspension_status(self, user_id: str, suspension_id: str, status: STATUS_SUSPENSION_ENUM) -> Dict or None:
         try:
             response = self.__dynamodb.update_item(
                 Key={
                     'PK': user_id,
-                    'SK': USER_TABLE_ENTITY.SUSPENSION.value
+                    'SK': USER_TABLE_ENTITY.SUSPENSION.value + "#" + suspension_id
                 },
                 UpdateExpression='SET status_suspension = :status_suspension',
                 ExpressionAttributeValues={
@@ -301,7 +301,7 @@ class UserDynamodb(UserInterface):
             if response:
                 response.pop('SK')
                 response['user_id'] = response.pop('PK')
-                response['created_at'] = int(response['created_at'])
+                response['created_at'] = int(response['created_at']) if response.get('created_at') else None
             return response if response else None
         except ClientError as e:
             raise e
