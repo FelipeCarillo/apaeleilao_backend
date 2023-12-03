@@ -92,13 +92,10 @@ class UserDynamodb(UserInterface):
 
     def get_user_by_id(self, user_id: str) -> Dict or None:
         try:
-            query = self.__dynamodb.get_item(
-                Key={
-                    'PK': user_id,
-                    'SK': USER_TABLE_ENTITY.USER.value
-                },
+            query = self.__dynamodb.query(
+                KeyConditionExpression=Key('PK').eq(user_id) & Key('SK').eq(USER_TABLE_ENTITY.USER.value),
             )
-            item = query.get('Item', None)
+            item = query.get('Items', None)
             if item:
                 item = query[0]
                 item['user_id'] = item.pop('PK')
@@ -168,7 +165,7 @@ class UserDynamodb(UserInterface):
         try:
             query = self.__dynamodb.query(
                 IndexName='cpf-index',
-                KeyConditionExpression=Key('cpf').eq(cpf),
+                KeyConditionExpression=Key('cpf').eq(cpf) & Attr('SK').eq(USER_TABLE_ENTITY.USER.value),
             )
             response = query.get('Items', None)
             if response:
@@ -182,7 +179,7 @@ class UserDynamodb(UserInterface):
         try:
             query = self.__dynamodb.query(
                 IndexName='access_key-index',
-                KeyConditionExpression=Key('access_key').eq(access_key),
+                KeyConditionExpression=Key('access_key').eq(access_key) & Attr('SK').eq(USER_TABLE_ENTITY.USER.value),
             )
             response = query.get('Items', None)
             if response:
