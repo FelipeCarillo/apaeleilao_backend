@@ -257,7 +257,7 @@ class UserDynamodb(UserInterface):
                 KeyConditionExpression=Key('PK').eq(user_id) & Key('SK').begins_with(USER_TABLE_ENTITY.SUSPENSION.value)
             )
             response = query.get('Items', [])
-            if len(response) > 0:
+            if response:
                 for item in response:
                     item['user_id'] = item.pop('PK')
                     item['created_at'] = int(item['created_at']) if item.get('created_at') else None
