@@ -1,4 +1,5 @@
 from typing import Dict
+from datetime import datetime
 
 from src.shared.errors.modules_errors import *
 from src.shared.helper_functions.email_function import Email
@@ -31,24 +32,30 @@ class EndSuspensionUseCase:
         if suspension.get("status_suspension") != STATUS_SUSPENSION_ENUM.ACTIVE.value:
             raise InvalidParameter('Suspensão', 'não está ativa')
 
+        user_id = suspension.get('user_id')
+        user = self.__user_interface.get_user_by_id(user_id=user_id)
+
         self.__user_interface.update_suspension_status(user_id=suspension.get("user_id"), status=STATUS_SUSPENSION_ENUM.ENDED.value)
 
         self.__user_interface.update_user_status(user_id=suspension.get('user_id'), status=STATUS_USER_ACCOUNT_ENUM.ACTIVE.value)
 
         self.__trigger.delete_rule(rule_name=f"end_suspension_{suspension.get('suspension_id')}",  lambda_function="end_suspension")
 
+        date_suspension = datetime.strptime(suspension.get("date_suspension"), '%d/%m/%Y %H:%M:%S')
+        date_reactivation = datetime.strptime(suspension.get("date_reactivation"), '%d/%m/%Y %H:%M:%S')
+
         email_body = f"""
             <h1>Suspensão<span style="font-weight: bold;"></span> Finalizada!</h1>
             <p>Sua suspensão foi cumprida.</p>
-            <p>Data de início: {suspension.get("date_suspension")}</p>
-            <p>Data de término: {suspension.get("date_reactivation")}</p>
+            <p>Data de início: {date_suspension}</p>
+            <p>Data de término: {date_reactivation}</p>
             <p>Motivo da suspensão: {suspension.get("reason")}</p>
             <p>Para mais informações acesse o site.</p>
             """
 
         self.__email.set_email_template(f"Suspensão cumprida", email_body)
         self.__email.send_email(
-            to=suspension.get('email'),
+            to=user.get('email'),
             subject='Suspensão finalizada')
 
         return None
