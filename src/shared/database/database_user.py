@@ -116,10 +116,11 @@ class UserDynamodb(UserInterface):
                 KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.USER.value) & Key('type_account').eq(type_account.value),
             )
             response = query.get('Items', [])
-            print(response)
             if response:
-                response = [user for user in response if user.get('type_account') != TYPE_ACCOUNT_USER_ENUM.ADMIN.value]
                 for user in response:
+                    if user.get('type_account') == TYPE_ACCOUNT_USER_ENUM.ADMIN.value:
+                        response.remove(user)
+                        continue
                     user['user_id'] = user.pop('PK')
                     user.pop('SK')
                     user['created_at'] = int(user['created_at']) if user.get("created_at") else None
