@@ -24,7 +24,7 @@ class DeleteSuspensionController:
 
             self.__usecase(auth=request.get('auth'), body=request.get('body'))
 
-            return OK(None, message='Suspensão removida com sucesso.')
+            return OK(message='Suspensão removida com sucesso.')
 
         except DataAlreadyUsed as e:
             return ParameterError(message=e.message)

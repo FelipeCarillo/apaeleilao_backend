@@ -69,7 +69,8 @@ class DeleteSuspensionUseCase:
                 
         self.__email.set_email_template(f"Suspensão cumprida", email_body)
         self.__email.send_email(
-            to=suspension.get('email'),
-            subject='Suspensão finalizada')
+            to=user.get('email'),
+            subject='Suspensão finalizada',
+        )
         
         return None
