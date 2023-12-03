@@ -25,7 +25,8 @@ class GetAllAuctionsUserUseCase:
             raise UserNotAuthenticated()
         if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) != TYPE_ACCOUNT_USER_ENUM.USER:
             raise UserNotAuthenticated()
-        if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) != STATUS_USER_ACCOUNT_ENUM.ACTIVE:
+        permitted_status = [STATUS_USER_ACCOUNT_ENUM.ACTIVE, STATUS_USER_ACCOUNT_ENUM.SUSPENDED, STATUS_USER_ACCOUNT_ENUM.BANED]
+        if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) not in permitted_status:
             raise UserNotAuthenticated()
 
         if not body:
