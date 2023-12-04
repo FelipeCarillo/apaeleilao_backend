@@ -46,7 +46,7 @@ class CreateUserUseCase:
         while self.__user_interface.get_user_by_id(user_id):
             user_id = str(uuid.uuid4())
         created_at = TimeManipulation.get_current_time()
-        access_key = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        access_key = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
         password = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits +
                                           string.punctuation, k=20))
 

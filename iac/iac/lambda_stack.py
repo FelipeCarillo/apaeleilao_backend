@@ -131,11 +131,6 @@ class LambdaStack(Construct):
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
-        s3_policy = iam.PolicyStatement(
-            actions=["s3:*"],
-            resources=["*"]
-        )
-        self.create_auction.add_to_role_policy(statement=s3_policy)
 
         self.create_user_by_admin = self.create_lambda(
             function_name="create_user_by_admin",
@@ -221,6 +216,11 @@ class LambdaStack(Construct):
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
+
+        self.create_auction.add_to_role_policy(statement=iam.PolicyStatement(
+            actions=["s3:*"],
+            resources=["*"]
+        ))
 
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
