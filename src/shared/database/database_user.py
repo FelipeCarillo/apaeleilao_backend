@@ -151,7 +151,8 @@ class UserDynamodb(UserInterface):
         try:
             query = self.__dynamodb.query(
                 IndexName='email-index',
-                KeyConditionExpression=Key('email').eq(email) & Key('SK').eq(USER_TABLE_ENTITY.USER.value),
+                KeyConditionExpression=Key('email').eq(email),
+                FilterExpression=Attr('SK').eq(USER_TABLE_ENTITY.USER.value),
             )
             response = query.get('Items', None)
             if response:
@@ -165,7 +166,8 @@ class UserDynamodb(UserInterface):
         try:
             query = self.__dynamodb.query(
                 IndexName='cpf-index',
-                KeyConditionExpression=Key('cpf').eq(cpf) & Key('SK').eq(USER_TABLE_ENTITY.USER.value),
+                KeyConditionExpression=Key('cpf').eq(cpf),
+                FilterExpression=Attr('SK').eq(USER_TABLE_ENTITY.USER.value),
             )
             response = query.get('Items', None)
             if response:
@@ -179,7 +181,8 @@ class UserDynamodb(UserInterface):
         try:
             query = self.__dynamodb.query(
                 IndexName='access_key-index',
-                KeyConditionExpression=Key('access_key').eq(access_key) & Key('SK').eq(USER_TABLE_ENTITY.USER.value),
+                KeyConditionExpression=Key('access_key').eq(access_key),
+                FilterExpression=Attr('SK').eq(USER_TABLE_ENTITY.USER.value),
             )
             response = query.get('Items', None)
             if response:
