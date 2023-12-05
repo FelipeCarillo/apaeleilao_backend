@@ -18,7 +18,7 @@ class CreateFeedbackUseCase:
 
         user = None
         if auth.get("Authorization"):
-            decoded_token = self.__token.decode_token(body["Authorization"])
+            decoded_token = self.__token.decode_token(auth["Authorization"])
             if not decoded_token:
                 raise UserNotAuthenticated("Token de acesso inválido ou expirado.")
             user_id = decoded_token.get('user_id')
