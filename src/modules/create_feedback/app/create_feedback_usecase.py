@@ -36,7 +36,7 @@ class CreateFeedbackUseCase:
             raise MissingParameter("Nota")
         
         feedback_id = self.__user_interface.get_last_feedback_id()+1
-        email = body.get('email', user.get('email'))
+        email = body.get('email') if body.get('email') else user.get('email')
         created_at = TimeManipulation.get_current_time()
 
         feedback = Feedback(
