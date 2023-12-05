@@ -34,6 +34,11 @@ class GetAllAuctionsAdminUseCase:
         auctions_closed = False if body.get('auctions_closed') == 'false' else True
 
         auctions = self.__auction_interface.get_all_auctions_admin(auctions_closed=auctions_closed)
+        if auctions_closed:
+            for auction in auctions:
+                if auction.get('payment'):
+                    user = self.__user_interface.get_user_by_id(user_id=auction['payment']['user_id'])
+                    auction['user'] = user
 
         return {
             "auctions": auctions
