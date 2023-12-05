@@ -321,7 +321,7 @@ class UserDynamodb(UserInterface):
             response = query.get('Items', None)
             if response:
                 for item in response:
-                    item['email'] = item.pop('SK')
+                    item.pop('SK')
                     item['feedback_id'] = item.pop('PK')
                     item['created_at'] = int(item['created_at'])
                     item['grade'] = int(item['grade'])
