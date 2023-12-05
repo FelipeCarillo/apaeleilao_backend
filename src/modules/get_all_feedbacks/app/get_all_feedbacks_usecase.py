@@ -31,7 +31,7 @@ class GetAllFeedbacksUseCase:
         response = {
             "feedbacks": feedbacks,
             "total_feedbacks": len(feedbacks) if feedbacks else "Sem avaliações",
-            "mean_feedback": sum([feedback.get('rating') for feedback in feedbacks]) / len(feedbacks) if feedbacks else "Sem avaliações",
+            "mean_feedback": sum([feedback.get('grade') for feedback in feedbacks]) / len(feedbacks) if feedbacks else "Sem avaliações",
         }
 
         return response
