@@ -12,14 +12,14 @@ class ImageManipulation:
     def create_auction_folder(self, auction_id: str):
         try:
             auction_folder_key = f'{self.__auction_folder}{auction_id}/'
-            self.__s3.put_object(ACL='public-read', Bucket=self.__bucket, Key=auction_folder_key, Body='')
+            self.__s3.put_object(ACL='public-read-write', Bucket=self.__bucket, Key=auction_folder_key, Body='')
         except Exception as e:
             raise e
 
     def upload_auction_image(self, auction_id: str, image_id: str, image_body: str, content_type: str):
         try:
             image_key = f'{self.__auction_folder}{auction_id}/{image_id}'
-            self.__s3.put_object(ACL='public-read', Bucket=self.__bucket, Key=image_key, Body=base64.b64decode(image_body),
+            self.__s3.put_object(ACL='public-read-write', Bucket=self.__bucket, Key=image_key, Body=base64.b64decode(image_body),
                                  ContentType=content_type)
             self.__auction_folder = f'{self.__auction_folder}{auction_id}/'
             return self.get_image_url(image_id)
