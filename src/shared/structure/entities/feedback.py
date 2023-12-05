@@ -59,3 +59,4 @@ class Feedback(ABC):
             raise InvalidParameter("Texto", "deve ser str")
         if len(content) > 500:
             raise InvalidParameter("Texto", "deve ter menos de 500 caracteres")
+        return content
