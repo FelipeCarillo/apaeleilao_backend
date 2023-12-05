@@ -54,7 +54,8 @@ class UserDynamodb(UserInterface):
             query = self.__dynamodb.query(
                 IndexName='SK_created_at-index',
                 KeyConditionExpression=Key('SK').eq(USER_TABLE_ENTITY.FEEDBACK.value),
-                Limit=1
+                Limit=1,
+                ScanIndexForward=False,
             )
             response = query.get('Items', None)
             if response:
@@ -73,11 +74,13 @@ class UserDynamodb(UserInterface):
                 query = self.__dynamodb.query(
                     IndexName='access_key-index',
                     KeyConditionExpression=Key('access_key').eq(access_key),
+                    FilterExpression=Attr('SK').eq(USER_TABLE_ENTITY.USER.value),
                 )
             else:
                 query = self.__dynamodb.query(
                     IndexName='email-index',
                     KeyConditionExpression=Key('email').eq(email),
+                    FilterExpression=Attr('SK').eq(USER_TABLE_ENTITY.USER.value),
                 )
             item = query.get('Items', None)
             item = item[0] if item else None
