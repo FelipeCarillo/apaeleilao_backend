@@ -11,8 +11,8 @@ class HttpRequest:
         if self.auth:
             if isinstance(self.auth, str):
                 self.auth = json.loads(self.auth)
-                if self.auth.get('Authorization'):
-                    self.auth['Authorization'] = None if self.auth['Authorization'] == 'null' else self.auth['Authorization']
+                if not self.auth.get('Authorization') or self.auth.get('Authorization') == 'null':
+                    self.auth["Authorization"] = None
         response = {'auth': self.auth}
         if self.body:
             if isinstance(self.body, str):
