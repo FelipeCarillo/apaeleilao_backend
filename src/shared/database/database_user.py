@@ -103,6 +103,7 @@ class UserDynamodb(UserInterface):
                 item = item[0]
                 item['user_id'] = item.pop('PK')
                 item['created_at'] = int(item['created_at']) if item.get('created_at') else None
+                item['verification_email_code_expires_at'] = int(item['verification_email_code_expires_at']) if item.get("verification_email_code_expires_at") else None
                 item.pop('SK')
             return item
         except ClientError as e:
