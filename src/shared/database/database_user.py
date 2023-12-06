@@ -102,6 +102,7 @@ class UserDynamodb(UserInterface):
             if item:
                 item = item[0]
                 item['user_id'] = item.pop('PK')
+                item['created_at'] = int(item['created_at']) if item.get('created_at') else None
                 item.pop('SK')
             return item
         except ClientError as e:
