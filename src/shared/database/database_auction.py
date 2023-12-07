@@ -150,6 +150,7 @@ class AuctionDynamodb(AuctionInterface):
     def get_last_auction_id(self) -> int or None:
         try:
             query = self.__dynamodb.query(
+                IndexName="SK-index",
                 KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
             )
             response = query.get('Items', None)
