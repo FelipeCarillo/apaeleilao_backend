@@ -2,11 +2,12 @@ from typing import Dict
 
 from src.shared.structure.entities.bid import Bid
 from src.shared.helper_functions.token_authy import TokenAuthy
+from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
 from src.shared.structure.interface.user_interface import UserInterface
-from src.shared.structure.enums.user_enum import TYPE_ACCOUNT_USER_ENUM, STATUS_USER_ACCOUNT_ENUM
 from src.shared.helper_functions.time_manipulation import TimeManipulation
 from src.shared.structure.interface.auction_interface import AuctionInterface
-from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated, DataNotFound
+from src.shared.structure.enums.user_enum import TYPE_ACCOUNT_USER_ENUM, STATUS_USER_ACCOUNT_ENUM
+from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated, DataNotFound, InvalidParameter
 
 
 class CreateUserUseCase:
@@ -18,7 +19,7 @@ class CreateUserUseCase:
     def __call__(self, auth: Dict, body: Dict) -> None:
 
         if not auth.get('Authorization'):
-            raise MissingParameter('Authorization')
+            raise UserNotAuthenticated('Token de acesso não encontrado.')
 
         decoded_token = self.__token.decode_token(auth.get('Authorization'))
         if not decoded_token:
@@ -41,19 +42,33 @@ class CreateUserUseCase:
         if not body.get('amount'):
             raise MissingParameter('amount')
 
-        if self.__auction_interface.get_auction_by_id(auction_id=body.get('auction_id')):
+        auction = self.__auction_interface.get_auction_by_id(auction_id=body.get('auction_id'))
+        if not auction:
             raise DataNotFound('Leilão')
 
-        last_bid_id = self.__auction_interface.get_last_bid_id()
+        if auction.get('status_auction') != STATUS_AUCTION_ENUM.OPEN.value:
+            raise UserNotAuthenticated("Leilão não está aberto para lances.")
+
+        if auction.get("current_amount") >= body.get("amount"):
+            raise InvalidParameter("Lance", "deve ser maior que o valor atual do leilão")
+
+        if auction.get("current_amount") + 1 > body.get("amount"):
+            raise InvalidParameter("Lance", "deve ser pelo menos 1 real a mais que o valor atual do leilão")
+
+        last_bid_id = self.__auction_interface.get_last_bid_id(auction_id=body.get('auction_id'))
         bid_id = last_bid_id + 1 if last_bid_id else 1
 
         bid = Bid(
             bid_id=str(bid_id),
-            user_id=user.get('user_id'),
+            user_id=user_id,
+            email=user.get('email'),
+            first_name=user.get('first_name'),
             auction_id=body.get('auction_id'),
             amount=body.get('amount'),
-            create_at=TimeManipulation().get_current_time()
+            created_at=TimeManipulation.get_current_time()
         )
+
         self.__auction_interface.create_bid(bid=bid)
+        self.__auction_interface.update_auction_current_amount(body.get('auction_id'), body.get('amount'))
 
         return None

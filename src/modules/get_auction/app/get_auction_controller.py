@@ -1,9 +1,7 @@
-from typing import Dict
-
 from .get_auction_usecase import GetAuctionUseCase
 
-from src.shared.https_codes.https_code import OK, BadRequest, InternalServerError, Unauthorized, ParameterError
-from src.shared.errors.modules_errors import InvalidRequest, MissingParameter, InvalidParameter, UserNotAuthenticated
+from src.shared.errors.modules_errors import *
+from src.shared.https_codes.https_code import *
 
 
 class GetAuctionController:
@@ -23,7 +21,7 @@ class GetAuctionController:
 
             usecase = self.__usecase(auth=request.get('auth'), body=request.get('body'))
 
-            return OK(body=usecase, message='Usuário encontrado com sucesso.')
+            return OK(body=usecase, message='Leilão encontrado com sucesso.')
 
         except UserNotAuthenticated as e:
             return Unauthorized(message=e.message)
@@ -36,6 +34,9 @@ class GetAuctionController:
 
         except MissingParameter as e:
             return BadRequest(message=e.message)
+
+        except DataNotFound as e:
+            return NotFound(message=e.message)
 
         except Exception as e:
             return InternalServerError(message=e.args[0])

@@ -16,7 +16,7 @@ class GetAuctionUseCase:
 
     def __call__(self, auth: Dict, body: Dict) -> Dict:
         if not auth.get('Authorization'):
-            raise MissingParameter('Authorization')
+            raise UserNotAuthenticated('Token de acesso não encontrado.')
 
         decoded_token = self.__token.decode_token(auth["Authorization"])
         if not decoded_token:
@@ -32,11 +32,9 @@ class GetAuctionUseCase:
 
         if not body.get('auction_id'):
             raise MissingParameter('auction_id')
+
         auction = self.__auction_interface.get_auction_by_id(auction_id=body.get('auction_id'))
         if not auction:
-            raise DataNotFound('Leilão')
-
-        if auction.get('status_auction') != STATUS_USER_ACCOUNT_ENUM:
             raise DataNotFound('Leilão')
 
         auction = Auction(
@@ -44,21 +42,18 @@ class GetAuctionUseCase:
             created_by=auction.get('created_by'),
             title=auction.get('title'),
             description=auction.get('description'),
-            start_date=auction.get('start_date'),
-            end_date=auction.get('end_date'),
-            start_amount=auction.get('start_amount'),
-            current_amount=auction.get('current_amount'),
+            start_date=int(auction.get('start_date')),
+            end_date=int(auction.get('end_date')),
+            start_amount=float(auction.get('start_amount')),
+            current_amount=float(auction.get('current_amount')),
             images=auction.get('images'),
             status_auction=auction.get('status_auction'),
-            create_at=auction.get('create_at')
-        )
-        auction.check_time()
+            created_at=int(auction.get('created_at'))
+        ).to_dict()
 
-        bid = self.__auction_interface.get_bids_by_auction(auction_id=auction.auction_id, limit=1)
-        amount = bid[0].get('amount') if bid else auction.start_amount
-        auction.current_amount = amount if amount > auction.current_amount else auction.current_amount
+        bids = self.__auction_interface.get_all_bids_by_auction_id(auction_id=auction['auction_id'])
+        auction['bids'] = bids if bids else []
+        if len(auction['bids']) > 5:
+            auction['bids'] = auction['bids'][:5]
 
-        if auction.status_auction.value != body.get('status_auction'):
-            self.__auction_interface.update_auction(auction=auction)
-
-        return auction.to_dict()
+        return auction

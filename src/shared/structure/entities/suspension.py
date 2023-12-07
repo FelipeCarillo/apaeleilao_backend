@@ -5,30 +5,34 @@ from src.shared.structure.enums.suspension_enum import STATUS_SUSPENSION_ENUM
 
 
 class Suspension(ABC):
+    user_id: str
     suspension_id: str
     date_suspencion: int
     date_reactivation: int
     reason: str
+    user_id: str
     status: STATUS_SUSPENSION_ENUM
-    create_at: int
+    created_at: int
 
-    def __init__(self, suspension_id: str = None, date_suspension: int = None, date_reactivation: int = None,
-                 reason: str = None, status: STATUS_SUSPENSION_ENUM = None, create_at: int = None):
+    def __init__(self, user_id: str = None, suspension_id: str = None, date_suspension: int = None, date_reactivation: int = None,
+                 reason: str = None, status_suspension: STATUS_SUSPENSION_ENUM = None, created_at: int = None):
+        self.user_id = user_id
         self.suspension_id = self.validade_and_set_suspension_id(suspension_id)
         self.date_suspension = self.validate_and_set_date_suspencion(date_suspension)
         self.date_reactivation = self.validate_and_set_date_reactivation(date_reactivation)
         self.reason = self.validate_and_set_reason(reason)
-        self.status = self.validate_and_set_status(STATUS_SUSPENSION_ENUM(status))
-        self.create_at = self.validate_and_set_create_at(create_at)
+        self.status = self.validate_and_set_status_suspension(STATUS_SUSPENSION_ENUM(status_suspension))
+        self.created_at = self.validate_and_set_created_at(created_at)
 
     def to_dict(self):
         return {
             'user_id': self.suspension_id,
+            'suspension_id': self.suspension_id,
             'date_suspension': self.date_suspencion,
             'date_reactivation': self.date_reactivation,
             'reason': self.reason,
-            'create_at': self.create_at,
-            'status': self.status.value
+            'created_at': self.created_at,
+            'status_suspension': self.status.value
         }
 
     @staticmethod
@@ -48,9 +52,9 @@ class Suspension(ABC):
         return date_suspension
 
     @staticmethod
-    def validate_and_set_date_reactivation(date_reactivation: int) -> int:
+    def validate_and_set_date_reactivation(date_reactivation: int or None) -> int or None:
         if not date_reactivation:
-            raise InvalidParameter('date_reactivation', 'is required')
+            return None
         if not isinstance(date_reactivation, int):
             raise InvalidParameter('date_reactivation', 'must be a int')
         return date_reactivation
@@ -64,17 +68,17 @@ class Suspension(ABC):
         return reason
 
     @staticmethod
-    def validate_and_set_status(status: STATUS_SUSPENSION_ENUM) -> STATUS_SUSPENSION_ENUM:
+    def validate_and_set_status_suspension(status: STATUS_SUSPENSION_ENUM) -> STATUS_SUSPENSION_ENUM:
         if not status:
-            raise InvalidParameter('status is required')
+            raise InvalidParameter('status', 'is required')
         if not isinstance(status, STATUS_SUSPENSION_ENUM):
-            raise InvalidParameter('status must be a STATUS_SUSPENSION_ENUM')
+            raise InvalidParameter('status', 'must be a STATUS_SUSPENSION_ENUM')
         return status
 
     @staticmethod
-    def validate_and_set_create_at(create_at: int) -> int:
-        if not create_at:
-            raise InvalidParameter('create_at', 'is required')
-        if not isinstance(create_at, int):
-            raise InvalidParameter('create_at', 'must be a int')
-        return create_at
+    def validate_and_set_created_at(created_at: int) -> int:
+        if not created_at:
+            raise InvalidParameter('created_at', 'is required')
+        if not isinstance(created_at, int):
+            raise InvalidParameter('created_at', 'must be a int')
+        return created_at

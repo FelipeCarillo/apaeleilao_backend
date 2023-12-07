@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - dev
-      - homolog
       - prod
 
 jobs:
@@ -39,27 +38,38 @@ jobs:
           cd iac
           rm -rf bcrypt_layer 
           rm -rf jwt_layer
+          rm -rf mercadopago_layer
           mkdir bcrypt_layer
           mkdir jwt_layer
+          mkdir mercadopago_layer
+          mkdir urllib3_layer
           cd bcrypt_layer
           pip install bcrypt==3.2.2 -t python
           cd ..
           cd jwt_layer
           pip install pyjwt -t python
+          cd ..
+          cd mercadopago_layer
+          pip install mercadopago -t python
+          cd ..
+          cd urllib3_layer
+          pip install 'urllib3<2' -t python
 
       - name: AWS Credentials
         run: |
           echo "Configuring AWS Credentials"
           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws configure set default.region ${{ vars.AWS_REGION }}
-            aws configure set default.output json
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ${{ vars.AWS_REGION }}
+          aws configure set default.output json
 
       - name: CDK Bootstrap
         run: |
           echo "CDK Bootstrap"
           cd iac
-          cdk bootstrap
+          aws cloudformation describe-stacks --stack-name CDKToolkit 2>&1 > /dev/null || \
+            cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ vars.AWS_REGION }}
+
 
       - name: CDK Deploy
         run: |
@@ -76,8 +86,13 @@ jobs:
           BUCKET_NAME: ${{ env.BUCKET_NAME }}
           ENCRYPTED_KEY: ${{ secrets.ENCRYPTED_KEY }}
           JWT_ALGORITHM: ${{ secrets.JWT_ALGORITHM }}
+          MERCADO_PAGO_ACCESS_TOKEN: ${{ secrets.MERCADO_PAGO_ACCESS_TOKEN }}
           EMAIL_SENDER: ${{ vars.EMAIL_SENDER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
           EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
-
+          DOMAIN: ${{ vars.DOMAIN }}
+          DEV_DOMAIN: ${{ secrets.DEV_DOMAIN }}
+          ADMIN_ID: ${{ secrets.ADMIN_ID }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          ADMIN_ACCESS_KEY: ${{ secrets.ADMIN_ACCESS_KEY }}

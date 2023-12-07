@@ -26,6 +26,11 @@ class DataNotFound(MainError):
         super().__init__(f"{message} não encontrado.")
 
 
+class PaymentNotCreated(MainError):
+    def __init__(self):
+        super().__init__(f"Pagamento não foi criado.")
+
+
 class UserNotAuthenticated(MainError):
     def __init__(self, message: str = None):
         if message:

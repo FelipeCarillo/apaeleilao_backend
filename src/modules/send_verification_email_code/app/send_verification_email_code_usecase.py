@@ -1,6 +1,7 @@
 import os
 import random
 import smtplib
+import string
 import datetime
 from typing import Dict
 from email.mime.text import MIMEText
@@ -24,7 +25,7 @@ class SendVerificationEmailCodeUseCase:
 
     def __call__(self, auth: Dict):
         if not auth.get('Authorization'):
-            MissingParameter('Authorization')
+            raise UserNotAuthenticated('Token de acesso não encontrado.')
 
         decoded_token = self.__token.decode_token(auth['Authorization'])
         if not decoded_token:
@@ -42,7 +43,8 @@ class SendVerificationEmailCodeUseCase:
         if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) != TYPE_ACCOUNT_USER_ENUM.USER:
             raise UserNotAuthenticated(message='Você não tem permissão para validar uma conta de usuário.')
 
-        code = random.randint(10000, 99999)
+        numbers = string.digits
+        code = ''.join(random.choice(numbers) for i in range(6))
         code_expires_at = TimeManipulation().plus_minute(1.5)
 
         user = User(user_id=user['user_id'],
@@ -55,69 +57,28 @@ class SendVerificationEmailCodeUseCase:
                     accepted_terms=user['accepted_terms'],
                     status_account=user['status_account'],
                     type_account=user['type_account'],
-                    create_at=int(user['create_at']),
+                    created_at=int(user['created_at']),
                     verification_email_code=str(code),
-                    verification_email_code_expires_at=code_expires_at,
-                    password_reset_code=user['password_reset_code'],
-                    password_reset_code_expires_at=user['password_reset_code_expires_at']
+                    verification_email_code_expires_at=int(code_expires_at),
                     )
 
         datetime_expire = datetime.datetime.fromtimestamp(code_expires_at).strftime(
             "%d/%m/%Y %H:%M:%S")
         self.__user_interface.update_user(user)
 
-        email_format = f"""
-        <html lang="pt-br" charset="UTF-8">
-        <head>
-        </head>
-        <body
-            style="margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; min-height: 75vh; background-color: white; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
-            <table class="main"
-                style="width: 50vw; max-width: 600px; background-color: #E9E9E9; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); overflow: hidden;">
-                <tr>
-                    <td>
-                        <table class="TittleBox" style="width: 100%; background-color: #2C4FBC; border-radius: 10px 10px 0 0;">
-                            <tr>
-                                <td style="text-align: center; padding: 20px;">
-                                    <img alt="Apae Leilão Logo"
-                                        src="https://apaeleilaoimtphotos.s3.sa-east-1.amazonaws.com/logo-apaeleilao/logo-apaeleilao-branco.jpg" 
-                                        style="width: 50%;"/>
-                                    <h1 style="color: #FFFFFF; margin-top: 10px;"><b>Código de Validação!</b></h1>
-                                </td>
-                            </tr>
-                        </table>
-                        <table class="ContentBox" style="width: 100%; background-color: #FFFFFF;">
-                            <tr>
-                                <td style="text-align: center; padding: 20px;">
-                                    <div class="TextsBox" style="word-wrap: break-word;">
-                                        <h2 style="color: #949393;">Obrigado, {user.first_name}<p>Aqui está o seu código de validação do email:</p>
-                                        </h2>
-                                        <h4 style="color: #000000; font-size: 26px; letter-spacing: 10px;">{user.verification_email_code}</h4>
-                                        <h4 style="color: #000000;">Código válido até: {datetime_expire}</h4>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                        <table class="BottomBox"
-                            style="width: 100%; background-color: #FFFFFF; border-top: 1px solid gray; border-radius: 0 0 10px 10px;">
-                            <tr>
-                                <td style="text-align: center; padding: 20px;">
-                                    <div class="TextsBox" style="color: #949393; word-wrap: break-word;">
-                                        <h2>Atenciosamente,</h2>
-                                        <h2><b>IMT</b></h2>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </body>
-        </html>
+        email_content = f"""
+        <div class="TextsBox" style="word-wrap: break-word;">
+          <h2 style="color: #949393;">Obrigado, {user.first_name}<p>Aqui está o seu código de validação do email:</p></h2>
+          <h4 style="color: #000000; font-size: 26px; letter-spacing: 10px;">{user.verification_email_code}</h4>
+          <h4 style="color: #000000;">Código válido até: {datetime_expire}</h4>
+        </div>
         """
 
-        self.__email.send_email(to=user.email, 
-                                subject="Código de Validação.", 
-                                body=email_format)
+        self.__email.set_email_template(title="Código de Validação", content=email_content)
+
+        self.__email.send_email(
+            to=user.email,
+            subject="Código de Validação.",
+        )
 
         return {"email": user.email, 'code_expires_at': code_expires_at}

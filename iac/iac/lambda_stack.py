@@ -1,16 +1,23 @@
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 from aws_cdk import (
     aws_lambda as _lambda,
     aws_apigateway as apigw,
-    Duration
+    Duration, aws_iam as iam
 )
 from constructs import Construct
 
 
 class LambdaStack(Construct):
 
-    def create_lambda(self, function_name: str, method: str,
-                      restapi_resource: apigw.Resource, environment_variables: Dict[str, str]) -> _lambda.Function:
+    def create_lambda(self, function_name: str,
+                      environment_variables: Dict[str, str],
+                      method: str = None,
+                      restapi_resource: apigw.Resource = None,
+                      origins: List = apigw.Cors.ALL_ORIGINS,
+                      more_layers: List[_lambda.LayerVersion] = None,
+                      ) -> _lambda.Function:
+        layers = [self.shared_layer, self.jwt_layer, self.bcrypt_layer]
+        layers.extend(more_layers) if more_layers else None
 
         function = _lambda.Function(
             self, (function_name + "_apae_leilao").title(),
@@ -19,14 +26,19 @@ class LambdaStack(Construct):
             runtime=_lambda.Runtime.PYTHON_3_9,
             code=_lambda.Code.from_asset(f"../src/modules/{function_name}"),
             handler=f"app.{function_name}_presenter.lambda_handler",
-            layers=[self.shared_layer, self.jwt_layer, self.bcrypt_layer],
+            layers=layers,
             timeout=Duration.seconds(15),
             memory_size=512,
         )
 
-        restapi_resource.add_resource(function_name.replace("_", "-")).add_method(method,
-                                                                                  integration=apigw.LambdaIntegration(
-                                                                                      function))
+        restapi_resource.add_resource(function_name.replace("_", "-"),
+                                      default_cors_preflight_options=
+                                      {
+                                          "allow_origins": origins,
+                                          "allow_methods": ["GET", "POST", "PUT", "DELETE"],
+                                          "allow_headers": ["*"]
+                                      }
+                                      ).add_method(method, integration=apigw.LambdaIntegration(function))
 
         return function
 
@@ -49,6 +61,18 @@ class LambdaStack(Construct):
         self.shared_layer = _lambda.LayerVersion(
             self, "ApaeLeilao_Layer",
             code=_lambda.Code.from_asset("./apaeleilao_layer"),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
+        )
+
+        self.mercadopago = _lambda.LayerVersion(
+            self, "MercadoPago_Layer",
+            code=_lambda.Code.from_asset("./mercadopago_layer"),
+            compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
+        )
+
+        self.urllib3 = _lambda.LayerVersion(
+            self, "Urllib3_Layer",
+            code=_lambda.Code.from_asset("./urllib3_layer"),
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_9]
         )
 
@@ -80,16 +104,9 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
-        self.send_password_reset_code = self.create_lambda(
-            function_name="send_password_reset_code",
+        self.send_reset_password_link = self.create_lambda(
+            function_name="send_reset_password_link",
             method="GET",
-            restapi_resource=restapi_resource,
-            environment_variables=environment_variables,
-        )
-
-        self.confirm_password_reset_code = self.create_lambda(
-            function_name="confirm_password_reset_code",
-            method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
@@ -103,7 +120,7 @@ class LambdaStack(Construct):
 
         self.update_user = self.create_lambda(
             function_name="update_user",
-            method="PUT",
+            method="POST",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
@@ -136,19 +153,74 @@ class LambdaStack(Construct):
             environment_variables=environment_variables,
         )
 
-        self.get_bids_by_auction = self.create_lambda(
-            function_name="get_bids_by_auction",
-            method="GET",
-            restapi_resource=restapi_resource,
-            environment_variables=environment_variables,
-        )
-
         self.get_all_auctions_menu = self.create_lambda(
             function_name="get_all_auctions_menu",
             method="GET",
             restapi_resource=restapi_resource,
             environment_variables=environment_variables,
         )
+
+        self.create_feedback = self.create_lambda(
+            function_name="create_feedback",
+            method="POST",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
+        self.get_all_auctions_user = self.create_lambda(
+            function_name="get_all_auctions_user",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
+        self.get_payment = self.create_lambda(
+            function_name="get_payment",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+            more_layers=[self.mercadopago, self.urllib3]
+        )
+
+        self.delete_auction = self.create_lambda(
+            function_name="delete_auction",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
+        self.get_all_auctions_admin = self.create_lambda(
+            function_name="get_all_auctions_admin",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
+        self.get_all_users = self.create_lambda(
+            function_name="get_all_users",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
+        self.delete_suspension = self.create_lambda(
+            function_name="delete_suspension",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
+        self.get_all_feedbacks = self.create_lambda(
+            function_name="get_all_feedbacks",
+            method="GET",
+            restapi_resource=restapi_resource,
+            environment_variables=environment_variables,
+        )
+
+        self.create_auction.add_to_role_policy(statement=iam.PolicyStatement(
+            actions=["s3:*"],
+            resources=["*"]
+        ))
 
     @property
     def functions_need_user_table_permission(self) -> Tuple[_lambda.Function] or None:
@@ -157,16 +229,22 @@ class LambdaStack(Construct):
             self.get_user,
             self.send_verification_email_code,
             self.confirm_verification_email_code,
-            self.send_password_reset_code,
-            self.confirm_password_reset_code,
+            self.send_reset_password_link,
             self.get_token,
             self.update_user,
             self.create_auction,
             self.create_user_by_admin,
             self.get_auction,
             self.create_bid,
-            self.get_bids_by_auction,
             self.get_all_auctions_menu,
+            self.create_feedback,
+            self.delete_auction,
+            self.get_payment,
+            self.get_all_auctions_user,
+            self.get_all_auctions_admin,
+            self.get_all_users,
+            self.delete_suspension,
+            self.get_all_feedbacks,
         )
 
     @property
@@ -175,6 +253,25 @@ class LambdaStack(Construct):
             self.create_auction,
             self.get_auction,
             self.create_bid,
-            self.get_bids_by_auction,
             self.get_all_auctions_menu,
+            self.delete_auction,
+            self.get_payment,
+            self.get_all_auctions_user,
+            self.get_all_auctions_admin,
+        )
+
+    @property
+    def functions_need_events_permission(self) -> Tuple[_lambda.Function] or None:
+        return (
+            self.create_auction,
+            self.delete_auction,
+            self.delete_suspension,
+        )
+
+    @property
+    def functions_need_lambda_permission(self) -> Tuple[_lambda.Function] or None:
+        return (
+            self.create_auction,
+            self.delete_auction,
+            self.delete_suspension,
         )

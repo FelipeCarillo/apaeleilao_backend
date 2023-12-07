@@ -21,10 +21,7 @@ class CreateUserUseCase:
     def __call__(self, auth: Dict, body: Dict) -> Dict:
 
         if not auth.get('Authorization'):
-            raise MissingParameter('Authorization')
-
-        if not body.get('email'):
-            raise MissingParameter('Email')
+            raise UserNotAuthenticated('Token de acesso não encontrado.')
 
         if not body.get('cpf'):
             raise MissingParameter('CPF')
@@ -48,8 +45,8 @@ class CreateUserUseCase:
         user_id = str(uuid.uuid4())
         while self.__user_interface.get_user_by_id(user_id):
             user_id = str(uuid.uuid4())
-        create_at = TimeManipulation.get_current_time()
-        access_key = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        created_at = TimeManipulation.get_current_time()
+        access_key = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
         password = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits +
                                           string.punctuation, k=20))
 
@@ -61,7 +58,7 @@ class CreateUserUseCase:
                              password=password,
                              status_account=STATUS_USER_ACCOUNT_ENUM.ACTIVE.value,
                              type_account=TYPE_ACCOUNT_USER_ENUM.MODERATOR.value,
-                             create_at=create_at
+                             created_at=created_at
                              )
 
         user.password = hashpw(user.password.encode('utf-8'), gensalt()).decode('utf-8')

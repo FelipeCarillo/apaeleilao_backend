@@ -17,12 +17,12 @@ class ConfirmVerificationEmailCodeUseCase:
 
     def __call__(self, auth: Dict, body: Dict):
         if not auth:
-            MissingParameter('auth')
+            raise MissingParameter('auth')
         if not auth.get('Authorization'):
-            MissingParameter('Authorization')
+            raise UserNotAuthenticated('Authorization')
 
         if not body:
-            MissingParameter('body')
+            raise MissingParameter('body')
         if not body.get('verification_email_code'):
             raise MissingParameter('Código de validação')
 
@@ -40,12 +40,12 @@ class ConfirmVerificationEmailCodeUseCase:
         if TYPE_ACCOUNT_USER_ENUM(user.get('type_account')) != TYPE_ACCOUNT_USER_ENUM.USER:
             raise UserNotAuthenticated(message='Você não tem permissão para validar uma conta de usuário.')
 
-        current_time = TimeManipulation().get_current_time()
+        current_time = TimeManipulation.get_current_time()
 
         if current_time > user.get('verification_email_code_expires_at'):
             raise InvalidParameter(parameter='Código de validação', body='expirado')
 
-        if body.get('verification_email_code') != user.get('verification_email_code'):
+        if str(body.get('verification_email_code')) != str(user.get('verification_email_code')):
             raise InvalidParameter(parameter='Código de validação', body='inválido')
 
         status_account = STATUS_USER_ACCOUNT_ENUM.ACTIVE.value
@@ -61,11 +61,9 @@ class ConfirmVerificationEmailCodeUseCase:
             accepted_terms=user.get('accepted_terms'),
             status_account=status_account,
             type_account=user.get('type_account'),
-            create_at=int(user.get('create_at')),
+            created_at=user.get('created_at') if isinstance(user.get('created_at'), int) else int(user.get('created_at')),
             verification_email_code=None,
             verification_email_code_expires_at=None,
-            password_reset_code=user.get('password_reset_code'),
-            password_reset_code_expires_at=user.get('password_reset_code_expires_at')
         )
 
         self.__user_interface.update_user(user)

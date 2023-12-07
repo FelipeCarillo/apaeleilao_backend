@@ -1,14 +1,13 @@
-from decimal import Decimal
+from abc import ABC
 from typing import List, Optional, Dict
 
 from src.shared.errors.modules_errors import *
 from src.shared.structure.entities.bid import Bid
 from src.shared.structure.entities.payment import Payment
 from src.shared.structure.enums.auction_enum import STATUS_AUCTION_ENUM
-from src.shared.helper_functions.time_manipulation import TimeManipulation
 
 
-class Auction:
+class Auction(ABC):
     auction_id: str
     created_by: str  # who created the auction user_id
     title: str
@@ -17,9 +16,9 @@ class Auction:
     end_date: int
     start_amount: float
     current_amount: float
-    images: List[Dict[str]]
+    images: List[Optional[Dict]]
     status_auction: STATUS_AUCTION_ENUM
-    create_at: int
+    created_at: int
     USER_ID_LENGTH = 36
     TITTLE_MAX_LENGTH = 100
     TITTLE_MIN_LENGTH = 3
@@ -34,9 +33,9 @@ class Auction:
                  end_date: int = None,
                  start_amount: float = None,
                  current_amount: float = None,
-                 images: List[Dict[str]] = None,
-                 status_auction: STATUS_AUCTION_ENUM = None,
-                 create_at: int = None,
+                 images: List[Optional[Dict]] = None,
+                 status_auction: str = None,
+                 created_at: int = None,
                  ):
 
         self.auction_id = self.validate_and_set_auction_id(auction_id)
@@ -49,7 +48,7 @@ class Auction:
         self.current_amount = self.validate_and_set_amount(current_amount)
         self.images = self.validate_and_set_images(images)
         self.status_auction = self.validate_and_set_status_auction(STATUS_AUCTION_ENUM(status_auction))
-        self.create_at = self.validate_and_set_create_at(create_at)
+        self.created_at = self.validate_and_set_created_at(created_at)
 
     def to_dict(self):
         return {
@@ -63,23 +62,11 @@ class Auction:
             "current_amount": self.current_amount,
             "images": self.images,
             "status_auction": self.status_auction.value,
-            "create_at": self.create_at
+            "created_at": self.created_at
         }
 
-    def check_time(self):
-        """
-        Check if the auction is open or closed
-        """
-        time = TimeManipulation.get_current_time()
-        if self.status_auction == STATUS_AUCTION_ENUM.OPEN:
-            if self.end_date <= time:
-                self.status_auction = STATUS_AUCTION_ENUM.CLOSED
-        if self.status_auction == STATUS_AUCTION_ENUM.PENDING:
-            if self.start_date <= time:
-                self.status_auction = STATUS_AUCTION_ENUM.OPEN
-
     @staticmethod
-    def validate_and_set_auction_id(auction_id: str) -> str or None:
+    def validate_and_set_auction_id(auction_id: str) -> str:
         if auction_id is None:
             raise MissingParameter("auction_id")
         if type(auction_id) is not str:
@@ -89,7 +76,7 @@ class Auction:
         return auction_id
 
     @staticmethod
-    def validate_and_set_user_id(user_id: str) -> str or None:
+    def validate_and_set_user_id(user_id: str) -> str:
         if user_id is None:
             raise MissingParameter("user_id")
         if type(user_id) is not str:
@@ -99,12 +86,12 @@ class Auction:
         return user_id
 
     @staticmethod
-    def validate_and_set_title(title: str) -> str or None:
+    def validate_and_set_title(title: str) -> str:
         if title is None:
             raise MissingParameter("title")
         if Auction.TITTLE_MIN_LENGTH > len(title) or len(title) > Auction.TITTLE_MAX_LENGTH:
             raise InvalidParameter(
-                "title",
+                "Título",
                 f"deve ter no mínimo {Auction.TITTLE_MIN_LENGTH} caracteres e no máximo {Auction.TITTLE_MAX_LENGTH}")
         if isinstance(title, str) is False:
             raise InvalidParameter("title", "deve ser uma str")
@@ -116,7 +103,7 @@ class Auction:
             return None
         if Auction.DESCRIPTION_MIN_LENGTH >= len(description) or len(description) >= Auction.DESCRIPTION_MAX_LENGTH:
             raise InvalidParameter(
-                "description",
+                "Descrição",
                 f"deve ter no mínimo {Auction.DESCRIPTION_MIN_LENGTH} caracteres e no máximo {Auction.DESCRIPTION_MAX_LENGTH}")
         if type(description) != str:
             raise InvalidParameter("description", "deve ser uma str")
@@ -143,17 +130,17 @@ class Auction:
         if amount is None:
             raise MissingParameter("amount")
         if type(amount) != float:
-            raise InvalidParameter("amount", "deve ser um número")
+            raise InvalidParameter("amount", "deve ser um número com casas decimais")
         amount = round(amount, 2)
         return amount
 
     @staticmethod
-    def validate_and_set_images(images: List[Dict[str]]) -> List[Dict[str]] or List[None]:
+    def validate_and_set_images(images: List[Optional[Dict]]) -> List[Optional[Dict]]:
         if images is None:
             raise MissingParameter("images")
-        if len(images) > 0:
-            return None
-        if isinstance(images, list):
+        if len(images) == 0:
+            return []
+        if isinstance(images, list) is False:
             raise InvalidParameter("images", "deve ser uma lista")
         for image in images:
             if not isinstance(image, dict):
@@ -166,23 +153,33 @@ class Auction:
                 raise MissingParameter("image_body")
             if type(image.get('image_body')) != str:
                 raise InvalidParameter("image_body", "deve ser uma str")
+            if "https" not in image.get('image_body'):
+                file_type_permitted = ['png', 'jpg', 'jpeg']
+                image_description = image.get('image_body').split(',')[0]
+                image_body = image.get('image_body').split(',')[1]
+                content_type = image_description.split(':')[1].split(";")[0]
+                if content_type.split("/")[-1] not in file_type_permitted:
+                    raise InvalidParameter("Imagens", "devem ser uma em formato PNG, JPG ou JPEG")
+                image['image_body'] = image_body
+                image['content_type'] = content_type
+
         return images
 
     @staticmethod
     def validate_and_set_status_auction(status_auction: STATUS_AUCTION_ENUM) -> STATUS_AUCTION_ENUM or None:
         if status_auction is None:
             raise MissingParameter("status_auction")
-        if type(status_auction) != STATUS_AUCTION_ENUM:
+        if isinstance(status_auction, STATUS_AUCTION_ENUM) is False:
             raise InvalidParameter("status_auction", "deve ser um STATUS_AUCTION_ENUM")
         return status_auction
 
     @staticmethod
-    def validate_and_set_create_at(create_at: int) -> int or None:
-        if create_at is None:
+    def validate_and_set_created_at(created_at: int) -> int or None:
+        if created_at is None:
             raise MissingParameter("create_at")
-        if type(create_at) != int:
+        if isinstance(created_at, int) is False:
             raise InvalidParameter("create_at", "deve ser um int")
-        return create_at
+        return created_at
 
     @staticmethod
     def validate_and_set_bids(bids: List[Optional[Bid]]) -> List[Optional[Bid]] or None:
@@ -197,7 +194,7 @@ class Auction:
         return bids
 
     @staticmethod
-    def validate_and_set_payments(payments: List[Optional[Payment]]) -> List[Optional[Payment]] or None:
+    def validate_and_set_payments(payments: List[Optional[Payment]]) -> List[Optional[Payment]]:
         if payments is None:
             raise MissingParameter("payments")
         if not isinstance(payments, list):

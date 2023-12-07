@@ -1,10 +1,10 @@
 from typing import Dict
 
-from src.shared.structure.entities.user import User
+from src.shared.structure.entities.user import User, UserAdmin
 from src.shared.helper_functions.token_authy import TokenAuthy
+from src.shared.errors.modules_errors import UserNotAuthenticated
 from src.shared.structure.interface.user_interface import UserInterface
 from src.shared.structure.enums.user_enum import STATUS_USER_ACCOUNT_ENUM
-from src.shared.errors.modules_errors import MissingParameter, UserNotAuthenticated
 
 
 class GetUserUseCase:
@@ -13,8 +13,8 @@ class GetUserUseCase:
         self.__token = TokenAuthy()
 
     def __call__(self, body: Dict) -> Dict:
-        if not body.get('Authorization'):
-            raise MissingParameter('Authorization')
+        if body.get('Authorization') is None:
+            raise UserNotAuthenticated('Token de acesso não encontrado.')
 
         decoded_token = self.__token.decode_token(body["Authorization"])
         if not decoded_token:
@@ -30,25 +30,8 @@ class GetUserUseCase:
         if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) not in status_account_permitted:
             raise UserNotAuthenticated(message='Conta de usuário deletada.')
 
-        user = User(
-            user_id=user['user_id'],
-            first_name=user.get('first_name'),
-            last_name=user.get('last_name'),
-            cpf=user.get('cpf'),
-            email=user.get('email'),
-            phone=user.get('phone'),
-            password=user.get('password'),
-            accepted_terms=user.get('accepted_terms'),
-            status_account=user.get('status_account'),
-            type_account=user.get('type_account'),
-            create_at=int(user.get('create_at')) if user.get('create_at') else None,
-            verification_email_code=int(user.get('verification_email_code')) if user.get(
-                'verification_email_code') else None,
-            verification_email_code_expires_at=int(user.get('verification_email_code_expires_at')) if user.get(
-                'verification_email_code_expires_at') else None,
-            password_reset_code=int(user.get('password_reset_code')) if user.get('password_reset_code') else None,
-            password_reset_code_expires_at=int(user.get('password_reset_code_expires_at')) if user.get(
-                'password_reset_code_expires_at') else None
-        )
+        if user.get('status_account') == STATUS_USER_ACCOUNT_ENUM.BANED or user.get("status_account") == STATUS_USER_ACCOUNT_ENUM.SUSPENDED:
+            user['suspensions'] = self.__user_interface.get_all_suspensions_by_user_id(user_id=user_id)
 
-        return user.to_dict()
+        user.pop('password')
+        return user

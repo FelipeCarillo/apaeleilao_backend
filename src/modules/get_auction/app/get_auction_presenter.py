@@ -1,10 +1,11 @@
 from .get_auction_usecase import GetAuctionUseCase
 from .get_auction_controller import GetAuctionController
 
-from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 from src.shared.database.database_user import UserDynamodb
+from src.shared.database.database_auction import AuctionDynamodb
+from src.shared.https_codes.https_code import HttpResponse, HttpRequest
 
-usecase = GetAuctionUseCase(UserDynamodb())
+usecase = GetAuctionUseCase(UserDynamodb(), AuctionDynamodb())
 controller = GetAuctionController(usecase)
 
 

@@ -1,7 +1,7 @@
-from get_all_auctions_menu_usecase import GetAllAuctionsMenuUseCase
+from .get_all_auctions_menu_usecase import GetAllAuctionsMenuUseCase
 
-from src.shared.https_codes.https_code import *
 from src.shared.errors.modules_errors import *
+from src.shared.https_codes.https_code import *
 
 
 class GetAllAuctionsMenuController:

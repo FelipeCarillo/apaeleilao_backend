@@ -16,11 +16,9 @@ class User(ABC):
     accepted_terms: bool
     status_account: STATUS_USER_ACCOUNT_ENUM
     type_account: TYPE_ACCOUNT_USER_ENUM
-    create_at: int
-    verification_code: str
-    verification_code_expires_at: int
-    password_reset_code: str
-    password_reset_code_expires_at: int
+    created_at: int
+    verification_code: str or None
+    verification_code_expires_at: int or None
 
     def __init__(self, user_id: str = None,
                  first_name: str = None,
@@ -32,12 +30,10 @@ class User(ABC):
                  accepted_terms: bool = None,
                  status_account: str = None,
                  type_account: str = None,
-                 create_at: int = None,
-                 verification_email_code: str = None,
-                 verification_email_code_expires_at: int = None,
-                 password_reset_code: str = None,
-                 password_reset_code_expires_at: int = None):
-
+                 created_at: int = None,
+                 verification_email_code: str or None = None,
+                 verification_email_code_expires_at: int or None = None,
+                 ):
         self.user_id = UserValidator.validate_and_set_user_id(user_id)
         self.first_name = UserValidator.validate_and_set_name(first_name)
         self.last_name = UserValidator.validate_and_set_name(last_name)
@@ -48,13 +44,10 @@ class User(ABC):
         self.accepted_terms = UserValidator.validate_and_set_accepted_terms(accepted_terms)
         self.status_account = UserValidator.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
         self.type_account = UserValidator.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
-        self.create_at = UserValidator.validate_and_set_create_at(create_at)
+        self.created_at = UserValidator.validate_and_set_created_at(created_at)
         self.verification_email_code = UserValidator.validate_and_set_verification_email_code(verification_email_code)
         self.verification_email_code_expires_at = UserValidator.validate_and_set_verification_email_code_expires_at(
             verification_email_code_expires_at)
-        self.password_reset_code = UserValidator.validate_and_set_password_reset_code(password_reset_code)
-        self.password_reset_code_expires_at = UserValidator.validate_and_set_password_reset_code_expires_at(
-            password_reset_code_expires_at)
 
     def to_dict(self):
         return {
@@ -68,11 +61,9 @@ class User(ABC):
             'accepted_terms': self.accepted_terms,
             'status_account': self.status_account.value,
             'type_account': self.type_account.value,
-            'create_at': self.create_at,
+            'created_at': self.created_at,
             'verification_email_code': self.verification_email_code,
             'verification_email_code_expires_at': self.verification_email_code_expires_at,
-            'password_reset_code': self.password_reset_code,
-            'password_reset_code_expires_at': self.password_reset_code_expires_at,
         }
 
 
@@ -86,6 +77,7 @@ class UserModerator(ABC):
     status_account: STATUS_USER_ACCOUNT_ENUM
     type_account: TYPE_ACCOUNT_USER_ENUM
     date_joined: int
+    created_at: int
     USER_ID_LENGTH = 36
     NAME_MIN_LENGTH = 3
     NAME_MAX_LENGTH = 200
@@ -99,7 +91,7 @@ class UserModerator(ABC):
                  password: str = None,
                  status_account: str = None,
                  type_account: str = None,
-                 create_at: int = None):
+                 created_at: int = None):
         self.user_id = UserValidator.validate_and_set_user_id(user_id)
         self.access_key = UserValidator.validate_and_set_access_key(access_key)
         self.first_name = UserValidator.validate_and_set_name(first_name)
@@ -108,7 +100,7 @@ class UserModerator(ABC):
         self.password = UserValidator.validate_and_set_password(password)
         self.status_account = UserValidator.validate_and_set_status_account(STATUS_USER_ACCOUNT_ENUM(status_account))
         self.type_account = self.validate_and_set_type_account(TYPE_ACCOUNT_USER_ENUM(type_account))
-        self.create_at = UserValidator.validate_and_set_create_at(create_at)
+        self.created_at = UserValidator.validate_and_set_created_at(created_at)
 
     def to_dict(self):
         return {
@@ -120,7 +112,7 @@ class UserModerator(ABC):
             'password': self.password,
             'status_account': self.status_account.value,
             'type_account': self.type_account.value,
-            'create_at': self.create_at,
+            'created_at': self.created_at,
         }
 
     @staticmethod
@@ -218,7 +210,7 @@ class UserValidator(ABC):
     def validate_and_set_cpf(cpf: str) -> str or None:
         if cpf is None:
             raise MissingParameter("CPF")
-        if type(cpf) != str:
+        if isinstance(cpf, str) is False:
             raise InvalidParameter("cpf", "deve ser str")
         if not cpf.isnumeric():
             raise InvalidParameter("cpf", "deve ser numérico")
@@ -227,14 +219,16 @@ class UserValidator(ABC):
             raise InvalidParameter("cpf", "deve ter 11 caracteres")
 
         numbers = [int(digit) for digit in cpf]
-
+        if all(number == numbers[0] for number in numbers):
+            raise InvalidParameter("CPF", "inválido")
         sum_of_products = sum(a * b for a, b in zip(numbers[0:9], range(10, 1, -1)))
-        expected_digit = (sum_of_products * 10 % 11) % 10
+        expected_digit = 11 - (sum_of_products % 11)
+        expected_digit = expected_digit if expected_digit < 10 else 0
         if numbers[9] != expected_digit:
             raise InvalidParameter("CPF", "inválido")
-
         sum_of_products = sum(a * b for a, b in zip(numbers[0:10], range(11, 1, -1)))
-        expected_digit = (sum_of_products * 10 % 11) % 10
+        expected_digit = 11 - (sum_of_products % 11)
+        expected_digit = expected_digit if expected_digit < 10 else 0
         if numbers[10] != expected_digit:
             raise InvalidParameter("CPF", "inválido")
 
@@ -254,8 +248,12 @@ class UserValidator(ABC):
     def validate_and_set_phone(phone: str) -> str or None:
         if phone is None:
             raise MissingParameter("Celular")
-        if type(phone) != str:
+        if isinstance(phone, str) is False:
             raise InvalidParameter("phone", "deve ser str")
+        if not phone.isnumeric():
+            raise InvalidParameter("phone", "deve ser numérico")
+        if len(phone) != 11:
+            raise InvalidParameter("phone", "deve ter 11 digitos")
         return phone
 
     @staticmethod
@@ -270,17 +268,17 @@ class UserValidator(ABC):
     def validate_and_set_accepted_terms(accepted_terms: bool) -> bool or None:
         if accepted_terms is None:
             return None
-        if type(accepted_terms) != bool:
+        if isinstance(accepted_terms, bool) is False:
             raise InvalidParameter("accepted_terms", "deve ser bool")
         return accepted_terms
 
     @staticmethod
-    def validate_and_set_create_at(create_at: int) -> int or None:
-        if create_at is None:
+    def validate_and_set_created_at(created_at: int) -> int or None:
+        if created_at is None:
             return None
-        if type(create_at) != int:
+        if isinstance(created_at, int) is False:
             raise InvalidParameter("create_at", "deve ser int")
-        return create_at
+        return created_at
 
     @staticmethod
     def validate_and_set_status_account(status_account: STATUS_USER_ACCOUNT_ENUM):
@@ -301,33 +299,17 @@ class UserValidator(ABC):
         return type_account
 
     @staticmethod
-    def validate_and_set_verification_email_code(verification_email_code: str) -> str or None:
+    def validate_and_set_verification_email_code(verification_email_code: str or None) -> str or None:
         if verification_email_code is None:
             return None
-        if type(verification_email_code) != str:
-            raise InvalidParameter("verification_code", "deve ser str")
+        if isinstance(verification_email_code, str) is False:
+            raise InvalidParameter("verification_email_code", "deve ser str")
         return verification_email_code
 
     @staticmethod
-    def validate_and_set_verification_email_code_expires_at(verification_email_code_expires_at: int) -> int or None:
+    def validate_and_set_verification_email_code_expires_at(verification_email_code_expires_at: int or None) -> int or None:
         if verification_email_code_expires_at is None:
             return None
         if type(verification_email_code_expires_at) != int:
             raise InvalidParameter("verification_code_expires_at", "deve ser int")
         return verification_email_code_expires_at
-
-    @staticmethod
-    def validate_and_set_password_reset_code(password_reset_code: str) -> str or None:
-        if password_reset_code is None:
-            return None
-        if type(password_reset_code) != str:
-            raise InvalidParameter("password_reset_code", "deve ser str")
-        return password_reset_code
-
-    @staticmethod
-    def validate_and_set_password_reset_code_expires_at(password_reset_code_expires_at: int) -> int or None:
-        if password_reset_code_expires_at is None:
-            return None
-        if type(password_reset_code_expires_at) != int:
-            raise InvalidParameter("password_reset_code_expires_at", "deve ser int")
-        return password_reset_code_expires_at

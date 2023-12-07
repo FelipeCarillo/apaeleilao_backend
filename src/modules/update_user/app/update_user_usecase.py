@@ -15,12 +15,13 @@ class UpdateUserUseCase:
 
     def __call__(self, auth: Dict, body: Dict):
         if not auth:
-            MissingParameter('auth')
+            raise MissingParameter('auth')
+
         if not auth.get('Authorization'):
-            MissingParameter('Authorization')
+            raise UserNotAuthenticated('Token de acesso não encontrado.')
 
         if not body:
-            MissingParameter('body')
+            raise MissingParameter('body')
 
         decoded_token = self.__token.decode_token(auth['Authorization'])
         if not decoded_token:
@@ -30,11 +31,12 @@ class UpdateUserUseCase:
         if not user:
             raise UserNotAuthenticated()
 
-        if checkpw(body.get("password").encode("utf-8"), user.get("password").encode("utf-8")):
-            raise InvalidParameter("Senha", "deve ser diferente da anterior")
+        if body.get("password"):
+            if checkpw(body.get("password").encode("utf-8"), user.get("password").encode("utf-8")):
+                raise InvalidParameter("Senha", "deve ser diferente da anterior")
 
-        first_name = body.get("first_name", user.get("first_name"))
-        last_name = body.get("last_name", user.get("last_name"))
+        first_name = body.get("first_name", user.get("first_name")).title()
+        last_name = body.get("last_name", user.get("last_name")).title()
         phone = body.get("phone", user.get("phone"))
         password = body.get("password", user.get("password"))
 
@@ -49,14 +51,11 @@ class UpdateUserUseCase:
             accepted_terms=user.get("accepted_terms"),
             status_account=user.get("status_account"),
             type_account=user.get("type_account"),
-            create_at=int(user.get("create_at")),
+            created_at=int(user.get("created_at")),
             verification_email_code=int(user.get('verification_email_code'))
             if user.get('verification_email_code') else None,
             verification_email_code_expires_at=int(user.get('verification_email_code_expires_at'))
             if user.get('verification_email_code_expires_at') else None,
-            password_reset_code=int(user.get('password_reset_code')) if user.get('password_reset_code') else None,
-            password_reset_code_expires_at=int(user.get('password_reset_code_expires_at'))
-            if user.get('password_reset_code_expires_at') else None
         )
 
         return self.__user_interface.update_user(user)
