@@ -150,14 +150,11 @@ class AuctionDynamodb(AuctionInterface):
     def get_last_auction_id(self) -> int or None:
         try:
             query = self.__dynamodb.query(
-                IndexName="SK_PK-index",
                 KeyConditionExpression=Key('SK').eq(AUCTION_TABLE_ENTITY.AUCTION.value),
-                ScanIndexForward=False,
-                Limit=1
             )
             response = query.get('Items', None)
             if response:
-                return int(response[0]['PK'])
+                return int(sorted(response, key=lambda k: int(k['PK']), reverse=True)[0]['PK'])
             return None
         except ClientError as e:
             raise e
