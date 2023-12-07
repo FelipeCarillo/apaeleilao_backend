@@ -1,6 +1,6 @@
 from typing import Dict
 
-from src.shared.structure.entities.user import User
+from src.shared.structure.entities.user import User, UserAdmin
 from src.shared.helper_functions.token_authy import TokenAuthy
 from src.shared.errors.modules_errors import UserNotAuthenticated
 from src.shared.structure.interface.user_interface import UserInterface
@@ -30,28 +30,8 @@ class GetUserUseCase:
         if STATUS_USER_ACCOUNT_ENUM(user.get('status_account')) not in status_account_permitted:
             raise UserNotAuthenticated(message='Conta de usuário deletada.')
 
-        user = User(
-            user_id=user['user_id'],
-            first_name=user.get('first_name'),
-            last_name=user.get('last_name'),
-            cpf=user.get('cpf'),
-            email=user.get('email'),
-            phone=user.get('phone'),
-            password=user.get('password'),
-            accepted_terms=user.get('accepted_terms'),
-            status_account=user.get('status_account'),
-            type_account=user.get('type_account'),
-            created_at=int(user.get('created_at')) if user.get('created_at') else None,
-            verification_email_code=str(user.get('verification_email_code')) if user.get(
-                'verification_email_code') else None,
-            verification_email_code_expires_at=int(user.get('verification_email_code_expires_at')) if user.get(
-                'verification_email_code_expires_at') else None,
-        )
+        if user.get('status_account') == STATUS_USER_ACCOUNT_ENUM.BANED or user.get("status_account") == STATUS_USER_ACCOUNT_ENUM.SUSPENDED:
+            user['suspensions'] = self.__user_interface.get_all_suspensions_by_user_id(user_id=user_id)
 
-        user_dict = user.to_dict()
-
-        if user.status_account == STATUS_USER_ACCOUNT_ENUM.BANED or user.status_account == STATUS_USER_ACCOUNT_ENUM.SUSPENDED:
-            user_dict['suspensions'] = self.__user_interface.get_all_suspensions_by_user_id(user_id=user_id)
-
-        user_dict.pop('password')
-        return user_dict
+        user.pop('password')
+        return user
