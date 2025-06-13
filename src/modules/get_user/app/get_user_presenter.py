@@ -7,6 +7,7 @@ from src.shared.database.database_user import UserDynamodb
 usecase = GetUserUseCase(UserDynamodb())
 controller = GetUserController(usecase)
 
+api_key = "safaefawdafbaeufbaodfbao"  # Essa é minha chave que não pode subir pro git
 
 def lambda_handler(event, context):
     request = HttpRequest(auth=event['headers'])
